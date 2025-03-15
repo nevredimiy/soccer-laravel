@@ -4648,12 +4648,12 @@ body::after {
   justify-content: center;
   align-items: center;
   background: #fff;
+  color: #0A2640;
   padding: 36px 14px;
   max-width: 390px;
   margin: 0 auto;
   border: 1px solid #336ba4;
   border-radius: 10px;  
-  color: #0A2640;
 }
 
 .login-section__block .title{
@@ -4662,11 +4662,13 @@ body::after {
   font-size: 20px;
   padding: 12px 24px;
 }
+
 .login-section__block .text{
-  margin-bottom: 24px;
   text-align: center;
   line-height: 1.5;
+  margin-bottom: 24px;
 }
+
 .login-section__block .header__link {
   display: block;
 }

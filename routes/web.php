@@ -69,6 +69,3 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/liqpay/result', [LiqPayController::class, 'result'])->name('liqpay.result');
     Route::post('/liqpay/callback', [LiqPayController::class, 'callback'])->name('liqpay.callback');
 });
-
-
-

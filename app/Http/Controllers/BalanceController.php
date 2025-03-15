@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\User;
 use App\Services\BalanceService;
+use App\Models\User;
 
 class BalanceController extends Controller
 {
@@ -24,7 +24,7 @@ class BalanceController extends Controller
 
         $this->balanceService->deposit($user, $request->amount);
 
-        return back()->with('success', 'Баланс поповнено!');
+        return back()->with('success', 'Баланс пополнен!');
     }
 
     // Списание баланса (например, для оплаты участия в турнире)
@@ -36,7 +36,7 @@ class BalanceController extends Controller
 
         try {
             $this->balanceService->withdraw($user, $request->amount);
-            return back()->with('success', 'Кошти списані!');
+            return back()->with('success', 'Средства списаны!');
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
         }

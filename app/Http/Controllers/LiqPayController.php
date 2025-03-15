@@ -3,10 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\User;
-use App\Models\Transaction;
 use App\Services\LiqPayService;
-use Illuminate\Support\Facades\Log;
 
 class LiqPayController extends Controller
 {
