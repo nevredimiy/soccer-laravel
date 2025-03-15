@@ -2,18 +2,14 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
-
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\VerificationController;
 use App\Http\Controllers\ProfileController;
-
+use App\Http\Controllers\BalanceController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-
-// Route::get('/', function () {
-//     return view('welcome');
-// });
+use App\Http\Controllers\LiqPayController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -64,4 +60,15 @@ Route::post('/email/resend', [VerificationController::class, 'resend'])->name('v
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
 });
+
+Route::middleware(['auth'])->group(function () {
+    Route::post('/balance/deposit/{user}', [BalanceController::class, 'deposit'])->name('balance.deposit');
+    Route::post('/balance/withdraw/{user}', [BalanceController::class, 'withdraw'])->name('balance.withdraw');
+
+    Route::post('/liqpay/pay', [LiqPayController::class, 'pay'])->name('liqpay.pay');
+    Route::get('/liqpay/result', [LiqPayController::class, 'result'])->name('liqpay.result');
+    Route::post('/liqpay/callback', [LiqPayController::class, 'callback'])->name('liqpay.callback');
+});
+
+
 
