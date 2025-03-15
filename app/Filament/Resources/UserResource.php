@@ -17,7 +17,11 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-users';
+    
+    protected static ?string $navigationLabel = 'Користувачі';
+
+    protected static ?string $pluralModelLabel = "Список користувачів";
 
     public static function form(Form $form): Form
     {
@@ -33,11 +37,18 @@ class UserResource extends Resource
                 Forms\Components\DateTimePicker::make('email_verified_at'),
                 Forms\Components\TextInput::make('password')
                     ->password()
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('role')
+                    ->maxLength(255)
+                    ->nullable() // 👈 Разрешаем оставлять поле пустым
+                    ->dehydrated(fn ($state) => filled($state)) // 👈 Сохранится только если что-то введено
+                    ->dehydrateStateUsing(fn ($state) => bcrypt($state)), // 👈 Хешируем, если пароль введён
+                Forms\Components\Select::make('role')
+                    ->options([
+                        'admin' => 'Адмін', 
+                        'team_owner' => 'Власник команди', 
+                        'player' => 'Гравець', 
+                        'viewer' => 'Спостерігач'
+                    ])
                     ->default('viewer')
-                    ->disabled()
                     ->dehydrated()
                     ->label('Роль'),
                 

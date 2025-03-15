@@ -2,10 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\TeamResource\Pages;
-use App\Filament\Resources\TeamResource\RelationManagers;
-use App\Models\Team;
-use App\Models\User;
+use App\Filament\Resources\TournamentResource\Pages;
+use App\Filament\Resources\TournamentResource\RelationManagers;
+use App\Models\Tournament;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -14,32 +13,34 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class TeamResource extends Resource
+class TournamentResource extends Resource
 {
-    protected static ?string $model = Team::class;
+    protected static ?string $model = Tournament::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-user-group';
-    
-    protected static ?string $navigationLabel = 'Команди';
-    
-    protected static ?string $pluralModelLabel = "Команди";
+    protected static ?string $navigationIcon = 'heroicon-o-clipboard';
 
     protected static ?string $navigationGroup = 'Дані матчів';
 
-    protected static ?int $navigationSort = 3;
+    protected static ?string $navigationLabel = 'Турнири';
+    
+    protected static ?string $pluralModelLabel = 'Список турнірів';
+
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('owner_id')
-                    ->options(User::all()->pluck('name', 'id'))
+                Forms\Components\TextInput::make('league_id')
                     ->required()
-                    ->searchable(),
+                    ->numeric(),
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\FileUpload::make('logo'),
+                Forms\Components\TextInput::make('entry_fee')
+                    ->required()
+                    ->numeric()
+                    ->default(0.00),
             ]);
     }
 
@@ -47,14 +48,14 @@ class TeamResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('owner.name')
-                    ->label('Власник') 
-                    ->sortable()
-                    ->searchable(),
+                Tables\Columns\TextColumn::make('league_id')
+                    ->numeric()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-                Tables\Columns\ImageColumn::make('logo')
-                    ->defaultImageUrl(url('/images/placeholder.png')),
+                Tables\Columns\TextColumn::make('entry_fee')
+                    ->numeric()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -68,6 +69,7 @@ class TeamResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
@@ -87,9 +89,10 @@ class TeamResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListTeams::route('/'),
-            'create' => Pages\CreateTeam::route('/create'),
-            'edit' => Pages\EditTeam::route('/{record}/edit'),
+            'index' => Pages\ListTournaments::route('/'),
+            'create' => Pages\CreateTournament::route('/create'),
+            'view' => Pages\ViewTournament::route('/{record}'),
+            'edit' => Pages\EditTournament::route('/{record}/edit'),
         ];
     }
 }
