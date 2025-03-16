@@ -31,7 +31,7 @@
                         <div class="profile-header__label">
                             {{ number_format(auth()->user()->balance ?? 0, 2) }} грн
                         </div>
-                        <button class="profile-header__add _icon-add-circle"></button>
+                        <button id="top-up-balance" class="profile-header__add _icon-add-circle"></button>
                     </div>
                     <a href="{{ route('profile') }}" class="header__link button button--transparent _icon-user-circle">
                         <span>Профіль</span>
@@ -114,5 +114,12 @@
             </ul>
         </div>
 
+    </div>
+</div>
+<div id="balance-modal" class="modal hidden">
+    <div class="modal-content">
+        <h2>Поповнити баланс</h2>
+        <input type="number" id="balance-amount" placeholder="Введіть суму (грн)">
+        <button id="pay-button">Оплатити</button>
     </div>
 </div>

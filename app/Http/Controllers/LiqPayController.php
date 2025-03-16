@@ -28,7 +28,7 @@ class LiqPayController extends Controller
         $form = $this->liqpay->getForm(
             $amount,
             $order_id,
-            "Пополнение баланса на {$amount} грн",
+            "Поповнення балансу на {$amount} грн",
             route('liqpay.result'),
             route('liqpay.callback')
         );
@@ -39,7 +39,7 @@ class LiqPayController extends Controller
     // 2️⃣ Страница после успешного платежа
     public function result()
     {
-        return redirect()->route('profile')->with('success', 'Оплата прошла успешно!');
+        return redirect()->route('profile')->with('success', 'Оплата пройшла успішно!');
     }
 
     // 3️⃣ Обработка callback от LiqPay
@@ -51,7 +51,7 @@ class LiqPayController extends Controller
         $generated_signature = base64_encode(sha1(env('LIQPAY_PRIVATE_KEY') . $data . env('LIQPAY_PRIVATE_KEY'), true));
 
         if ($signature !== $generated_signature) {
-            Log::error('LiqPay: Неверная подпись!', ['data' => $data]);
+            Log::error('LiqPay: Невірний підпис!', ['data' => $data]);
             return response()->json(['status' => 'error', 'message' => 'Invalid signature'], 400);
         }
 
@@ -68,7 +68,7 @@ class LiqPayController extends Controller
                     'user_id' => $user->id,
                     'amount' => $response['amount'],
                     'type' => 'deposit',
-                    'description' => 'Пополнение через LiqPay',
+                    'description' => 'Поповнення через LiqPay',
                 ]);
             }
         }

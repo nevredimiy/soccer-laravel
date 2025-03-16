@@ -1156,3 +1156,16 @@
     window["FLS"] = false;
     formRating();
 })();
+
+document.getElementById('top-up-balance').addEventListener('click', function() {
+    document.getElementById('balance-modal').classList.remove('hidden');
+});
+
+document.getElementById('pay-button').addEventListener('click', function() {
+    let amount = document.getElementById('balance-amount').value;
+    if (amount > 0) {
+        window.location.href = `/balance/pay?amount=${amount}`;
+    } else {
+        alert('Введіть коректну суму!');
+    }
+});

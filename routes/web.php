@@ -10,6 +10,7 @@ use App\Http\Controllers\BalanceController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\LiqPayController;
+use App\Http\Controllers\PaymentController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -68,4 +69,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/liqpay/pay', [LiqPayController::class, 'pay'])->name('liqpay.pay');
     Route::get('/liqpay/result', [LiqPayController::class, 'result'])->name('liqpay.result');
     Route::post('/liqpay/callback', [LiqPayController::class, 'callback'])->name('liqpay.callback');
+
+    Route::get('/balance/pay', [PaymentController::class, 'pay'])->name('balance.pay');
 });

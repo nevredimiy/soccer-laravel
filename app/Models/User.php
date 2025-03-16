@@ -11,7 +11,7 @@ use Filament\Panel;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
@@ -50,6 +50,30 @@ class User extends Authenticatable implements MustVerifyEmail
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        // Админ имеет полный доступ
+        if ($this->role === 'admin') {
+            return true;
+        }
+
+        // Менеджер имеет доступ только к определённой панели
+        if ($this->role === 'manager' && $panel->getId() === 'admin') {
+            return true; // Или замените на `false`, если вообще нельзя в админку
+        }
+
+        return false;
+    }
+
+    public function canAccessNavigationGroup(string $group): bool
+    {
+        if ($this->role === 'manager') {
+            return $group === 'Дані матчів'; // Менеджер видит только "Дані матчів"
+        }
+
+        return true; // Другие роли видят всё
     }
 
  
