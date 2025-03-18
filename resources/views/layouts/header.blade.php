@@ -2,7 +2,7 @@
     <div class="header__container">
         <div class="header__images">
             <a href="#" class="header__logo">
-                <img src="/img/header/logo.svg" alt="Image" class="ibg ibg--contain">
+                <img class="ibg ibg--contain" src="{{ asset('storage/' . optional(App\Models\SiteSetting::first())->logo) }}" alt="Logo">
             </a>
         </div>
         <div class="header__menu">
@@ -55,7 +55,7 @@
             
         </div>
         <div class="header__contacts">
-            <a href="#" class="header__phone">+38(093) 431 94 92</a>
+            <a href="#" class="header__phone">{{ $siteSettings->contacts }}</a>
             <div class="header__social social">
                 <a href="#" class="social__item _icon-s-fb">
                 </a>
