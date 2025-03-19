@@ -10,7 +10,8 @@ class Team extends Model
    protected $fillable = [
       'owner_id',
       'name',
-      'logo'
+      'logo',
+      'color'
    ];
 
    public function owner(): BelongsTo

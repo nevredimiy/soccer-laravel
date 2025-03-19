@@ -2,10 +2,10 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\LeagueResource\Pages;
-use App\Filament\Resources\LeagueResource\RelationManagers;
-use App\Models\League;
+use App\Filament\Resources\LocationResource\Pages;
+use App\Filament\Resources\LocationResource\RelationManagers;
 use App\Models\Location;
+use App\Models\District;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -14,35 +14,37 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class LeagueResource extends Resource
+class LocationResource extends Resource
 {
-    protected static ?string $model = League::class;
+    protected static ?string $model = Location::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-circle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $navigationGroup = 'Дані матчів';
+    protected static ?string $navigationLabel = 'Локація';
 
-    protected static ?string $navigationLabel = 'Ліги';
+    protected static ?string $navigationGroup = 'Локації';
     
-    protected static ?string $pluralModelLabel = 'Список ліг';
-
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
+                    ->label('Назва')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\Select::make('location_id')
-                    ->options(
-                        Location::all()->mapWithKeys(function ($location) {
-                            $loc = empty($location->address) ? '' : ' (' .$location->address. ')';
-                            return [$location->id => $location->name . $loc];
-                        })
-                    )
-            ]);
+                Forms\Components\Select::make('district_id')
+                    ->label('Регіон')
+                    ->options(District::all()->pluck('name', 'id'))
+                    ->required()
+                    ->searchable()
+                    ->preload(),
+                Forms\Components\TextInput::make('address')
+                    ->label('Адреса')
+                    ->maxLength(255)
+                    ->default(null),
+            ])->columns(3);
     }
 
     public static function table(Table $table): Table
@@ -51,6 +53,11 @@ class LeagueResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('address')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('district_id')
+                    ->numeric()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -64,9 +71,7 @@ class LeagueResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -85,10 +90,9 @@ class LeagueResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListLeagues::route('/'),
-            'create' => Pages\CreateLeague::route('/create'),
-            'view' => Pages\ViewLeague::route('/{record}'),
-            'edit' => Pages\EditLeague::route('/{record}/edit'),
+            'index' => Pages\ListLocations::route('/'),
+            'create' => Pages\CreateLocation::route('/create'),
+            'edit' => Pages\EditLocation::route('/{record}/edit'),
         ];
     }
 }

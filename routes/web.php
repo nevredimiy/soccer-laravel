@@ -11,8 +11,13 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\LiqPayController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\LocationController;
+use App\Http\Controllers\TeamController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/districts/{city_id}', [LocationController::class, 'getDistricts']);
+Route::get('/locations/{district_id}', [LocationController::class, 'getLocations']);
+Route::get('/leagues/{location_id}', [LocationController::class, 'getLeagues']);
 
 // Аутентификация
 // Страница входа
@@ -71,4 +76,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/liqpay/callback', [LiqPayController::class, 'callback'])->name('liqpay.callback');
 
     Route::get('/balance/pay', [PaymentController::class, 'pay'])->name('balance.pay');
+    Route::get('/teams/create', [TeamController::class, 'create'])->name('teams.create');
+    Route::post('/teams', [TeamController::class, 'store'])->name('teams.store');
 });
+
+
+

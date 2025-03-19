@@ -22,6 +22,10 @@ class StadiumResource extends Resource
     protected static ?string $navigationLabel = 'Стадіони';
     
     protected static ?string $pluralModelLabel = 'Список стадіонів';
+    
+    protected static ?string $navigationGroup = 'Дані матчів';
+
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {

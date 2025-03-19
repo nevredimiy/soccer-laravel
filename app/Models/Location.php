@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class League extends Model
+class Location extends Model
 {
     protected $fillable = [
         'name',
-        'location_id'
+        'address',
+        'district_id'
     ];
 }

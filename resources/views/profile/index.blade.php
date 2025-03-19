@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="container block-center">
-    <div class="flex justify-center flex-col items-center mb-4">
+    {{-- <div class="flex justify-center flex-col items-center mb-4">
         <h2>Мій профіль</h2>
         <p>Вітаємо, {{ auth()->user()->nickname }}!</p>
         <p>Email: {{ auth()->user()->email }}</p>
@@ -30,7 +30,7 @@
         @csrf
         <input type="number" name="amount" placeholder="Сумма" required class="border p-2">
         <button type="submit" class="bg-green-500 text-white px-4 py-2">Пополнить через LiqPay</button>
-    </form>
+    </form> --}}
     
 
     <div class="page__container">

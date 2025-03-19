@@ -2,10 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\LeagueResource\Pages;
-use App\Filament\Resources\LeagueResource\RelationManagers;
-use App\Models\League;
-use App\Models\Location;
+use App\Filament\Resources\CityResource\Pages;
+use App\Filament\Resources\CityResource\RelationManagers;
+use App\Models\City;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -14,19 +13,18 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class LeagueResource extends Resource
+class CityResource extends Resource
 {
-    protected static ?string $model = League::class;
+    protected static ?string $model = City::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-circle-stack';
+    protected static ?string $navigationLabel = 'Міста';
 
-    protected static ?string $navigationGroup = 'Дані матчів';
-
-    protected static ?string $navigationLabel = 'Ліги';
+    protected static ?string $navigationGroup = 'Локації';
     
-    protected static ?string $pluralModelLabel = 'Список ліг';
+    protected static ?int $navigationSort = 1;
 
-    protected static ?int $navigationSort = 2;
+    protected static ?string $navigationIcon = 'heroicon-o-building-office-2';
+
 
     public static function form(Form $form): Form
     {
@@ -35,13 +33,10 @@ class LeagueResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\Select::make('location_id')
-                    ->options(
-                        Location::all()->mapWithKeys(function ($location) {
-                            $loc = empty($location->address) ? '' : ' (' .$location->address. ')';
-                            return [$location->id => $location->name . $loc];
-                        })
-                    )
+                Forms\Components\FileUpload::make('logo')
+                    ->image()
+                    ->disk('public')
+                    ->directory('img/cities_emblems'),
             ]);
     }
 
@@ -51,6 +46,8 @@ class LeagueResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
+                Tables\Columns\ImageColumn::make('logo')
+                ->label('Герб міста'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -85,10 +82,9 @@ class LeagueResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListLeagues::route('/'),
-            'create' => Pages\CreateLeague::route('/create'),
-            'view' => Pages\ViewLeague::route('/{record}'),
-            'edit' => Pages\EditLeague::route('/{record}/edit'),
+            'index' => Pages\ListCities::route('/'),
+            'create' => Pages\CreateCity::route('/create'),
+            'edit' => Pages\EditCity::route('/{record}/edit'),
         ];
     }
 }

@@ -12,6 +12,7 @@
 <body>
     <div class="wrapper">
         @include('layouts.header') 
+        @include('layouts.filter')
         <main class="page">
             @yield('content') 
         </main>       

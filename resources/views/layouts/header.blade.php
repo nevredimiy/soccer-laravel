@@ -1,14 +1,14 @@
 <header class="header">
     <div class="header__container">
         <div class="header__images">
-            <a href="#" class="header__logo">
+            <a href="{{ route('home') }}" class="header__logo">
                 <img class="ibg ibg--contain" src="{{ asset('storage/' . optional(App\Models\SiteSetting::first())->logo) }}" alt="Logo">
             </a>
         </div>
         <div class="header__menu">
             <div class="header__block">
                 <!--Активному пукнту додати клас _active-->
-                <a href="#" class="header__link button _icon-ch-right">
+                <a href="{{ route('teams.create') }}" class="header__link button _icon-ch-right">
                     <span>Заявити команду</span>
                 </a>
                 <a href="#" class="header__link button _icon-ch-right">
@@ -55,7 +55,7 @@
             
         </div>
         <div class="header__contacts">
-            <a href="#" class="header__phone">{{ $siteSettings->contacts }}</a>
+            <a href="tel:{{ $siteSettings->contacts }}" class="header__phone">{{ $phone }}</a>
             <div class="header__social social">
                 <a href="#" class="social__item _icon-s-fb">
                 </a>
@@ -66,56 +66,8 @@
     </div>
 </header>
 
-<div class="page__nav nav">
-    <div class="nav__container">
-        <div data-simplebar class="nav__body">
-            <ul class="nav__list">
-                <!--Активному пукнту додати клас _active-->
-                <li>
-                    <a href="#">
-                        Головна
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        Місто
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        Таблиці
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        Календар
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        Команди
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        Стадіони
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        Регламент
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        Архів
-                    </a>
-                </li>
-            </ul>
-        </div>
+@include('layouts.navbar')
 
-    </div>
-</div>
 <div id="balance-modal" class="modal hidden">
     <div class="modal-content">
         <h2>Поповнити баланс</h2>
