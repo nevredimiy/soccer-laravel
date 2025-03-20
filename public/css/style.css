@@ -66,6 +66,7 @@
 ._icon-cross:before {
   content: ""
 }
+/* 
 * {
   padding: 0;
   margin: 0;
@@ -85,7 +86,7 @@ input:focus {
 }
 * {
   -webkit-tap-highlight-color: transparent
-}
+} */
 body,
 html {
   height: 100%;
@@ -150,9 +151,11 @@ details summary::-webkit-details-marker {
 input {
   border-radius: 0
 }
+
 input[type=search] {
   -webkit-appearance: none
 }
+
 body {
   background-color: #fafafa
 }
@@ -4661,6 +4664,10 @@ body::after {
   text-transform: uppercase;
   font-size: 20px;
   padding: 12px 24px;
+}
+
+.login-section__block form{
+  margin-bottom: 20px;
 }
 
 .login-section__block .text{

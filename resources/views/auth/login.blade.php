@@ -29,6 +29,9 @@
                 <button class="account__button button button--green flex-content-center" type="submit">Увійти</button>
             </div>
         </form>
+        <div class="item-player__name">
+            <a href="{{ route('register') }}">Зареєструватися</a>
+        </div>
     </div>
 </div>
 @endsection

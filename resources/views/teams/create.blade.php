@@ -11,11 +11,11 @@
                         <div class="team-setup__label team-setup__label--big">
                             НАЗВА КОМАНДИ
                         </div>
-                        <input type="text" value="SOBORNA TEAM" name="name" class="team-setup__input">
+                        <input type="text" value="Назва команди" name="name" class="team-setup__input">
                     </div>
                     <div class="team-setup__logo">
                         <div class="team-setup__image">
-                            <img src="img/header/logo.svg" alt="Logo" class="ibg ibg--contain">
+                            <img src="{{ asset('img/header/logo.svg') }}" alt="Logo" class="ibg ibg--contain">
                         </div>
                         <label class="team-setup__upload button button--blue upload-btn">
                             <input type="file" name="logo" accept="image.webp, image.webp, image/svg+xml" />

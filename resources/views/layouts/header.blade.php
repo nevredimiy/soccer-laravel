@@ -15,10 +15,13 @@
                     <span>Заявка гравця</span>
                 </a>
             </div>
-            <div data-da=".header__images, 767.98, last" class="header__city">
+
+            {{-- <div data-da=".header__images, 767.98, last" class="header__city">
                 КИЇВ
                 <img src="/img/header/kyiv.webp" alt="Image" class="ibg ibg--contain">
-            </div>
+            </div> --}}
+
+            <livewire:city-emblem />
 
 
             <div class="header__block">
@@ -68,6 +71,11 @@
 
 @include('layouts.navbar')
 
+
+
+<livewire:dependent-dropdown />
+
+
 <div id="balance-modal" class="modal hidden">
     <div class="modal-content">
         <h2>Поповнити баланс</h2>
@@ -75,3 +83,4 @@
         <button id="pay-button">Оплатити</button>
     </div>
 </div>
+
