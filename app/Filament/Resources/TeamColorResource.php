@@ -32,9 +32,8 @@ class TeamColorResource extends Resource
                     ->required()
                     ->maxLength(255),
                 Forms\Components\ColorPicker::make('color_picker')
-                    ->required()
-                    
-                    ->label('Вібир коліра')
+                    ->required()                    
+                    ->label('Вибір коліра')
             ]);
     }
 

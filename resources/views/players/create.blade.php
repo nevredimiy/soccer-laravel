@@ -22,25 +22,56 @@
                             ФОТО
                         </div>
                         <label class="account__upload upload-btn">
-                            <input type="file" name="photo" accept="image/webp, image/jpeg, image/png, image/gif, image/svg+xml" /> 
+                            <input id="photoInput" type="file" name="photo" accept="image/webp, image/jpeg, image/png, image/gif, image/svg+xml" /> 
                             Додати фото самостійно, або фото з'явиться автоматично після першої зіграної серії
-                        </label>
+
+                              <!-- Контейнер для превью фото -->
+                            <div id="photoPreviewContainer" style="display:none; position: absolute; width: 100%; height: 100%;">
+                                <img 
+                                    id="photoPreview" 
+                                    src="" 
+                                    alt="Предварительный просмотр" 
+                                    style="border-radius: 5px; width: 100%; height: 100%; object-fit: cover;"
+                                >
+                            </div>
+                        </label>                       
                     </div>
+
+
+                   
+
+                    <script>
+                    document.getElementById('photoInput').addEventListener('change', function(event) {
+                        const file = event.target.files[0]; // Получаем выбранный файл
+                        if (file) {
+                            const reader = new FileReader();
+                            reader.onload = function(e) {
+                                const img = document.getElementById('photoPreview');
+                                img.src = e.target.result; // Устанавливаем превью
+                                document.getElementById('photoPreviewContainer').style.display = 'block'; // Показываем контейнер
+                            };
+                            reader.readAsDataURL(file); // Читаем файл как Data URL
+                        }
+                    });
+                    </script>
+
+
+
                     <div class="account__body">
                         <div class="account__field">
                             <div class="account__label ">Прізвище</div>
-                            <input type="text" placeholder="МАМЕДОВ" name="lastname" class="account__input input">
+                            <input type="text" placeholder="МАМЕДОВ" name="lastname" value="{{ old('lastname') }}" class="account__input input">
                         </div>
                         <div class="account__field">
                             <div class="account__label ">ІМ’Я</div>
-                            <input type="text" placeholder="МАКСИМ" name="firstname" class="account__input input">
+                            <input type="text" placeholder="МАКСИМ" name="firstname" value="{{ old('firstname') }}" class="account__input input">
                         </div>
                         <div class="account__field">
                             <div class="account__label ">ДАТА НАРОДЖЕННЯ</div>
                             <div class="account__date">
-                                <input type="number" min="1" max="31" placeholder="14" name="day" class="account__input input">
-                                <input type="number" min="1" max="12" placeholder="08" name="month" class="account__input input">
-                                <input type="text" pattern="\d{4}" placeholder="1988" name="year" class="account__input input">
+                                <input type="number" min="1" max="31" placeholder="14" value="{{ old('day') }}" name="day" class="account__input input">
+                                <input type="number" min="1" max="12" placeholder="08" value="{{ old('month') }}" name="month" class="account__input input">
+                                <input type="text" pattern="\d{4}" placeholder="1988" value="{{ old('year') }}" name="year" class="account__input input">
                             </div>
                         </div>
                     </div>
@@ -62,7 +93,7 @@
                         <div class="account__label ">
                             НОМЕР ТЕЛЕФОНУ
                         </div>
-                        <input type="text" pattern="\+380\d{9}" required placeholder="+380XXXXXXXXX" name="phone" class="account__input input">
+                        <input type="text" pattern="\+380\d{9}" required placeholder="+380XXXXXXXXX" value="{{ old('phone') }}" name="phone" class="account__input input">
                     </div>
                     <div class="account__field">
                         <div class="account__label ">
@@ -74,7 +105,7 @@
                         <div class="account__label ">
                             НІКНЕЙМ В TELEGRAM
                         </div>
-                        <input type="text" placeholder="@MAMEDOV1988" name="tg" class="account__input input">
+                        <input type="text" value="{{ old('tg') }}" placeholder="@MAMEDOV1988" name="tg" class="account__input input">
                     </div>
                     <div class="account__field">
                         <div class="account__label ">

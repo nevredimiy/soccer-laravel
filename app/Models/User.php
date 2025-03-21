@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
+use App\Models\Team;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 
@@ -74,6 +75,11 @@ class User extends Authenticatable implements FilamentUser
         }
 
         return true; // Другие роли видят всё
+    }
+
+    public function teams()
+    {
+        return $this->hasMany(Team::class, 'owner_id');
     }
 
  

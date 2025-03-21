@@ -39,7 +39,7 @@
                 <div class="profile__block _block">
                     <div class="profile__hero hero-tournament">
                         <div class="hero-tournament__image">
-                            <img src="{{ $player->photo }}" alt="Image" class="ibg">
+                            <img src="{{ asset($player->photo) }}" alt="Image" class="ibg">
                         </div>
                         <div class="hero-tournament__body">
                             <div class="hero-tournament__info">
@@ -69,45 +69,30 @@
                             УПРАВЛІННЯ КОМАНДАМИ
                         </h2>
                         
-                        <div class="teams-profile__none">
-                            ПОКИ ЩО НЕМАЄ СТВОРЕНИХ КОМАНД
-                        </div>
                         
-                        <div class="teams-profile__items">
-                            <button class="teams-profile__item team-card">
-                                <h3 class="team-card__name">afc sparta</h3>
-                                <div class="team-card__logo">
-                                    <img src="img/teams/01.webp" alt="Image" class="ibg ibg--contain">
-                                </div>
-                                <div data-rating data-rating-size="10" data-rating-value="8" class="team-card__rating rating">
-                                </div>
-                                <div class="team-card__label">
-                                    БЕРКОВЩИНА
-                                </div>
-                            </button>
-                            <button class="teams-profile__item team-card _active">
-                                <h3 class="team-card__name">afc sparta</h3>
-                                <div class="team-card__logo">
-                                    <img src="img/teams/02.webp" alt="Image" class="ibg ibg--contain">
-                                </div>
-                                <div data-rating data-rating-size="10" data-rating-value="8" class="team-card__rating rating">
-                                </div>
-                                <div class="team-card__label">
-                                    X-PARK
-                                </div>
-                            </button>
-                            <button class="teams-profile__item team-card">
-                                <h3 class="team-card__name">afc sparta</h3>
-                                <div class="team-card__logo">
-                                    <img src="img/teams/03.webp" alt="Image" class="ibg ibg--contain">
-                                </div>
-                                <div data-rating data-rating-size="10" data-rating-value="8" class="team-card__rating rating">
-                                </div>
-                                <div class="team-card__label">
-                                    МЕРИДІАН
-                                </div>
-                            </button>
-                        </div>
+
+                        @if($user->teams->isNotEmpty())
+                            <div class="teams-profile__items">
+                                @foreach($user->teams as $team)
+                                    <button class="teams-profile__item team-card">
+                                        <h3 class="team-card__name">{{ $team->name }} afc sparta</h3>
+                                        <div class="team-card__logo">
+                                            <img src="{{ asset('storage/' . $team->logo) }}" alt="Image" class="ibg ibg--contain">
+                                        </div>
+                                        <div data-rating data-rating-size="10" data-rating-value="8" class="team-card__rating rating">
+                                        </div>
+                                        <div class="team-card__label">
+                                            БЕРКОВЩИНА
+                                        </div>
+                                    </button>
+                                @endforeach
+                            </div>
+                        @else
+                            <div class="teams-profile__none">
+                                ПОКИ ЩО НЕМАЄ СТВОРЕНИХ КОМАНД
+                            </div>
+                        @endif
+
                         <div class="teams-profile__setup">
                             <div class="teams-profile__item team-card">
                                 <h3 class="team-card__name">FC DONBASS</h3>

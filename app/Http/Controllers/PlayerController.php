@@ -14,6 +14,13 @@ class PlayerController extends Controller
     public function store(Request $request)
     {
 
+        $request->merge([
+            'day' => intval($request->day),
+            'month' => intval($request->month),
+            'year' => intval($request->year),
+        ]);
+        
+
         $request->validate([
             'lastname' => 'required|string|max:255',
             'firstname' => 'required|string|max:255',

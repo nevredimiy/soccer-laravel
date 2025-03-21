@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\TeamResource\Pages;
 use App\Filament\Resources\TeamResource\RelationManagers;
 use App\Models\Team;
+use App\Models\TeamColor;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -13,6 +14,8 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Forms\Components\ColorPicker;
+use Filament\Tables\Columns\ColorColumn;
 
 class TeamResource extends Resource
 {
@@ -39,7 +42,14 @@ class TeamResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\FileUpload::make('logo'),
+                Forms\Components\FileUpload::make('logo')
+                    ->image()
+                    ->disk('public')
+                    ->directory('img/team_logo'),
+                Forms\Components\Select::make('color_id')
+                    ->label('Колір')
+                    ->options(TeamColor::all()->pluck('name', 'id'))
+                    ->required(),
             ]);
     }
 
@@ -54,7 +64,7 @@ class TeamResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\ImageColumn::make('logo')
-                    ->defaultImageUrl(url('/images/placeholder.png')),
+                    ->defaultImageUrl(url('/img/team_logo/team_placeholder.png')),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -63,6 +73,8 @@ class TeamResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\ColorColumn::make('color.color_picker')
+                    ->label('Колір'),
             ])
             ->filters([
                 //

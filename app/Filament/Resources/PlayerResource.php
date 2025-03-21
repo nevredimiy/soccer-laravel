@@ -51,16 +51,7 @@ class PlayerResource extends Resource
                     ->label('Телефон'),
                 Forms\Components\DatePicker::make('birth_date')
                     ->label('День народження'),
-                Forms\Components\Select::make('position')
-                    ->options([
-                        'нападник' => 'Нападник',
-                        'захисник' => 'Захисник',
-                        'голкіпер' => 'Голкіпер',
-                        'менеджер' => 'Менеджер',
-                        'тренер' => 'Тренер',
-                    ])
-                    ->default('нападник')
-                    ->native(false), 
+
             ])->columns(3);
     }
 
@@ -83,7 +74,7 @@ class PlayerResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('birth_date')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('position')
+                Tables\Columns\TextColumn::make('rating')
                     ->sortable(),
             ])
             ->filters([

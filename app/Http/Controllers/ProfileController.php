@@ -17,9 +17,16 @@ class ProfileController extends Controller
         // Проверяем, есть ли пользователь в таблице players
         $player = Player::where('user_id', $user->id)->first();
 
+        // Если игрока нет, перенаправляем на создание профиля
+        if (!$player) {
+            return redirect()->route('players.create');
+        }
+
         $teams =  Team::where('id', $player->id)->get();
 
-        dd($teams);
+        $user = auth()->user(); // Получаем объект User
+
+        
     
         if (!$player) {
             return redirect()->route('players.create'); // Перенаправление на форму заполнения
@@ -29,6 +36,6 @@ class ProfileController extends Controller
         $date = Carbon::createFromFormat('Y-m-d', $dateString);  
         $formattedBithDate = $date->locale('uk')->translatedFormat('d F Y');  
     
-        return view('profile.index', compact('player', 'formattedBithDate'));
+        return view('profile.index', compact('player', 'formattedBithDate', 'user'));
     }
 }
