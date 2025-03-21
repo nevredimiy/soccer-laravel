@@ -666,7 +666,9 @@ body::after {
   color: #fff;
   text-align: center;
   font-weight: 800;
-  text-transform: uppercase
+  text-transform: uppercase;
+  max-width: 65px;
+  line-height: normal;
 }
 .header__city img {
   width: 3.75rem;

@@ -71,10 +71,7 @@
 
 @include('layouts.navbar')
 
-
-
 <livewire:dependent-dropdown />
-
 
 <div id="balance-modal" class="modal hidden">
     <div class="modal-content">

@@ -13,6 +13,7 @@ use App\Http\Controllers\LiqPayController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\TeamController;
+use App\Http\Controllers\PlayerController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/districts/{city_id}', [LocationController::class, 'getDistricts']);
@@ -65,6 +66,8 @@ Route::post('/email/resend', [VerificationController::class, 'resend'])->name('v
 // Профиль пользователя
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+    Route::get('/players/create', [PlayerController::class, 'create'])->name('players.create'); 
+    Route::post('/players', [PlayerController::class, 'store'])->name('players.store'); 
 });
 
 Route::middleware(['auth'])->group(function () {

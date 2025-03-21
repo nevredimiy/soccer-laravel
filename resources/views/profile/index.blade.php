@@ -39,35 +39,27 @@
                 <div class="profile__block _block">
                     <div class="profile__hero hero-tournament">
                         <div class="hero-tournament__image">
-                            <img src="img/player/player.webp" alt="Image" class="ibg">
+                            <img src="{{ $player->photo }}" alt="Image" class="ibg">
                         </div>
                         <div class="hero-tournament__body">
                             <div class="hero-tournament__info">
                                 <div class="hero-tournament__label hero-tournament__label--big">
-                                    <span>МАМЕДОВ МАКСИМ</span>
+                                    <span>{{ $player->last_name }} {{ $player->first_name }}</span>
                                 </div>
                             </div>
                             <div class="hero-tournament__info">
                                 <div class="hero-tournament__label">
-                                    23 БЕРЕЗНЯ 2023
+                                    {{ $formattedBithDate }} 
                                 </div>
                             </div>
                             <div class="hero-tournament__info">
                                 <div class="hero-tournament__label">
                                     РІВЕНЬ ПІДГОТОВКИ
                                 </div>
-                                <div data-rating data-rating-size="10" data-rating-value="8" class="hero-tournament__rating rating">
+                                <div data-rating data-rating-size="10" data-rating-value="{{ $player->rating}}" class="hero-tournament__rating rating">
                                 </div>
                                 <button class="hero-tournament__button button button--green">
                                     <span>ЗМІНИТИ РІВЕНЬ</span>
-                                </button>
-                            </div>
-                            <div class="hero-tournament__info">
-                                <div class="hero-tournament__label">
-                                    приват **** **** **** 5687
-                                </div>
-                                <button class="hero-tournament__button button button--green">
-                                    <span>ЗМІНИТИ КАРТКУ</span>
                                 </button>
                             </div>
                         </div>
@@ -76,11 +68,11 @@
                         <h2 class="teams-profile__title section-title section-title--margin">
                             УПРАВЛІННЯ КОМАНДАМИ
                         </h2>
-                        <!--
+                        
                         <div class="teams-profile__none">
                             ПОКИ ЩО НЕМАЄ СТВОРЕНИХ КОМАНД
                         </div>
-                        -->
+                        
                         <div class="teams-profile__items">
                             <button class="teams-profile__item team-card">
                                 <h3 class="team-card__name">afc sparta</h3>

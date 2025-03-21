@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 
 class TeamController extends Controller
 {
+
+
     public function create()
     {
         // Получаем доступные цвета для команд
@@ -22,15 +24,19 @@ class TeamController extends Controller
 
     public function store(Request $request)
     {
+
+        
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'color' => 'nullable|in:синій,зелений,червоний,сірий,жовтий,рожевий',
+            'color' => 'nullable',
             'promo_code' => 'nullable|exists:promo_codes,code',
         ]);
 
+        $color = TeamColor::where('name', $request->color)->first();
+     
         // Проверка на уникальность цвета
-        $existingColor = Team::where('color', $request->color)->first();
+        $existingColor = Team::where('color_id', $color->id)->first();
         if ($existingColor) {
             return back()->withErrors(['color' => 'Цей колір вже зайнятий.']);
         }

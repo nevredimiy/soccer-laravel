@@ -1,6 +1,6 @@
 <div class='filter__container max-w-md mx-auto'>
-    <div class="mt-3 flex gap-4 flex-wrap">
-        <div class="mt-2">
+    <div class="flex gap-4 flex-wrap">
+        <div class="">
             <select class="bg-[#00539f] text-white py-1.5 px-2 min-w-44 rounded" wire:model.live="selectedCity" name="cities" id="">
                 <option value="">Вибери місто</option>
                 @foreach ($cities as $city)
@@ -9,7 +9,7 @@
             </select>
         </div>
 
-        <div class="mt-2">
+        <div class="">
            <select class="bg-[#00539f] text-white py-1.5 px-2 min-w-44 rounded" wire:model.live="selectedDistrict" name="" id="">
                 <option value="">Вибери район</option>
 
@@ -21,7 +21,7 @@
             </select>
         </div>
 
-        <div class="mt-2">
+        <div class="">
            <select class="bg-[#00539f] text-white py-1.5 px-2 min-w-44 rounded" wire:model.live="selectedLocation" name="" id="">
                 <option value="">Вибери локацію</option>
                 @if ($locations)
@@ -32,7 +32,7 @@
             </select>
         </div>
 
-        <div class="mt-2">
+        <div class="">
            <select class="bg-[#00539f] text-white py-1.5 px-2 min-w-44 rounded" name="" id="">
                 <option value="">Вибери лігу</option>
                 @if ($leagues)

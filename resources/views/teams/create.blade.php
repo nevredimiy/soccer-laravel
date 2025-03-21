@@ -6,19 +6,27 @@
     <div class="page__container">
         <div class="page__wrapper">
             <div class="page__team-setup team-setup">
-                <div class="team-setup__block _block">
+                @if ($errors->any())
+                <div style="color: red; padding: 12px; text-align: center">
+                        @foreach ($errors->all() as $error)
+                            <p>{{ $error }}</p>
+                        @endforeach
+                    </div>
+                @endif
+                <form action="{{ route('teams.store') }}" method="post" class="team-setup__block _block" enctype="multipart/form-data">
+                    @csrf
                     <div class="team-setup__name">
                         <div class="team-setup__label team-setup__label--big">
                             НАЗВА КОМАНДИ
                         </div>
-                        <input type="text" value="Назва команди" name="name" class="team-setup__input">
+                        <input type="text" placeholder="Назва команди" name="name" class="team-setup__input">
                     </div>
                     <div class="team-setup__logo">
                         <div class="team-setup__image">
                             <img src="{{ asset('img/header/logo.svg') }}" alt="Logo" class="ibg ibg--contain">
                         </div>
                         <label class="team-setup__upload button button--blue upload-btn">
-                            <input type="file" name="logo" accept="image.webp, image.webp, image/svg+xml" />
+                            <input type="file" name="logo" accept="image/webp, image/jpeg, image/png, image/gif, image/svg+xml" /> 
                             <span>Завантажити ЛОГОТИП</span>
                         </label>
                     </div>
@@ -28,24 +36,11 @@
                                 ВИБРАТИ КОЛІР КОМАНДИ
                             </div>
                             <div class="team-setup__colors">
-                                <label style="--color: #8593a0" class="team-setup__color">
-                                    <input disabled type="radio" name="team-color">
-                                </label>
-                                <label style="--color: #FF3B3B" class="team-setup__color">
-                                    <input type="radio" name="team-color">
-                                </label>
-                                <label style="--color: #59C65D" class="team-setup__color">
-                                    <input type="radio" name="team-color">
-                                </label>
-                                <label style="--color: #1B5BA2" class="team-setup__color">
-                                    <input disabled type="radio" name="team-color">
-                                </label>
-                                <label style="--color: #F7E10E" class="team-setup__color">
-                                    <input disabled type="radio" name="team-color">
-                                </label>
-                                <label style="--color: #FF7F27" class="team-setup__color">
-                                    <input type="radio" name="team-color">
-                                </label>
+                                @foreach ($colors as $color)
+                                    <label style="--color: {{ $color->color_picker }}" class="team-setup__color">
+                                        <input type="radio" value="{{ $color->name }}" name="color">
+                                    </label>
+                                @endforeach
                             </div>
                         </div>
                         <div class="team-setup__field">
@@ -63,12 +58,12 @@
                             <div class="team-setup__label">
                                 ВНЕСОК: <span>650 ГРН</span>
                             </div>
-                            <button type="button" class="team-setup__pay-button button button--blue">
+                            <button type="submit" class="team-setup__pay-button button button--blue">
                                 Оплатити внесок
                             </button>
                         </div>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
     </div>
