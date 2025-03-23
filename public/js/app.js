@@ -1169,3 +1169,6 @@ document.getElementById('pay-button').addEventListener('click', function() {
         alert('Введіть коректну суму!');
     }
 });
+
+
+

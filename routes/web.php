@@ -81,6 +81,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/balance/pay', [PaymentController::class, 'pay'])->name('balance.pay');
     Route::get('/teams/create', [TeamController::class, 'create'])->name('teams.create');
     Route::post('/teams', [TeamController::class, 'store'])->name('teams.store');
+    
+    Route::post('/teams/{id}/update-name', [TeamController::class, 'updateName'])->middleware('auth');
+    Route::post('/teams/{id}/update-logo', [TeamController::class, 'updateLogo'])->middleware('auth');
+
+    // Route::get('/requests', function () {
+    //     return view('requests.index')->name('requests');
+    // });
+
 });
 
 

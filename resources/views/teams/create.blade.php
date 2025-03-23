@@ -19,9 +19,9 @@
                         <div class="team-setup__label team-setup__label--big">
                             НАЗВА КОМАНДИ
                         </div>
-                        <input type="text" placeholder="Назва команди" name="name" class="team-setup__input">
+                        <input type="text" placeholder="Назва команди" name="name" class="team-setup__input" value="{{ old('name') }}">
                     </div>
-                    <div class="team-setup__logo">
+                    {{-- <div class="team-setup__logo">
                         <div class="team-setup__image">
                             <img src="{{ asset('img/header/logo.svg') }}" alt="Logo" class="ibg ibg--contain">
                         </div>
@@ -29,7 +29,9 @@
                             <input type="file" name="logo" accept="image/webp, image/jpeg, image/png, image/gif, image/svg+xml" /> 
                             <span>Завантажити ЛОГОТИП</span>
                         </label>
-                    </div>
+                    </div> --}}
+                    <livewire:team-logo-uploader />
+
                     <div class="team-setup__footer">
                         <div class="team-setup__field">
                             <div class="team-setup__label">
@@ -37,8 +39,15 @@
                             </div>
                             <div class="team-setup__colors">
                                 @foreach ($colors as $color)
+                                    @php
+                                        $isDisable = $teams->where('color_id', $color->id)->isNotEmpty();
+                                    @endphp
                                     <label style="--color: {{ $color->color_picker }}" class="team-setup__color">
-                                        <input type="radio" value="{{ $color->name }}" name="color">
+                                        <input {{ $isDisable ? 'disabled' : ''}}
+                                            type="radio" 
+                                            value="{{ $color->id }}" 
+                                            name="color_id"
+                                        >
                                     </label>
                                 @endforeach
                             </div>

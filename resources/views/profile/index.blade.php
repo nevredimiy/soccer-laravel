@@ -67,15 +67,15 @@
                     <section class="profile__teams teams-profile">
                         <h2 class="teams-profile__title section-title section-title--margin">
                             УПРАВЛІННЯ КОМАНДАМИ
-                        </h2>
+                        </h2>  
                         
-                        
-
                         @if($user->teams->isNotEmpty())
                             <div class="teams-profile__items">
+
                                 @foreach($user->teams as $team)
-                                    <button class="teams-profile__item team-card">
-                                        <h3 class="team-card__name">{{ $team->name }} afc sparta</h3>
+                                <div class="flex flex-col max-w-60">
+                                    <button wire:click="$emit('toggleEditing')" class="teams-profile__item team-card">
+                                        <h3 class="team-card__name">{{ $team->name }}</h3>
                                         <div class="team-card__logo">
                                             <img src="{{ asset('storage/' . $team->logo) }}" alt="Image" class="ibg ibg--contain">
                                         </div>
@@ -85,6 +85,9 @@
                                             БЕРКОВЩИНА
                                         </div>
                                     </button>
+                                    
+                                    <livewire:team-editor :team="$team"/>
+                                </div>
                                 @endforeach
                             </div>
                         @else
@@ -93,21 +96,7 @@
                             </div>
                         @endif
 
-                        <div class="teams-profile__setup">
-                            <div class="teams-profile__item team-card">
-                                <h3 class="team-card__name">FC DONBASS</h3>
-                                <div class="team-card__logo">
-                                    <img src="img/teams/01.webp" alt="Image" class="ibg ibg--contain">
-                                </div>
-                            </div>
-                            <button class="teams-profile__button button button--blue">
-                                <span>ЗМІНИТИ НАЗВУ</span>
-                            </button>
-                            <label class="teams-profile__button button button--green upload-btn">
-                                <input type="file" name="logo" accept="image.webp, image.webp, image/svg+xml" />
-                                <span>ЗМІНИТИ ЛОГОТИП</span>
-                            </label>
-                        </div>
+                       
                     </section>
                     <section class="profile__players players-tournament">
                         <h2 class="players-tournament__title section-title section-title--margin">

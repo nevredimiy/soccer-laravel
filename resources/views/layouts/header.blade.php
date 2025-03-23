@@ -1,3 +1,8 @@
+@extends('layouts.app')
+
+@section('title', 'Вхід')
+
+@section('content')
 <header class="header">
     <div class="header__container">
         <div class="header__images">
@@ -11,7 +16,7 @@
                 <a href="{{ route('teams.create') }}" class="header__link button _icon-ch-right">
                     <span>Заявити команду</span>
                 </a>
-                <a href="#" class="header__link button _icon-ch-right">
+                <a href="{{ asset('requests') }}" class="header__link button _icon-ch-right">
                     <span>Заявка гравця</span>
                 </a>
             </div>
@@ -81,3 +86,4 @@
     </div>
 </div>
 
+@endsection
