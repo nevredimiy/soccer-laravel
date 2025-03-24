@@ -1,10 +1,11 @@
 <div class='filter__container max-w-md mx-auto'>
-    <div class="flex gap-4 flex-wrap">
+    <div class="flex gap-4 flex-wrap justify-center mb-4">
         <div class="">
             <select class="bg-[#00539f] text-white py-1.5 px-2 min-w-44 rounded" wire:model.live="selectedCity" name="cities" id="">
-                <option value="">Вибери місто</option>
+                
                 @foreach ($cities as $city)
-                    <option value="{{ $city->id }}">{{ $city->name }}</option>
+                    <option value="{{ $city->id }}"
+                        @if(session()->has('current_city') && session('current_city') == $city->id) selected @endif>{{ $city->name }}</option>
                 @endforeach                    
             </select>
         </div>

@@ -16,7 +16,7 @@ class TeamLogoUploader extends Component
     {
         // Проверяем, что загружен допустимый файл
         $this->validate([
-            'logo' => 'image|max:2048', // Максимальный размер - 2MB
+            'logo' => 'image|mimes:webp,jpg,jpeg,png|max:2048', // Максимальный размер - 2MB
         ]);
     }
 

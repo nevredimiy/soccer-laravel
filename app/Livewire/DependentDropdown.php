@@ -12,6 +12,7 @@ class DependentDropdown extends Component
 {
 
     public $cities;
+    public $city;
     public $districts;
     public $locations;
     public $leagues;
@@ -22,19 +23,33 @@ class DependentDropdown extends Component
 
     public function mount()
     {
+        $this->selectedCity = session('current_city', 2);
         $this->cities = City::all(); 
+        $this->districts = District::where('city_id', $this->selectedCity)->orderBy('name')->get();
     }
 
     public function updatedSelectedCity($city_id) 
     {
-        $this->districts = District::where('city_id', $city_id)->get();
+        session(['current_city' => $city_id]);
+        
+        $this->selectedCity = $city_id;
+
+        $this->selectedDistrict = null;
+        $this->selectedLocation = null;
+
+        $this->districts = District::where('city_id', $city_id)->orderBy('name')->get();
+
+        $this->locations = [];
+        $this->leagues = [];
 
         $this->dispatch('city-selected', city_id: $city_id);
     }
 
     public function updatedSelectedDistrict($district_id) 
     {
+        $this->selectedLocation = null;
         $this->locations = Location::where('district_id', $district_id)->get();
+        $this->leagues = [];
     }
 
     public function updatedSelectedLocation($location_id) 

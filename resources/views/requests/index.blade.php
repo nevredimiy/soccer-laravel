@@ -1,3 +1,8 @@
+@extends('layouts.app')
+
+@section('title', 'Заявка гравця')
+
+@section('content')
 <div class="page__container">
     <div class="page__wrapper">
         <div class="page__bid bid">
@@ -659,3 +664,4 @@
         </div>
     </div>
 </div>
+@endsection

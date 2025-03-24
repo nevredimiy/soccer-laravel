@@ -10,12 +10,12 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{{ route('cities') }}">
                         Місто
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{{ route('tables') }}">
                         Таблиці
                     </a>
                 </li>
@@ -35,13 +35,18 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{{ asset(route('article.show', '1')) }}">
                         Регламент
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{{ route('archive') }}">
                         Архів
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ asset(route('contacts')) }}">
+                        Контакти
                     </a>
                 </li>
             </ul>

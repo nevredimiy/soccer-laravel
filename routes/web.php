@@ -14,6 +14,10 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\PlayerController;
+use App\Http\Controllers\ArchiveController;
+use App\Http\Controllers\CityController;
+use App\Http\Controllers\TableController;
+use App\Models\Article;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/districts/{city_id}', [LocationController::class, 'getDistricts']);
@@ -85,11 +89,21 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/teams/{id}/update-name', [TeamController::class, 'updateName'])->middleware('auth');
     Route::post('/teams/{id}/update-logo', [TeamController::class, 'updateLogo'])->middleware('auth');
 
-    // Route::get('/requests', function () {
-    //     return view('requests.index')->name('requests');
-    // });
+    Route::get('/requests', function () {
+        return view('requests.index');
+    })->name('requests');
 
 });
 
+Route::get('/contacts', function () {
+    return view('pages.contacts');
+})->name('contacts');
 
+Route::get('/article/{article}', function (Article $article) {
+    return view('article.show', compact('article'));
+})->name('article.show');
 
+Route::get('/archive', [ArchiveController::class, 'index'])->name('archive');
+Route::get('/cities', [CityController::class, 'index'])->name('cities');
+Route::get('/tables', [TableController::class, 'index'])->name('tables');
+Route::get('/stadiums', [StadiumController::class, 'index'])->name('stadiums');

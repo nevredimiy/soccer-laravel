@@ -157,7 +157,7 @@ input[type=search] {
 }
 
 body {
-  background-color: #fafafa
+  background-color: #fafafa;
 }
 .lock body {
   overflow: hidden;
@@ -3056,7 +3056,7 @@ body::after {
 }
 @media (min-width:85.125em) {
   .page__nav {
-    margin-bottom: 3.125rem
+    margin-bottom: 1.125rem
   }
   .header__menu {
     gap: 6.25rem

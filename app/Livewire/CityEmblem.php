@@ -17,19 +17,15 @@ class CityEmblem extends Component
 
     public function mount()
     {
-        $this->city = City::where('id', '=', '2')->get();
+        $currentCity = session('current_city', 2);
+        $this->city = City::where('id', '=', $currentCity)->first();
     }
 
     #[On('city-selected')] 
     public function updateCityId($city_id)
     {
-        $this->city = City::where('id', $city_id)->get();
+        $this->city = City::where('id', $city_id)->first();
     }
-
-    // public function updatedSelectedCity($city_id) 
-    // {
-    //     $this->city = City::where('city_id', $city_id)->get();
-    // }
 
     public function render()
     {

@@ -4,7 +4,10 @@
 
 
 
+
 @section('content')
+
+<livewire:dependent-dropdown />
 
     <div class="page__container">
         <div class="page__wrapper">

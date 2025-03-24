@@ -1,8 +1,4 @@
-@extends('layouts.app')
 
-@section('title', 'Вхід')
-
-@section('content')
 <header class="header">
     <div class="header__container">
         <div class="header__images">
@@ -76,7 +72,6 @@
 
 @include('layouts.navbar')
 
-<livewire:dependent-dropdown />
 
 <div id="balance-modal" class="modal hidden">
     <div class="modal-content">
@@ -86,4 +81,3 @@
     </div>
 </div>
 
-@endsection
