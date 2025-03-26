@@ -36,10 +36,6 @@ class SiteSettingResource extends Resource
                     ->preserveFilenames(),
                 Forms\Components\Textarea::make('meta_tags')
                     ->columnSpanFull(),
-                // Forms\Components\TextInput::make('contacts')
-                //     ->maxLength(255)
-                //     ->default(null)
-                //     ->tel(),
                 PhoneInput::make('contacts')
                     ->onlyCountries(['ua']),
             ]);

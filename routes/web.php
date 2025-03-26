@@ -17,6 +17,9 @@ use App\Http\Controllers\PlayerController;
 use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\TableController;
+use App\Http\Controllers\StadiumController;
+use App\Http\Controllers\PlayerRequestController;
+use App\Http\Controllers\TeamRequestController;
 use App\Models\Article;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -70,6 +73,7 @@ Route::post('/email/resend', [VerificationController::class, 'resend'])->name('v
 // Профиль пользователя
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+    Route::post('/profile', [ProfileController::class, 'updateRating'])->name('profile.updateRating');
     Route::get('/players/create', [PlayerController::class, 'create'])->name('players.create'); 
     Route::post('/players', [PlayerController::class, 'store'])->name('players.store'); 
 });
@@ -84,14 +88,17 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/balance/pay', [PaymentController::class, 'pay'])->name('balance.pay');
     Route::get('/teams/create', [TeamController::class, 'create'])->name('teams.create');
-    Route::post('/teams', [TeamController::class, 'store'])->name('teams.store');
+    
     
     Route::post('/teams/{id}/update-name', [TeamController::class, 'updateName'])->middleware('auth');
     Route::post('/teams/{id}/update-logo', [TeamController::class, 'updateLogo'])->middleware('auth');
 
-    Route::get('/requests', function () {
-        return view('requests.index');
-    })->name('requests');
+    Route::get('/player-request', [PlayerRequestController::class, 'index'])->name('player.request');
+    Route::get('/player-request/details', [PlayerRequestController::class, 'create'])->name('player.request.create');
+    
+    Route::get('/team-request', [TeamRequestController::class, 'index'])->name('team.request');
+    Route::get('/team-request/details', [TeamRequestController::class, 'create'])->name('team.request.create');
+    Route::post('/team-request', [TeamRequestController::class, 'store'])->name('team.request.store');
 
 });
 
@@ -106,4 +113,8 @@ Route::get('/article/{article}', function (Article $article) {
 Route::get('/archive', [ArchiveController::class, 'index'])->name('archive');
 Route::get('/cities', [CityController::class, 'index'])->name('cities');
 Route::get('/tables', [TableController::class, 'index'])->name('tables');
-Route::get('/stadiums', [StadiumController::class, 'index'])->name('stadiums');
+Route::get('/stadia', [StadiumController::class, 'index'])->name('stadia');
+Route::get('/teams', [TeamController::class, 'index'])->name('teams.index');
+Route::get('/no-access', function () {
+    return view('no-access');
+})->name('no-access');

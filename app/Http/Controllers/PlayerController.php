@@ -62,4 +62,6 @@ class PlayerController extends Controller
 
         return redirect()->route('profile')->with('success', 'Данные успешно сохранены!');
     }
+
+    
 }

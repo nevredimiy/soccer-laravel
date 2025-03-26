@@ -9,10 +9,10 @@
         <div class="header__menu">
             <div class="header__block">
                 <!--Активному пукнту додати клас _active-->
-                <a href="{{ route('teams.create') }}" class="header__link button _icon-ch-right">
+                <a href="{{ route('team.request') }}" class="header__link button _icon-ch-right">
                     <span>Заявити команду</span>
                 </a>
-                <a href="{{ asset('requests') }}" class="header__link button _icon-ch-right">
+                <a href="{{ route('player.request') }}" class="header__link button _icon-ch-right">
                     <span>Заявка гравця</span>
                 </a>
             </div>
@@ -22,7 +22,9 @@
                 <img src="/img/header/kyiv.webp" alt="Image" class="ibg ibg--contain">
             </div> --}}
 
-            <livewire:city-emblem />
+            <a href="{{route('cities')}}">
+                <livewire:city-emblem />
+            </a>
 
 
             <div class="header__block">
@@ -30,13 +32,15 @@
                     <!-- Пользователь авторизован -->
                     <div class="header__profile profile-header">
                         <div class="profile-header__image">
-                            <img src="{{ auth()->user()->avatar ?? asset('/img/header/profile.webp') }}" alt="Avatar" class="ibg">
+                            <img src="{{ auth()->user()->avatar ?? asset('/img/header/profile.webp') }}" alt="{{$authUser->name}}" class="ibg">
                         </div>
                         <div class="profile-header__label">
                             {{ number_format(auth()->user()->balance ?? 0, 2) }} грн
                         </div>
                         <button id="top-up-balance" class="profile-header__add _icon-add-circle"></button>
+                        
                     </div>
+                    
                     <a href="{{ route('profile') }}" class="header__link button button--transparent _icon-user-circle">
                         <span>Профіль</span>
                     </a>

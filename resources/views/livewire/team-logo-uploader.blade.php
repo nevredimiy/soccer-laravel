@@ -7,7 +7,7 @@
         @endif
     </div>
     <label class="team-setup__upload button button--blue upload-btn">
-        <input type="file" wire:model="logo" accept="image/webp, image/jpeg, image/png, image/gif, image/svg+xml">
+        <input name="logo" type="file" wire:model="logo" accept="image/webp, image/jpeg, image/png, image/gif, image/svg+xml">
         <span>Завантажити ЛОГОТИП</span>
     </label>
 

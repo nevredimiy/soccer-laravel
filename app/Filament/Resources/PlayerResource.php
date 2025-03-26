@@ -14,6 +14,9 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Ysfkaya\FilamentPhoneInput\Forms\PhoneInput;
+use Ysfkaya\FilamentPhoneInput\PhoneInputNumberType;
+
 
 class PlayerResource extends Resource
 {
@@ -37,7 +40,8 @@ class PlayerResource extends Resource
                     ->label('Користувач')
                     ->options(User::all()->pluck('name', 'id'))
                     ->searchable()
-                    ->preload(),
+                    ->preload()
+                    ->required(),
                 Forms\Components\TextInput::make('last_name')
                     ->required()
                     ->maxLength(255)
@@ -46,9 +50,27 @@ class PlayerResource extends Resource
                     ->required()
                     ->maxLength(255)
                     ->label('Ім\'я'),
-                Forms\Components\TextInput::make('phone')
-                    ->tel()
+                PhoneInput::make('phone')
+                    ->required()
+                    ->validateFor(
+                        country: 'UA', // default: 'AUTO'
+                        lenient: true, // default: false
+                    )
+                    ->onlyCountries(['ua'])
                     ->label('Телефон'),
+                Forms\Components\FileUpload::make('photo')
+                    ->image()
+                    ->disk('public')
+                    ->maxSize(2048)
+                    ->directory('img/avatars')
+                    ->deleteUploadedFileUsing(fn ($record) => 
+                        $record->photo ? unlink(storage_path('app/public/' . $record->photo)) : null
+                    ),
+                Forms\Components\TextInput::make('rating')
+                        ->numeric()
+                        ->minValue(1)
+                        ->maxValue(10)
+                        ->label('Рейтинг'),
                 Forms\Components\DatePicker::make('birth_date')
                     ->label('День народження'),
 
@@ -61,21 +83,38 @@ class PlayerResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('Користувач') 
                     ->sortable()
                     ->searchable(), 
                 Tables\Columns\TextColumn::make('last_name')
-                    ->sortable(),
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('first_name')
-                    ->sortable(),
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('phone')
-                    ->sortable(),
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\ImageColumn::make('photo')
+                    ->disk('public')
+                    ->height(50)
+                    ->width(50)
+                    ->label('Фото'), 
                 Tables\Columns\TextColumn::make('birth_date')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('rating')
                     ->sortable(),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //

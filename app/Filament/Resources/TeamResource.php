@@ -45,7 +45,11 @@ class TeamResource extends Resource
                 Forms\Components\FileUpload::make('logo')
                     ->image()
                     ->disk('public')
-                    ->directory('img/team_logo'),
+                    ->maxSize(2048)
+                    ->directory('img/team_logo')
+                    ->deleteUploadedFileUsing(fn ($record) => 
+                        $record->logo ? unlink(storage_path('app/public/' . $record->logo)) : null
+                    ),
                 Forms\Components\Select::make('color_id')
                     ->label('Колір')
                     ->options(TeamColor::all()->pluck('name', 'id'))
@@ -64,7 +68,10 @@ class TeamResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\ImageColumn::make('logo')
-                    ->defaultImageUrl(url('/img/team_logo/team_placeholder.png')),
+                    ->disk('public')
+                    ->label('Фото'), 
+                Tables\Columns\ColorColumn::make('color.color_picker')
+                    ->label('Колір'),                   
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -73,14 +80,20 @@ class TeamResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\ColorColumn::make('color.color_picker')
-                    ->label('Колір'),
+               
             ])
             ->filters([
                 //
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make()->before(function ($record) {
+                    if ($record->logo && file_exists(storage_path('app/public/' . $record->logo))) {
+                        unlink(storage_path('app/public/' . $record->logo));
+                    }
+                }),
+                
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

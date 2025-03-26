@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use App\Models\SiteSetting;
 use App\Models\City;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Auth;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -34,6 +35,9 @@ class AppServiceProvider extends ServiceProvider
         View::share('siteSettings', $siteSettings);
         View::share('phone', $phone);
         View::share('cities', $cities);
+        View::composer('*', function ($view) {
+            $view->with('authUser', Auth::user());
+        });
     }
 
     // Метод для форматирования номера телефона

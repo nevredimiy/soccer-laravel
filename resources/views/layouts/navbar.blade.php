@@ -10,8 +10,8 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('cities') }}">
-                        Місто
+                    <a href="#">
+                        Турніри
                     </a>
                 </li>
                 <li>
@@ -20,17 +20,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#">
-                        Календар
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        Команди
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
+                    <a href="{{ route('stadia') }}">
                         Стадіони
                     </a>
                 </li>

@@ -60,6 +60,12 @@ class TeamEditor extends Component
     {
         $this->validate(['logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048']);
         if ($this->logo) {
+
+            // Удаляем старый логотип, если он существует
+            if ($this->team->logo && file_exists(storage_path('app/public/' . $this->team->logo))) {
+                unlink(storage_path('app/public/' . $this->team->logo));
+            }
+            
             $path = $this->logo->store('img/team_logo', 'public');
             $this->team->update(['logo' => $path]);
         }

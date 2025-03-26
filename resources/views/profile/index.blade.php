@@ -4,6 +4,17 @@
 
 @section('content')
 <div class="container block-center">
+
+    @if (session()->has('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+    @if (session()->has('notice'))
+        <div class="alert alert-notice">
+            {{ session('notice') }}
+        </div>
+    @endif
     {{-- <div class="flex justify-center flex-col items-center mb-4">
         <h2>Мій профіль</h2>
         <p>Вітаємо, {{ auth()->user()->nickname }}!</p>
@@ -39,7 +50,7 @@
                 <div class="profile__block _block">
                     <div class="profile__hero hero-tournament">
                         <div class="hero-tournament__image">
-                            <img src="{{ asset($player->photo) }}" alt="Image" class="ibg">
+                            <img src="{{ asset('storage/' . $player->photo) }}" alt="Image" class="ibg">
                         </div>
                         <div class="hero-tournament__body">
                             <div class="hero-tournament__info">
@@ -53,14 +64,17 @@
                                 </div>
                             </div>
                             <div class="hero-tournament__info">
+
                                 <div class="hero-tournament__label">
                                     РІВЕНЬ ПІДГОТОВКИ
                                 </div>
-                                <div data-rating data-rating-size="10" data-rating-value="{{ $player->rating}}" class="hero-tournament__rating rating">
-                                </div>
-                                <button class="hero-tournament__button button button--green">
-                                    <span>ЗМІНИТИ РІВЕНЬ</span>
-                                </button>
+                                <form class="flex flex-col gap-2 items-center" action="{{route('profile')}}" method="post">
+                                    @csrf
+                                    <div data-rating="set" data-rating-size="10" data-rating-value="{{ $player->rating}}" class="hero-tournament__rating rating"></div>
+                                    <button class="hero-tournament__button button button--green">
+                                        <span>ЗМІНИТИ РІВЕНЬ</span>
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -98,6 +112,7 @@
 
                        
                     </section>
+                    @if($user->teams->isNotEmpty())
                     <section class="profile__players players-tournament">
                         <h2 class="players-tournament__title section-title section-title--margin">
                             Гравців зареєстровано
@@ -843,6 +858,7 @@
                             </div>
                         </div>
                     </div>
+                    @endif
                 </div>
             </div>
         </div>

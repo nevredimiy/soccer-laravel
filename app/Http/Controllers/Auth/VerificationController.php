@@ -15,8 +15,9 @@ class VerificationController extends Controller
     }
 
     // Страница с уведомлением о необходимости подтвердить email
-    public function show()
+    public function show(Request $request)
     {
+        $request->user()->sendEmailVerificationNotification();
         return view('auth.verify-email');
     }
 
@@ -33,7 +34,11 @@ class VerificationController extends Controller
 
         if ($request->user()->markEmailAsVerified()) {
             event(new Verified($request->user()));
+
+            // Флэш-сообщение об успешном подтверждении почты
+            session()->flash('success', 'Ваш email был успешно подтверждён!');
         }
+
 
         return redirect('/profile')->with('status', 'Email подтверждён!');
     }

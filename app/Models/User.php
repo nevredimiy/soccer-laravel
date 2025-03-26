@@ -60,9 +60,17 @@ class User extends Authenticatable implements FilamentUser
             return true;
         }
 
+
         // Менеджер имеет доступ только к определённой панели
         if ($this->role === 'manager' && $panel->getId() === 'admin') {
             return true; // Или замените на `false`, если вообще нельзя в админку
+        }
+
+        // Если не админ, перенаправляем на страницу "доступ запрещён"
+        if ($panel->getId() === 'admin') {
+            // Запоминаем предыдущий URL и редиректим на страницу ошибки
+            session()->flash('previous_url', url()->previous());
+            redirect()->route('no-access')->send();
         }
 
         return false;

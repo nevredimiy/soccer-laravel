@@ -23,6 +23,8 @@ class CitySelector extends Component
         $this->dispatch('city-selected', city_id: $city_id);
     }
 
+    
+
     public function render()
     {
         return view('livewire.city-selector');

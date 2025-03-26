@@ -1989,7 +1989,7 @@ body::after {
   margin: 0 auto
 }
 .hero-tournament {
-  max-width: 48.0625rem;
+  max-width: 36rem;
   margin: 0 auto
 }
 .hero-tournament__info {
@@ -4710,4 +4710,53 @@ body::after {
 .filter__form select:focus{
   outline: none;
   box-shadow: 0 0 0 1px #38577a, 0 0 10px #7e9bbd;
+}
+
+.article__container h1{
+  font-weight: 900;
+  font-size: 28px;
+  text-align: center;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.article__container>div>h2 {
+  font-weight: 600;
+  font-size: 22px;
+  text-align: center;
+  margin-bottom: 10px;
+  margin-top: 20px;
+}
+
+.article__container>div img {
+  max-width: 180px;
+}
+
+.article__container p {
+  line-height: normal;
+  padding: 10px 20px;
+}
+
+body > div.wrapper > main > div > a {
+  padding: 10px 20px;
+  color: #0053a0;
+  font-size: 22px;
+}
+
+body > div.wrapper > main > div > a:hover {
+  color: #22b14c;
+  text-decoration:underline;
+}
+
+.alert{
+  color: #fafafa;
+  text-align: center;
+  padding: 10px;
+}
+.alert-success{
+  background-color: #22b14c;
+}
+
+.alert-notice{
+  background-color: #d7cf2e;  
 }

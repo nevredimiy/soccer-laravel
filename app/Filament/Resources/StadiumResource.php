@@ -12,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Ysfkaya\FilamentPhoneInput\Forms\PhoneInput;
 
 class StadiumResource extends Resource
 {
@@ -39,36 +40,33 @@ class StadiumResource extends Resource
                     ->required()
                     ->maxLength(255)
                     ->label('Адреса'),
-                Forms\Components\TextInput::make('photo')
-                    ->maxLength(255)
-                    ->default(null)
+                Forms\Components\FileUpload::make('photo')
+                    ->image()
+                    ->disk('public')
+                    ->directory('img/stadium')
+                    ->default('/img/stadium/stadium_placeholder.png')
                     ->label('Фото'),
+                PhoneInput::make('phone')
+                    ->onlyCountries(['ua']),
                 Forms\Components\TextInput::make('fields_40x20')
-                    ->required()
                     ->numeric()
                     ->default(0)
                     ->label('Полів 40х20 (шт.)'),
                 Forms\Components\TextInput::make('fields_60x40')
-                    ->required()
                     ->numeric()
                     ->default(0)
                     ->label('Поле 60х40 (шт.)'),
                 Forms\Components\TextInput::make('parking_spots')
-                    ->required()
                     ->numeric()
                     ->default(0)
                     ->label('Парковчні місця'),
                 Forms\Components\Toggle::make('has_shower')
-                    ->required()
                     ->label('Наявність душа'),
                 Forms\Components\Toggle::make('has_speaker_system')
-                    ->required()
                     ->label('Наявність гучномовця'),
                 Forms\Components\Toggle::make('has_wardrobe')
-                    ->required()
                     ->label('Наявність гардеробу'),
                 Forms\Components\Toggle::make('has_toilet')
-                    ->required()
                     ->label('Наявність туалету'),
             ]);
     }
@@ -78,28 +76,40 @@ class StadiumResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
+                    ->searchable()
+                    ->label('Назва'),
                 Tables\Columns\TextColumn::make('address')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('photo')
-                    ->searchable(),
+                    ->searchable()
+                    ->label('Адреса'),
+                Tables\Columns\ImageColumn::make('photo')
+                    ->searchable()
+                    ->label('Фото'),                    
+                    Tables\Columns\TextColumn::make('phone')
+                    ->label('Телефон'),
                 Tables\Columns\TextColumn::make('fields_40x20')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->label('Поле 40х20'),
                 Tables\Columns\TextColumn::make('fields_60x40')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->label('Поле 60х40'),
                 Tables\Columns\TextColumn::make('parking_spots')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->label('Парковки'),
                 Tables\Columns\IconColumn::make('has_shower')
-                    ->boolean(),
+                    ->boolean()
+                    ->label('Душ'),
                 Tables\Columns\IconColumn::make('has_speaker_system')
-                    ->boolean(),
+                    ->boolean()
+                    ->label('Гучномовець'),
                 Tables\Columns\IconColumn::make('has_wardrobe')
-                    ->boolean(),
+                    ->boolean()
+                    ->label('Гардероб'),
                 Tables\Columns\IconColumn::make('has_toilet')
-                    ->boolean(),
+                    ->boolean()
+                    ->label('Туалет'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -115,6 +125,7 @@ class StadiumResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

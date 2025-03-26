@@ -7,6 +7,7 @@ use Livewire\Component;
 class Rating extends Component
 {
     public $rating = 0; // Текущий рейтинг
+    
 
     public function setRating($value)
     {

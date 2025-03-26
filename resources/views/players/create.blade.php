@@ -4,7 +4,13 @@
 
 @section('content')
 <div class="page__container">
+    
     <div class="page__wrapper">
+        @if (session()->has('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
         @if ($errors->any())
             <div style="color: red; padding: 12px; text-align: center">
                 @foreach ($errors->all() as $error)
@@ -60,17 +66,17 @@
                     <div class="account__body">
                         <div class="account__field">
                             <div class="account__label ">Прізвище</div>
-                            <input type="text" placeholder="МАМЕДОВ" name="lastname" value="{{ old('lastname') }}" class="account__input input">
+                            <input type="text" placeholder="Прізвище" name="lastname" value="{{ old('lastname') }}" class="account__input input">
                         </div>
                         <div class="account__field">
                             <div class="account__label ">ІМ’Я</div>
-                            <input type="text" placeholder="МАКСИМ" name="firstname" value="{{ old('firstname') }}" class="account__input input">
+                            <input type="text" placeholder="ІМ’Я" name="firstname" value="{{ old('firstname') }}" class="account__input input">
                         </div>
                         <div class="account__field">
                             <div class="account__label ">ДАТА НАРОДЖЕННЯ</div>
                             <div class="account__date">
-                                <input type="number" min="1" max="31" placeholder="14" value="{{ old('day') }}" name="day" class="account__input input">
-                                <input type="number" min="1" max="12" placeholder="08" value="{{ old('month') }}" name="month" class="account__input input">
+                                <input type="number" min="1" max="31" placeholder="01" value="{{ old('day') }}" name="day" class="account__input input">
+                                <input type="number" min="1" max="12" placeholder="01" value="{{ old('month') }}" name="month" class="account__input input">
                                 <input type="text" pattern="\d{4}" placeholder="1988" value="{{ old('year') }}" name="year" class="account__input input">
                             </div>
                         </div>
@@ -95,24 +101,14 @@
                         </div>
                         <input type="text" pattern="\+380\d{9}" required placeholder="+380XXXXXXXXX" value="{{ old('phone') }}" name="phone" class="account__input input">
                     </div>
-                    <div class="account__field">
-                        <div class="account__label ">
-                            ПАРОЛЬ
-                        </div>
-                        <input type="password" placeholder="453GPR@53" name="password" class="account__input input">
-                    </div>
+                  
                     <div class="account__field">
                         <div class="account__label ">
                             НІКНЕЙМ В TELEGRAM
                         </div>
                         <input type="text" value="{{ old('tg') }}" placeholder="@MAMEDOV1988" name="tg" class="account__input input">
                     </div>
-                    <div class="account__field">
-                        <div class="account__label ">
-                            ПОВТОРНИЙ ПАРОЛЬ
-                        </div>
-                        <input type="password" placeholder="453GPR@53" name="password-repeat" class="account__input input">
-                    </div>
+                  
                     <button type="submit" class="account__button button button--green">
                         <span>СТВОРИТИ КАБІНЕТ ГРАВЦЯ</span>
                     </button>
