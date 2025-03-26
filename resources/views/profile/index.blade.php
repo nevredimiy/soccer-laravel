@@ -15,39 +15,24 @@
             {{ session('notice') }}
         </div>
     @endif
-    {{-- <div class="flex justify-center flex-col items-center mb-4">
-        <h2>Мій профіль</h2>
-        <p>Вітаємо, {{ auth()->user()->nickname }}!</p>
-        <p>Email: {{ auth()->user()->email }}</p>
-    </div>
-
-    <div class="login-section__block">
-        @if(session('success'))
-            <div class="text-green-500">{{ session('success') }}</div>
-        @endif
     
-        @if(session('error'))
-            <div class="text-red-500">{{ session('error') }}</div>
-        @endif
-    
-        <form class="flex flex-col gap-4" method="POST" action="{{ route('balance.deposit', auth()->user()) }}">
-            @csrf
-            <input class="account__input input mb-4" type="number" name="amount" placeholder="Сумма" required class="border p-2">
-            <button class="account__button button button--green flex-content-center" type="submit" class="bg-blue-500 text-white px-4 py-2">Пополнить баланс</button>
-        </form>
 
-    </div>
+   
     <form method="POST" action="{{ route('liqpay.pay') }}">
         @csrf
         <input type="number" name="amount" placeholder="Сумма" required class="border p-2">
         <button type="submit" class="bg-green-500 text-white px-4 py-2">Пополнить через LiqPay</button>
-    </form> --}}
+    </form>
     
 
     <div class="page__container">
         <div class="page__wrapper">
             <div class="page__profile profile">
                 <div class="profile__block _block">
+                    <div class="flex justify-center flex-col items-center mb-4">
+                        <h2 class="hero-tournament__label hero-tournament__label--big">Мій профіль</h2>
+                        <p>Вітаємо, {{ auth()->user()->name }}!</p>
+                    </div>
                     <div class="profile__hero hero-tournament">
                         <div class="hero-tournament__image">
                             <img src="{{ asset('storage/' . $player->photo) }}" alt="Image" class="ibg">
@@ -56,6 +41,11 @@
                             <div class="hero-tournament__info">
                                 <div class="hero-tournament__label hero-tournament__label--big">
                                     <span>{{ $player->last_name }} {{ $player->first_name }}</span>
+                                </div>
+                            </div>
+                            <div class="hero-tournament__info">
+                                <div class="hero-tournament__label">
+                                    Email: {{ auth()->user()->email }}
                                 </div>
                             </div>
                             <div class="hero-tournament__info">

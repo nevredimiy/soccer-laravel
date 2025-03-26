@@ -13,6 +13,7 @@ class Player extends Model
         'last_name',
         'first_name',
         'phone',
+        'tg',
         'birth_date',
         'photo',
         'rating'
@@ -27,6 +28,11 @@ class Player extends Model
     public function setPhotoAttribute($value)
     {
         $this->attributes['photo'] = $value ?: '/img/avatars/default_avatar.jpg';
+    }
+
+    public function team():BelongsTo
+    {
+        return $this->belongsTo(Team::class, 'team_id');
     }
 
 

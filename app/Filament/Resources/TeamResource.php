@@ -7,6 +7,8 @@ use App\Filament\Resources\TeamResource\RelationManagers;
 use App\Models\Team;
 use App\Models\TeamColor;
 use App\Models\User;
+use App\Models\Event;
+use App\Models\PromoCode;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -36,12 +38,46 @@ class TeamResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Select::make('owner_id')
-                    ->options(User::all()->pluck('name', 'id'))
+                    ->options(function () {
+                        return User::all()->mapWithKeys(function ($user) {
+                            return [$user->id => "{$user->name} ({$user->email})"];
+                        });
+                    })
                     ->required()
                     ->searchable(),
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
+                Forms\Components\Select::make('color_id')
+                    ->label('Колір')
+                    ->options(TeamColor::all()->pluck('name', 'id'))
+                    ->required(),
+                Forms\Components\Select::make('event_id')
+                    ->label('Подія')
+                    ->options(function () {
+                        return Event::with('location') // Загружаем связанную локацию
+                            ->get()
+                            ->mapWithKeys(function ($event) {
+                                $date = \Carbon\Carbon::parse($event->date)->format('d.m.Y'); // Форматируем дату
+                                $startTime = \Carbon\Carbon::parse($event->start_time)->format('H:i'); // Форматируем время начала
+                                $endTime = \Carbon\Carbon::parse($event->end_time)->format('H:i'); // Форматируем время конца
+                                $location = $event->location ? $event->location->name : 'Без локації'; // Проверяем наличие локации
+                
+                                return [$event->id => "{$date} | {$startTime} - {$endTime} | {$location}"];
+                            });
+                    })
+                    ->searchable(),
+                Forms\Components\Select::make('promo_code_id')
+                    ->label('Промокод')
+                    ->options(PromoCode::all()->pluck('code', 'id')),
+                    Forms\Components\Select::make('status')
+                    ->label('Статус')
+                    ->options([
+                        'awaiting_payment' => 'Очікування оплати',
+                        'paid' => 'Сплачено',
+                    ])
+                    ->default('awaiting_payment')
+                    ->required(),
                 Forms\Components\FileUpload::make('logo')
                     ->image()
                     ->disk('public')
@@ -50,11 +86,7 @@ class TeamResource extends Resource
                     ->deleteUploadedFileUsing(fn ($record) => 
                         $record->logo ? unlink(storage_path('app/public/' . $record->logo)) : null
                     ),
-                Forms\Components\Select::make('color_id')
-                    ->label('Колір')
-                    ->options(TeamColor::all()->pluck('name', 'id'))
-                    ->required(),
-            ]);
+            ])->columns(3);
     }
 
     public static function table(Table $table): Table
@@ -71,7 +103,14 @@ class TeamResource extends Resource
                     ->disk('public')
                     ->label('Фото'), 
                 Tables\Columns\ColorColumn::make('color.color_picker')
-                    ->label('Колір'),                   
+                    ->label('Колір'),  
+                Tables\Columns\TextColumn::make('event_id')
+                    ->numeric()
+                    ->label('Подія'), 
+                Tables\Columns\TextColumn::make('promo_code_id')
+                    ->label('Промокод'), 
+                Tables\Columns\TextColumn::make('status')
+                    ->label('Статус'),                  
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

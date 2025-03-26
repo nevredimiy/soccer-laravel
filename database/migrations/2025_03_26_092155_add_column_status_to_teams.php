@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tournaments', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->timestamps();
+        Schema::table('teams', function (Blueprint $table) {
+            $table->enum('status', ['awaiting_payment', 'paid'])
+                ->default('awaiting_payment')
+                ->after('promo_code_id');
         });
     }
 
@@ -23,6 +23,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tournaments');
+        Schema::table('teams', function (Blueprint $table) {
+            $table->dropColumn('status');
+        });
     }
 };

@@ -6,13 +6,19 @@ use Illuminate\Http\Request;
 use App\Models\TeamColor;
 use App\Models\PromoCode;
 use App\Models\Team;
+use App\Models\Event;
 use Illuminate\Support\Facades\Auth;
 
 class TeamRequestController extends Controller
 {
     public function index()
     {
-        return view('team-request.index');
+
+        $oneEvents = Event::where('tournament_id', 1)->withCount('teams')->get();
+        $manyEvents = Event::where('tournament_id', 2)->withCount('teams')->get();
+
+
+        return view('team-request.index', compact('oneEvents', 'manyEvents'));
     }
 
     public function create(Request $request)

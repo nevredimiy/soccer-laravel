@@ -6,6 +6,7 @@ use App\Filament\Resources\PlayerResource\Pages;
 use App\Filament\Resources\PlayerResource\RelationManagers;
 use App\Models\Player;
 use App\Models\User;
+use App\Models\Team;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Components\Select;;
@@ -36,20 +37,22 @@ class PlayerResource extends Resource
     {
         return $form
             ->schema([
-                Select::make('user_id')
-                    ->label('Користувач')
-                    ->options(User::all()->pluck('name', 'id'))
-                    ->searchable()
-                    ->preload()
-                    ->required(),
+                
                 Forms\Components\TextInput::make('last_name')
                     ->required()
                     ->maxLength(255)
-                    ->label('Прізвище'),
+                    ->label('Прізвище')
+                    ->columnSpan([
+                        'sm' => 3,
+
+                    ]),
                 Forms\Components\TextInput::make('first_name')
                     ->required()
                     ->maxLength(255)
-                    ->label('Ім\'я'),
+                    ->label('Ім\'я')
+                    ->columnSpan([
+                        'sm' => 3,
+                    ]),
                 PhoneInput::make('phone')
                     ->required()
                     ->validateFor(
@@ -57,7 +60,41 @@ class PlayerResource extends Resource
                         lenient: true, // default: false
                     )
                     ->onlyCountries(['ua'])
-                    ->label('Телефон'),
+                    ->label('Телефон')
+                    ->columnSpan([
+                        'sm' => 2,
+                    ]),
+                Forms\Components\TextInput::make('tg')
+                    ->maxLength(255)
+                    ->label('Телеграм')
+                    ->columnSpan([
+                        'sm' => 2,
+                    ]),
+                Forms\Components\DatePicker::make('birth_date')
+                    ->label('День народження')
+                    ->columnSpan([
+                        'sm' => 2,
+                    ]),
+                Select::make('user_id')
+                    ->label('Користувач')
+                    ->options(User::all()->pluck('name', 'id'))
+                    ->searchable()
+                    ->preload()
+                    ->required()
+                    ->columnSpan([
+                        'sm' => 2,
+                    ]),
+                Select::make('team_id')
+                    ->label('Команда')
+                    ->options(Team::all()->pluck('name', 'id'))
+                    ->searchable()
+                    ->preload(),
+                Forms\Components\TextInput::make('rating')
+                        ->numeric()
+                        ->minValue(1)
+                        ->maxValue(10)
+                        ->label('Рейтинг'),
+               
                 Forms\Components\FileUpload::make('photo')
                     ->image()
                     ->disk('public')
@@ -65,16 +102,12 @@ class PlayerResource extends Resource
                     ->directory('img/avatars')
                     ->deleteUploadedFileUsing(fn ($record) => 
                         $record->photo ? unlink(storage_path('app/public/' . $record->photo)) : null
-                    ),
-                Forms\Components\TextInput::make('rating')
-                        ->numeric()
-                        ->minValue(1)
-                        ->maxValue(10)
-                        ->label('Рейтинг'),
-                Forms\Components\DatePicker::make('birth_date')
-                    ->label('День народження'),
+                    )
+                    ->columnSpan([
+                        'sm' => 2,
+                    ]),
 
-            ])->columns(3);
+            ])->columns(6);
     }
 
     public static function table(Table $table): Table
@@ -88,7 +121,8 @@ class PlayerResource extends Resource
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('Користувач') 
                     ->sortable()
-                    ->searchable(), 
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('last_name')
                     ->sortable()
                     ->searchable(),
@@ -98,15 +132,26 @@ class PlayerResource extends Resource
                 Tables\Columns\TextColumn::make('phone')
                     ->sortable()
                     ->searchable(),
+                Tables\Columns\TextColumn::make('team.name')
+                    ->label('Команда') 
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('tg')
+                    ->searchable()
+                    ->label('Телеграм')
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\ImageColumn::make('photo')
                     ->disk('public')
                     ->height(50)
                     ->width(50)
-                    ->label('Фото'), 
+                    ->label('Фото')
+                    ->toggleable(isToggledHiddenByDefault: true), 
                 Tables\Columns\TextColumn::make('birth_date')
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('rating')
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

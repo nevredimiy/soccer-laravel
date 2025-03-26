@@ -31,16 +31,9 @@ class TournamentResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('league_id')
-                    ->required()
-                    ->numeric(),
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('entry_fee')
-                    ->required()
-                    ->numeric()
-                    ->default(0.00),
             ]);
     }
 
@@ -48,14 +41,8 @@ class TournamentResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('league_id')
-                    ->numeric()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('entry_fee')
-                    ->numeric()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -71,6 +58,7 @@ class TournamentResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

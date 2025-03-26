@@ -9,11 +9,8 @@ use Livewire\Attributes\On;
 class CityEmblem extends Component
 {
 
-
     public $city;
     public $cityId = null;
-   
-
 
     public function mount()
     {
