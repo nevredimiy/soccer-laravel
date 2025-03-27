@@ -29,6 +29,7 @@ class PlayerController extends Controller
             'year' => 'required|integer|min:1900|max:' . date('Y'),
             'photo' => 'nullable|image|max:2048',
             'phone' => ['required', 'regex:/^\+380\d{9}$/'],
+            'tg' => 'required|string|max:255',
         ]);
 
         // Собираем дату
@@ -50,6 +51,7 @@ class PlayerController extends Controller
         $player->first_name = $request->firstname;
         $player->phone = $cleanedPhone;
         $player->birth_date = $birthDate;
+        $player->tg = $request->tg;
 
         if ($request->hasFile('photo')) {
             $path = $request->file('photo')->store('img/avatars', 'public');

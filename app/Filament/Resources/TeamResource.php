@@ -44,7 +44,8 @@ class TeamResource extends Resource
                         });
                     })
                     ->required()
-                    ->searchable(),
+                    ->searchable()
+                    ->columnSpan(3),
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
@@ -66,7 +67,8 @@ class TeamResource extends Resource
                                 return [$event->id => "{$date} | {$startTime} - {$endTime} | {$location}"];
                             });
                     })
-                    ->searchable(),
+                    ->searchable()
+                    ->columnSpan(3),
                 Forms\Components\Select::make('promo_code_id')
                     ->label('Промокод')
                     ->options(PromoCode::all()->pluck('code', 'id')),

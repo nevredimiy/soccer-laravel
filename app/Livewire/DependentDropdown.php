@@ -44,9 +44,7 @@ class DependentDropdown extends Component
         $this->districts = District::where('city_id', $city_id)->orderBy('name')->get();
         $this->locations = [];
         $this->leagues = [];
-
         $this->updateEvents();
-
         $this->dispatch('city-selected', city_id: $city_id);
     }
 
@@ -100,7 +98,7 @@ class DependentDropdown extends Component
         }
 
         $this->events = $query->get();
-        $this->dispatch('events-update', events: $this->events);
+        // $this->dispatch('events-update', events: $this->events);
         
     }
 

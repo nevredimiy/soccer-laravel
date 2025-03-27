@@ -19,6 +19,7 @@ use App\Http\Controllers\CityController;
 use App\Http\Controllers\TableController;
 use App\Http\Controllers\StadiumController;
 use App\Http\Controllers\PlayerRequestController;
+use App\Http\Controllers\TeamEventController;
 use App\Http\Controllers\TeamRequestController;
 use App\Models\Article;
 
@@ -96,9 +97,17 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/player-request', [PlayerRequestController::class, 'index'])->name('player.request');
     Route::get('/player-request/details', [PlayerRequestController::class, 'create'])->name('player.request.create');
     
-    Route::get('/team-request', [TeamRequestController::class, 'index'])->name('team.request');
-    Route::get('/team-request/details', [TeamRequestController::class, 'create'])->name('team.request.create');
-    Route::post('/team-request', [TeamRequestController::class, 'store'])->name('team.request.store');
+    Route::get('/teams-events', [TeamEventController::class, 'index'])->name('teams.events');
+    Route::get('/teams/events/{id}', [TeamEventController::class, 'show'])->name('teams.events.show');
+    Route::get('/teams/request/create', [TeamRequestController::class, 'create'])->name('teams.request.create');
+    Route::post('/teams/request/store', [TeamRequestController::class, 'store'])->name('teams.request.store');
+    // Route::post('/teams/request/pay', [TeamRequestController::class, 'pay'])->name('teams.request.pay');
+    // Route::post('/teams/request/callback', [TeamRequestController::class, 'callback'])->name('teams.request.callback');
+    Route::get('/teams/request/pay/{team_id}', [TeamRequestController::class, 'pay'])->name('teams.request.payment');
+    Route::post('/teams/request/callback', [TeamRequestController::class, 'liqpayCallback'])->name('teams.request.callback');
+    Route::get('/teams/request/success/{team_id}', [TeamRequestController::class, 'success'])->name('teams.request.success');
+
+
 
 });
 

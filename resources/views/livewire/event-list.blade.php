@@ -11,11 +11,14 @@
         <h1 class="bid__title section-title">
             ВІДКРИТІ ЗАЯВКИ НА НАЙБЛИЖЧІ ТУРНІРИ
         </h1>
-
+      
         
+        {{-- <pre>{{ print_r($events, true) }}</pre> --}}
+
+
         @if (!empty($events)) 
-        @if (!empty($events[1])) 
-        @foreach ($events[1] as $event)
+            @if (!empty($events[1])) 
+                @foreach ($events[1] as $event)
                     <div class="bid__group">
                         <h2 class="bid__group-title section-title section-title--margin">                        
                             ОДНОДЕННІ ТУРНІРИ
@@ -41,7 +44,7 @@
                                             <svg class="icon">
                                                 <use xlink:href="img/icons.svg#location-empty"></use>
                                             </svg>
-                                            Берковщина
+                                            {{ $event['location']['name'] }}
                                         </div>
                                     </div>
                                     <div class="item-bid__fill">
@@ -60,7 +63,7 @@
 
                                         </div>
                                     </div>
-                                    <a href="#" class="item-bid__link button _icon-info"><span>Детальніше</span></a>
+                                    <a href="{{ route( 'teams.events.show', ['id' => $event['id']] ) }}" class="item-bid__link button _icon-info"><span>Детальніше</span></a>
                                 </div>
                                 
                             </div>
@@ -96,7 +99,7 @@
                                             <svg class="icon">
                                                 <use xlink:href="img/icons.svg#location-empty"></use>
                                             </svg>
-                                            Берковщина
+                                            {{ $event['location']['name'] }}
                                         </div>
                                     </div>
                                     <div class="item-bid__fill">
@@ -115,7 +118,7 @@
 
                                         </div>
                                     </div>
-                                    <a href="#" class="item-bid__link button _icon-info"><span>Детальніше</span></a>
+                                    <a href="{{ route( 'teams.events.show', ['id' => $event['id']] ) }}" class="item-bid__link button _icon-info"><span>Детальніше</span></a>
                                 </div>
                                 
                             </div>
@@ -128,3 +131,46 @@
         @endif
     </div>
 </div>
+
+<script>
+
+
+
+    document.addEventListener('livewire:load', () => {
+        Livewire.hook('message.processed', (message, component) => {
+            console.log("Livewire обновил компонент:", message, component);
+        });
+
+        initPrgs();
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        if (typeof Livewire !== "undefined") {
+            Livewire.hook('message.processed', (message, component) => {
+                console.log("Livewire обновил компонент:", component);
+                initPrgs();
+            });
+        } else {
+            console.error("Livewire не загрузился!");
+        }
+    });
+
+    function initPrgs() {
+        document.querySelectorAll("[data-prgs]").forEach(prgsEl => {
+            prgsEl.innerHTML = ''; // Очистка перед повторным рендерингом
+
+            const total = +prgsEl.getAttribute("data-prgs");
+            const active = +prgsEl.getAttribute("data-prgs-value");
+
+            if (active <= total) {
+                for (let i = 0; i < total; i++) {
+                    const span = document.createElement("span");
+                    if (i < active) span.classList.add("_active");
+                    prgsEl.appendChild(span);
+                }
+            } else {
+                console.log("Active value must be less than total", prgsEl);
+            }
+        });
+    }
+</script>

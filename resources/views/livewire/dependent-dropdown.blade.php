@@ -45,21 +45,5 @@
                 @endif
             </select>
         </div>
-
-        <!-- Список событий -->
-        <div class="event-list">
-
-           @forelse ($events as $event)
-                <div class="p-4 border rounded mb-2">
-                    <p><strong>Дата:</strong> {{ $event->date }}</p>
-                    <p><strong>Время:</strong> {{ $event->start_time }} - {{ $event->end_time }}</p>
-                    <p><strong>Локация:</strong> {{ $event->location->name }}</p>
-                    <p><strong>Локация:</strong> {{ $event->location->district->city->name }}</p>
-                </div>
-            @empty
-                <p>События не найдены.</p>
-            @endforelse
-        </div>
-        
     </div>
 </div>

@@ -1,0 +1,91 @@
+@extends('layouts.app')
+
+@section('title', 'Створення команди')
+
+@section('content')
+<div class="page__container">
+    <div class="page__wrapper">
+        <div class="page__tournament tournament">
+            <div class="tournament__block _block">
+                <section class="tournament__join-team join-team">
+
+                    <div class="page__team-setup team-setup">
+                        @if ($errors->any())
+                        <div style="color: red; padding: 12px; text-align: center">
+                                @foreach ($errors->all() as $error)
+                                    <p>{{ $error }}</p>
+                                @endforeach
+                            </div>
+                        @endif
+                        <form action="{{ url('/teams/request/store') }}" method="post" class="team-setup__block _block" enctype="multipart/form-data">
+                            @csrf
+                            <input type="hidden" name="event_id" value="{{ $eventId }}">
+                            <input type="hidden" name="price" value="{{ $event->price }}">
+                            <div class="team-setup__name">
+                                <div class="team-setup__label team-setup__label--big">
+                                    НАЗВА КОМАНДИ
+                                </div>
+                                <input type="text" placeholder="Назва команди" name="name" class="team-setup__input" value="{{ old('name') }}">
+                            </div>
+                            {{-- <div class="team-setup__logo">
+                                <div class="team-setup__image">
+                                    <img src="{{ asset('img/header/logo.svg') }}" alt="Logo" class="ibg ibg--contain">
+                                </div>
+                                <label class="team-setup__upload button button--blue upload-btn">
+                                    <input type="file" name="logo" accept="image/webp, image/jpeg, image/png, image/gif, image/svg+xml" /> 
+                                    <span>Завантажити ЛОГОТИП</span>
+                                </label>
+                            </div> --}}
+                            <livewire:team-logo-uploader />
+        
+                            <div class="team-setup__footer">
+                                <div class="team-setup__field">
+                                    <div class="team-setup__label">
+                                        ВИБРАТИ КОЛІР КОМАНДИ
+                                    </div>
+                                    <div class="team-setup__colors">
+                                        @foreach ($colors as $color)
+                                            @php
+                                                $isDisable = $teams->where('color_id', $color->id)->isNotEmpty();
+                                            @endphp
+                                            <label style="--color: {{ $color->color_picker }}" class="team-setup__color">
+                                                <input {{ $isDisable ? 'disabled' : ''}}
+                                                    type="radio" 
+                                                    value="{{ $color->id }}" 
+                                                    name="color_id"
+                                                >
+                                            </label>
+                                        @endforeach
+                                    </div>
+                                </div>
+                                <div class="team-setup__field">
+                                    <div class="team-setup__label">
+                                        ПРОМОКОД
+                                    </div>
+                                    <div class="team-setup__code-input input-code">
+                                        <input type="text" maxlength="1" />
+                                        <input type="text" maxlength="1" />
+                                        <input type="text" maxlength="1" />
+                                        <input type="text" maxlength="1" />
+                                    </div>
+                                </div>
+                                <div class="team-setup__field">
+                                    <div class="team-setup__label">
+                                        ВНЕСОК: <span>{{ $event->price }} ГРН</span>
+                                    </div>
+                                    <button type="submit" class="team-setup__pay-button button button--blue">
+                                        Оплатити внесок
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+
+                    
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection

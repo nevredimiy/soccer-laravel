@@ -62,7 +62,7 @@ class EventList extends Component
 
     public function updateEvents()
     {
-        $query = Event::query();
+        $query = Event::query()->with(['location', 'teams']);
 
         if ($this->selectedCity) {
             $query->whereHas('location.district.city', function ($q) {
@@ -84,14 +84,15 @@ class EventList extends Component
             $query->where('league_id', $this->selectedLeague);
         }
 
-        // $this->events = $query->withCount('teams')->get()->groupBy('tournament_id');
+        
 
         // Получаем коллекцию и группируем по tournament_id
         $groupedEvents = $query->withCount('teams')->get()->groupBy('tournament_id');
 
         // Преобразуем коллекцию в массив, чтобы избежать ошибки
         $this->events = $groupedEvents->map(fn($events) => $events->toArray())->toArray();
-       
+
+      
     }
 
     public function render()
