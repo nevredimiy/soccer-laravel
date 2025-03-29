@@ -2298,7 +2298,8 @@ body::after {
   height: 100%;
   width: .1875rem;
   border-radius: .125rem;
-  background-color: var(--color,#004aa0);
+  /* background-color: var(--color,#004aa0); */
+  background-color: var(--team-color);
   top: 0;
   left: 0
 }
@@ -2401,7 +2402,8 @@ body::after {
 }
 .teams-profile__item {
   padding: 1rem;
-  gap: .5rem
+  gap: .5rem;
+  position: relative;
 }
 .teams-profile__item .team-card__name {
   font-size: 1rem
@@ -4759,4 +4761,16 @@ body > div.wrapper > main > div > a:hover {
 
 .alert-notice{
   background-color: #d7cf2e;  
+}
+
+.payment-btn{
+  font-size: 10px;
+}
+
+.status-message{
+  position: absolute;
+  right: 3px;
+  font-size: 9px;
+  max-width: 85px;
+  top: -13px;
 }

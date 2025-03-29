@@ -16,16 +16,23 @@ class ProfileController extends Controller
 
         // Проверяем, есть ли пользователь в таблице players
         $player = Player::where('user_id', $user->id)->first();
-        
+
+              
         // Если игрока нет, перенаправляем на создание профиля
         if (!$player) {
             return redirect()->route('players.create')->with('success', 'Ваш email було успішно підтверджено!');;
         }
 
-        $teams =  Team::where('id', $player->id)->get();
-
-        $user = auth()->user(); // Получаем объект User
-
+        // // Формируем массив статусов команд
+        // $teams = $user->teams->map(function ($team) {
+        //     return [
+        //         'data' => $team,
+        //         'status_message' => $team->status === 'awaiting_payment' ? 'Очікування на оплату' :
+        //                             ($team->status === 'paid' ? 'Сплачено' : null),
+        //         'status' => $team->status === 'awaiting_payment' ? 0 : ($team->status === 'paid' ? 1 : null)
+        //     ];
+        // });
+        
 
         $dateString = $player->birth_date;  
         $date = Carbon::createFromFormat('Y-m-d', $dateString);  

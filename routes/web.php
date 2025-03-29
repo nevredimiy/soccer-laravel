@@ -97,7 +97,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/player-request', [PlayerRequestController::class, 'index'])->name('player.request');
     Route::get('/player-request/details', [PlayerRequestController::class, 'create'])->name('player.request.create');
     
-    Route::get('/teams-events', [TeamEventController::class, 'index'])->name('teams.events');
+    Route::get('/teams/events', [TeamEventController::class, 'index'])->name('teams.events');
     Route::get('/teams/events/{id}', [TeamEventController::class, 'show'])->name('teams.events.show');
     Route::get('/teams/request/create', [TeamRequestController::class, 'create'])->name('teams.request.create');
     Route::post('/teams/request/store', [TeamRequestController::class, 'store'])->name('teams.request.store');
@@ -106,6 +106,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/teams/request/pay/{team_id}', [TeamRequestController::class, 'pay'])->name('teams.request.payment');
     Route::post('/teams/request/callback', [TeamRequestController::class, 'liqpayCallback'])->name('teams.request.callback');
     Route::get('/teams/request/success/{team_id}', [TeamRequestController::class, 'success'])->name('teams.request.success');
+    Route::get('/teams/request/check/{team_id}', [TeamRequestController::class, 'checkPaymentStatus'])->name('teams.request.check');
 
 
 

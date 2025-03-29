@@ -581,48 +581,22 @@
                         ЗАЯВИТИ КОМАНДУ
                     </h2>
                     <div class="reg-tournament__body">
-                        <div style="--color: #F7E10E" class="reg-tournament__item reg-tournament__item--join">
-                            <div class="reg-tournament__label">
-                                ПЕРУН
-                            </div>
-                            <div style="--color: #FFF" class="reg-tournament__rating">
-                                <div data-rating data-rating-size="10" data-rating-value="8" class="rating">
+                        @foreach ($teams as $team)
+                            <div style="--color: #F7E10E; --team-color: {{ $team->team_color }};" class="reg-tournament__item reg-tournament__item--join">
+                                <div class="reg-tournament__label">
+                                    {{$team->name}}
                                 </div>
-                            </div>
-                            <div style="--color: #ed1c24" class="reg-tournament__status">
-                                <span>Заявка закрита</span>
-                            </div>
-                        </div>
-                        <div style="--color: #1B5BA2" class="reg-tournament__item reg-tournament__item--join">
-                            <div class="reg-tournament__label">
-                                AFC SPARTA
-                            </div>
-                            <div style="--color: #FFF" class="reg-tournament__rating">
-                                <div data-rating data-rating-size="10" data-rating-value="8" class="rating">
+                                <div style="--color: #FFF" class="reg-tournament__rating">
+                                    <div data-rating data-rating-size="10" data-rating-value="8" class="rating">
+                                    </div>
                                 </div>
-                            </div>
-                            <div style="--color: #b5e61d" class="reg-tournament__status">
-                                <span>Потрібні гравці</span>
-                            </div>
-                            <button class="reg-tournament__button button button--yellow">
-                                Хочу грати
-                            </button>
-                        </div>
-                        <div style="--color: #59C65D" class="reg-tournament__item reg-tournament__item--join">
-                            <div class="reg-tournament__label">
-                                ДНІПРО
-                            </div>
-                            <div style="--color: #FFF" class="reg-tournament__rating">
-                                <div data-rating data-rating-size="10" data-rating-value="8" class="rating">
+                                <div style="--color: {{ $team->status_color}}" class="reg-tournament__status">
+                                    <span>
+                                       {{ $team->status_text }}
+                                    </span>
                                 </div>
-                            </div>
-                            <div style="--color: #22b14c" class="reg-tournament__status">
-                                <span>Терміново потрібні гравці</span>
-                            </div>
-                            <button class="reg-tournament__button button button--yellow">
-                                Хочу грати
-                            </button>
-                        </div>
+                            </div>                            
+                        @endforeach
                     </div>
                     <div class="reg-tournament__actions">
                         <a href="{{ route('teams.request.create', ['id' => $event->id]) }}" class="reg-tournament__link button button--yellow"><span>ЗАЯВИТИ КОМАНДУ</span></a>

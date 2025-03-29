@@ -13,22 +13,42 @@ class TeamEventController extends Controller
 {
     public function index()
     {
+        
+        // $oneEvents = Event::where('tournament_id', 1)->withCount('teams')->get();
+        // $manyEvents = Event::where('tournament_id', 2)->withCount('teams')->get();
 
-        $oneEvents = Event::where('tournament_id', 1)->withCount('teams')->get();
-        $manyEvents = Event::where('tournament_id', 2)->withCount('teams')->get();
 
-
-        return view('teams.events.index', compact('oneEvents', 'manyEvents'));
+        return view('teams.events.index');
     }
 
     public function show($id)
     {
         
-
+        $teams = Team::where('event_id', $id)->get()->map(function ($team) {
+            $statusColors = [
+                'urgent' => '#b5e61d',
+                'needed' => '#22b14c',
+                'closed' => '#ed1c24',
+            ];
+            $statusTexts = [
+                'urgent' => 'Терміново потрібні гравці',
+                'needed' => 'Хочу грати',
+                'closed' => 'Заявка закрита',
+            ];
+    
+            // Добавляем подготовленные данные в объект команды
+            $team->status_color = $statusColors[$team->player_request_status] ?? '#ed1c24';
+            $team->status_text = $statusTexts[$team->player_request_status] ?? 'Невідомий статус';
+            $team->team_color = $team->color->color_picker ?? '#F7E10E'; // Цвет команды
+    
+            return $team;
+        });
+        
+        
         $event = Event::findOrFail($id);
-
+        $colors = TeamColor::all();
       
-        return view('teams.events.show', compact('event'));
+        return view('teams.events.show', compact('event', 'teams', 'colors'));
     }
    
 }

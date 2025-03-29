@@ -45,6 +45,10 @@ class LiqPayController extends Controller
     // 3️⃣ Обработка callback от LiqPay
     public function callback(Request $request)
     {
+         // Логируем входящие данные
+         Log::info('LiqPay callback', $request->all());
+
+        // Получаем данные от LiqPay
         $data = $request->input('data');
         $signature = $request->input('signature');
 
@@ -75,4 +79,22 @@ class LiqPayController extends Controller
 
         return response()->json(['status' => 'success']);
     }
+
+    // public function callback(Request $request)
+    // {
+    //     Log::info('LiqPay callback', $request->all());
+
+    //     $data = json_decode(base64_decode($request->input('data')), true);
+
+    //     if ($data['status'] === 'success' || $data['status'] === 'sandbox') {
+    //         $team = Team::find($data['order_id']);
+    //         if ($team) {
+    //             $team->status = 'paid';
+    //             $team->save();
+    //             Log::info("Статус команды #{$team->id} обновлен на 'paid'");
+    //         }
+    //     }
+
+    //     return response()->json(['status' => 'ok']);
+    // }
 }

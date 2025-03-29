@@ -124,7 +124,11 @@ class TeamResource extends Resource
                
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('owner_id')
+                    ->label('Власник')
+                    ->relationship('owner', 'name')
+                    ->searchable()
+                    ->preload()
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
@@ -134,6 +138,11 @@ class TeamResource extends Resource
                         unlink(storage_path('app/public/' . $record->logo));
                     }
                 }),
+                // Tables\Actions\Action::make('pay')
+                //     ->label('Оплатить')
+                //     ->color('primary')
+                //     ->icon('heroicon-o-currency-dollar')
+                //     ->action(fn (Team $record) => $record->processPayment()),
                 
             ])
             ->bulkActions([

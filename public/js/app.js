@@ -1131,16 +1131,16 @@
             behavior: "smooth"
         });
     }));
-    const prgsElements = document.querySelectorAll("[data-prgs]");
-    prgsElements.forEach((prgsEl => {
-            const total = +prgsEl.getAttribute("data-prgs");
-            const active = +prgsEl.getAttribute("data-prgs-value");
-            if (active <= total) for (let i = 0; i < total; i++) {
-                const span = document.createElement("span");
-                if (i < active) span.classList.add("_active");
-                prgsEl.appendChild(span);
-            } else console.log("Active value must be less than total" + prgsEl);
-    }));
+    // const prgsElements = document.querySelectorAll("[data-prgs]");
+    // prgsElements.forEach((prgsEl => {
+    //         const total = +prgsEl.getAttribute("data-prgs");
+    //         const active = +prgsEl.getAttribute("data-prgs-value");
+    //         if (active <= total) for (let i = 0; i < total; i++) {
+    //             const span = document.createElement("span");
+    //             if (i < active) span.classList.add("_active");
+    //             prgsEl.appendChild(span);
+    //         } else console.log("Active value must be less than total" + prgsEl);
+    // }));
     const codeInputs = document.querySelectorAll(".input-code");
     codeInputs.forEach((codeInput => {
         const inputs = codeInput.querySelectorAll("input");
