@@ -1,4 +1,5 @@
 <div class="teams-profile__items">
+    
     @foreach($teams as $team)
     <div wire:key="team-{{ $team->id }}" class="flex flex-col max-w-60">        
         <button  wire:click="selectTeam({{ $team->id }})" class="teams-profile__item team-card {{ $activeTeamId === $team->id ? '_active' : '' }}">
@@ -15,7 +16,7 @@
             <div data-rating data-rating-size="10" data-rating-value="8" class="team-card__rating rating">
             </div>
             <div class="team-card__label">
-                БЕРКОВЩИНА
+                {{ $team->event->location->name }}
             </div>
         </button>
         <livewire:team-editor :team="$team" :key="'edit-'.$team->id" />

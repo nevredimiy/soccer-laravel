@@ -2299,7 +2299,7 @@ body::after {
   width: .1875rem;
   border-radius: .125rem;
   /* background-color: var(--color,#004aa0); */
-  background-color: var(--team-color);
+  background-color: var(--team-color);  
   top: 0;
   left: 0
 }
@@ -4773,4 +4773,12 @@ body > div.wrapper > main > div > a:hover {
   font-size: 9px;
   max-width: 85px;
   top: -13px;
+}
+
+.text-success {
+  color:#d7cf2e;
+  font-size: xx-small;
+  position: absolute;
+  left: -10px;
+  width: 80px;
 }

@@ -17,11 +17,6 @@
                 </a>
             </div>
 
-            {{-- <div data-da=".header__images, 767.98, last" class="header__city">
-                КИЇВ
-                <img src="/img/header/kyiv.webp" alt="Image" class="ibg ibg--contain">
-            </div> --}}
-
             <a href="{{route('cities')}}">
                 <livewire:city-emblem />
             </a>
@@ -32,15 +27,21 @@
                     <!-- Пользователь авторизован -->
                     <div class="header__profile profile-header">
                         <div class="profile-header__image">
-                            <img src="{{ auth()->user()->avatar ?? asset('/img/header/profile.webp') }}" alt="{{$authUser->name}}" class="ibg">
+                            <img src="{{ auth()->user()->avatar ?? asset('/img/header/profile.webp') }}" 
+                                 alt="{{ auth()->user()->name }}" 
+                                 class="ibg">
                         </div>
                         <div class="profile-header__label">
-                            {{ number_format(auth()->user()->balance ?? 0, 2) }} грн
+                            <span id="balance-display">
+                                {{ number_format(auth()->user()->balance ?? 0, 2) }} грн
+                            </span>
                         </div>
-                        <button id="top-up-balance" class="profile-header__add _icon-add-circle"></button>
-                        
+                        <a href="{{ route('balance.form') }}" class="profile-header__add _icon-add-circle"></a>
+            
+                        <!-- Кнопка проверки баланса через Livewire -->
+                        <livewire:check-balance />
                     </div>
-                    
+            
                     <a href="{{ route('profile') }}" class="header__link button button--transparent _icon-user-circle">
                         <span>Профіль</span>
                     </a>
@@ -61,6 +62,7 @@
                 @endauth
             </div>
             
+            
         </div>
         <div class="header__contacts">
             <a href="tel:{{ $siteSettings->contacts }}" class="header__phone">{{ $phone }}</a>
@@ -76,12 +78,4 @@
 
 @include('layouts.navbar')
 
-
-<div id="balance-modal" class="modal hidden">
-    <div class="modal-content">
-        <h2>Поповнити баланс</h2>
-        <input type="number" id="balance-amount" placeholder="Введіть суму (грн)">
-        <button id="pay-button">Оплатити</button>
-    </div>
-</div>
 

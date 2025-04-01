@@ -32,7 +32,7 @@ class TeamEventController extends Controller
             ];
             $statusTexts = [
                 'urgent' => 'Терміново потрібні гравці',
-                'needed' => 'Хочу грати',
+                'needed' => 'Потрібні гравці',
                 'closed' => 'Заявка закрита',
             ];
     
@@ -45,9 +45,10 @@ class TeamEventController extends Controller
         });
         
         
-        $event = Event::findOrFail($id);
+        $event = Event::with('location.stadium')->findOrFail($id);
         $colors = TeamColor::all();
       
+        // dd($event);
         return view('teams.events.show', compact('event', 'teams', 'colors'));
     }
    

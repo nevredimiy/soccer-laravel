@@ -9,7 +9,7 @@ use App\Models\User;
 use App\Models\Team;
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Forms\Components\Select;;
+use Filament\Forms\Components\Select;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;

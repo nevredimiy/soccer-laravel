@@ -6,8 +6,10 @@ use App\Filament\Resources\LocationResource\Pages;
 use App\Filament\Resources\LocationResource\RelationManagers;
 use App\Models\Location;
 use App\Models\District;
+use App\Models\Stadium;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Components\Select;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -30,10 +32,11 @@ class LocationResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->label('Назва')
-                    ->required()
-                    ->maxLength(255),
+                Select::make('stadium_id')
+                    ->label('Стадіон')
+                    ->options(Stadium::all()->pluck('name', 'id'))
+                    ->searchable()
+                    ->preload(),
                 Forms\Components\Select::make('district_id')
                     ->label('Регіон')
                     ->options(District::all()->pluck('name', 'id'))
@@ -51,7 +54,9 @@ class LocationResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
+                Tables\Columns\TextColumn::make('stadium.name')
+                    ->label('Стадіон') 
+                    ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('address')
                     ->searchable(),

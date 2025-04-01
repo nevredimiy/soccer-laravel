@@ -10,18 +10,18 @@
                 <div class="tournament__hero hero-tournament">
                     <div class="hero-tournament__location item-stadium">
                         <h3 class="item-stadium__title">
-                            БЕРКОВЩИНА
+                            {{ $event->location->name ?? 'Не указано' }}
                         </h3>
                         <div class="item-stadium__image">
                             <img src="{{asset('img/stadium/preview.webp')}}" alt="Image" class="ibg">
                         </div>
                         <div class="item-stadium__body">
                             <div class="item-stadium__location _icon-location">
-                                Пр-т Степана Бандери 19 (Парк Муромець)
+                                {{ $event->location->stadium->address ?? 'Не указано' }} ({{ $event->location->name ?? 'Не указано' }})
                             </div>
                             <div class="item-stadium__details">
                                 <div class="item-stadium__info info-stadium">
-                                    4
+                                    {{ $event->location->stadium->fields_40x20 ?? 'Не указано' }}
                                     <div class="info-stadium__icon">
                                         <div class="info-stadium__field">
                                             40х20
@@ -30,7 +30,7 @@
                                     </div>
                                 </div>
                                 <div class="item-stadium__info info-stadium">
-                                    1
+                                    {{ $event->location->stadium->fields_60x40 ?? 'Не указано' }}
                                     <div class="info-stadium__icon">
                                         <div class="info-stadium__field">
                                             60x40
@@ -39,28 +39,27 @@
                                     </div>
                                 </div>
                                 <div class="item-stadium__info info-stadium">
-                                    50
+                                    {{ $event->location->stadium->parking_spots ?? 'Не указано' }}
                                     <div class="info-stadium__icon">
                                         <img src="{{asset('img/stadium/02.webp')}}" alt="Image">
                                     </div>
                                 </div>
-                                <div class="item-stadium__info info-stadium _icon-check">
+                                <div class="item-stadium__info info-stadium {{ $event->location->stadium->parking_spots ? '_icon-check' : '_icon-cross' }}">
                                     <div class="info-stadium__icon">
                                         <img src="{{asset('img/stadium/03.webp')}}" alt="Image">
                                     </div>
                                 </div>
-                                <div class="item-stadium__info info-stadium _icon-check">
+                                <div class="item-stadium__info info-stadium {{ $event->location->stadium->has_speaker_system ? '_icon-check' : '_icon-cross' }}">
                                     <div class="info-stadium__icon">
                                         <img src="{{asset('img/stadium/04.webp')}}" alt="Image">
                                     </div>
                                 </div>
-                                <div class="item-stadium__info info-stadium">
-                                    3
+                                <div class="item-stadium__info info-stadium {{ $event->location->stadium->has_wardrobe ? '_icon-check' : '_icon-cross' }}">
                                     <div class="info-stadium__icon">
                                         <img src="{{asset('img/stadium/05.webp')}}" alt="Image">
                                     </div>
                                 </div>
-                                <div class="item-stadium__info info-stadium _icon-cross">
+                                <div class="item-stadium__info info-stadium {{ $event->location->stadium->has_toilet ? '_icon-check' : '_icon-cross' }}">
                                     <div class="info-stadium__icon">
                                         <img src="{{asset('img/stadium/06.webp')}}" alt="Image">
                                     </div>
@@ -71,7 +70,7 @@
                     <div class="hero-tournament__body">
                         <div class="hero-tournament__info">
                             <div class="hero-tournament__label">
-                                X-PARK
+                                {{ $event->location->stadium->name ?? 'Не вказано' }}
                             </div>
                         </div>
                         <div class="hero-tournament__info">
@@ -81,17 +80,18 @@
                         </div>
                         <div class="hero-tournament__info">
                             <div class="hero-tournament__label">
-                                27 ЧЕРВНЯ - 3 СЕРПНЯ
+                                27 ЧЕРВНЯ - 3 СЕРПНЯ <br />
+                                {{ \Carbon\Carbon::parse($event->date)->locale('uk')->translatedFormat('j F') }} {{ \Carbon\Carbon::parse($event['start_time'])->format('H:i') }} - {{ \Carbon\Carbon::parse($event->end_time)->format('H:i') }} {{ \Carbon\Carbon::parse($event->date)->locale('uk')->translatedFormat('(D)') }}
                             </div>
                         </div>
                         <div class="hero-tournament__info">
                             <div class="hero-tournament__label">
-                                ФОРМАТ 5Х5Х5
+                                ФОРМАТ {{ $event->format ?? '5x5x5' }}
                             </div>
                         </div>
                         <div class="hero-tournament__info">
                             <div class="hero-tournament__label _icon-field">
-                                40х20м
+                                {{ $event->size_field  }}м
                             </div>
                         </div>
                         <div class="hero-tournament__info">
@@ -595,6 +595,11 @@
                                        {{ $team->status_text }}
                                     </span>
                                 </div>
+                                @if ($team->player_request_status != 'closed' )
+                                <button class="reg-tournament__button button button--yellow">
+                                    Хочу грати
+                                </button>
+                                @endif
                             </div>                            
                         @endforeach
                     </div>

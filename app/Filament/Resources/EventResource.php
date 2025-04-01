@@ -63,6 +63,22 @@ class EventResource extends Resource
                     ->options(League::all()->pluck('name', 'id'))
                     ->searchable()
                     ->default(null),
+                Forms\Components\Select::make('role')
+                    ->options([
+                        '5x5x5', 
+                        '4x4x4', 
+                        '9x9x9'
+                    ])
+                    ->default('5x5x5')
+                    ->dehydrated()
+                    ->label('Формат'),
+                Forms\Components\Select::make('size_field')
+                    ->options([
+                        '40x20', 
+                        '60x40'
+                    ])
+                    ->default('40x20')
+                    ->label('Формат'),
             ])->columns(3);
     }
 
@@ -75,6 +91,8 @@ class EventResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('start_time'),
                 Tables\Columns\TextColumn::make('end_time'),
+                Tables\Columns\TextColumn::make('format')->label('Формат'),
+                Tables\Columns\TextColumn::make('size_field')->label('Розмір поля'),
                 Tables\Columns\TextColumn::make('location.name')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('tournament.name')                    

@@ -36,7 +36,7 @@
 
         <!-- Лига -->
         <div class="">
-           <select class="bg-[#00539f] text-white py-1.5 px-2 min-w-44 rounded" name="league" id="">
+           <select wire:model.live="selectedLeague" class="bg-[#00539f] text-white py-1.5 px-2 min-w-44 rounded" name="league" id="">
                 <option value="">Вибери лігу</option>
                 @if ($leagues)
                     @foreach ($leagues as $league)
@@ -46,14 +46,5 @@
             </select>
         </div>
     </div>
-    {{-- <div class="">
-        @foreach ($events as $event)
-        <div class="">
-   
-            {{ $event->id}} / {{ $event->date}} / {{ $event->start_time}} / {{ $event->end_time}} / {{ $event->location->name}} / {{ $event->teams_count}}
-        </div>
-            
-        @endforeach 
-    </div> --}}
 
 </div>

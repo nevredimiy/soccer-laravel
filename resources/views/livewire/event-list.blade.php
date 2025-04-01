@@ -12,7 +12,7 @@
             ВІДКРИТІ ЗАЯВКИ НА НАЙБЛИЖЧІ ТУРНІРИ
         </h1>
       
-        @if (!empty($events)) 
+        {{-- @if (!empty($events)) 
         <div class="">
             @foreach ($events as $e)
                 @foreach ($e as $event)            
@@ -33,7 +33,7 @@
                 @endforeach 
             @endforeach 
         </div>
-        @endif
+        @endif --}}
 
         {{-- <pre>{{ print_r($events1, true) }}</pre> --}}
 

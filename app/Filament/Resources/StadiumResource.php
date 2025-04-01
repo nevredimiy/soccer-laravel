@@ -6,6 +6,7 @@ use App\Filament\Resources\StadiumResource\Pages;
 use App\Filament\Resources\StadiumResource\RelationManagers;
 use App\Models\Stadium;
 use Filament\Forms;
+use App\Models\Location;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -36,10 +37,28 @@ class StadiumResource extends Resource
                     ->required()
                     ->maxLength(255)
                     ->label('Назва'),
-                Forms\Components\TextInput::make('address')
+                Forms\Components\Select::make('location_id')
                     ->required()
-                    ->maxLength(255)
-                    ->label('Адреса'),
+                    ->options(function () {
+                        return Location::with(['district.city']) // Загружаем связанные данные
+                        ->get()
+                        ->mapWithKeys(function ($location) {
+                            $district = $location->district; // Получаем модель District
+                            $city = $district ? $district->city : null; // Получаем модель City
+                            $name = $location->name;
+
+                            if ($district) {
+                                $name .= ' - ' . $district->name;
+                            }
+                            if ($city) {
+                                $name .= ' - ' . $city->name;
+                            }
+
+                            return [$location->id => $name];
+                        });
+                    })
+                    ->label('Локація')
+                    ->searchable(),
                 Forms\Components\FileUpload::make('photo')
                     ->image()
                     ->disk('public')
@@ -78,8 +97,9 @@ class StadiumResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
                     ->label('Назва'),
-                Tables\Columns\TextColumn::make('address')
+                Tables\Columns\TextColumn::make('location.name')
                     ->searchable()
+                    ->sortable()
                     ->label('Адреса'),
                 Tables\Columns\ImageColumn::make('photo')
                     ->searchable()
@@ -123,7 +143,6 @@ class StadiumResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])

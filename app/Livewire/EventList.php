@@ -30,7 +30,6 @@ class EventList extends Component
             });
         }
 
-        // $this->events = $query->withCount('teams')->get();
         $this->updateEvents();
     
     }
@@ -39,6 +38,9 @@ class EventList extends Component
     public function updateCityId($city_id)
     {
         $this->selectedCity = $city_id;
+        $this->selectedDistrict = null;
+        $this->selectedLocation = null;
+       
         $this->updateEvents();
     }
     
@@ -47,6 +49,8 @@ class EventList extends Component
     public function updateSelectedDistrict($district_id)
     {
         $this->selectedDistrict = $district_id;
+        $this->selectedLocation = null;
+        $this->selectedLeague = null;
         $this->updateEvents();
     }
         
@@ -54,6 +58,7 @@ class EventList extends Component
     public function updateLocationId($location_id)
     {
         $this->selectedLocation = $location_id;
+        $this->selectedLeague = null;
         $this->updateEvents();
     }
         
@@ -61,15 +66,9 @@ class EventList extends Component
     public function updateLeagueId($league_id)
     {
         $this->selectedLeague = $league_id;
+        dump($this->selectedLeague); // Проверка, приходит ли league_id
         $this->updateEvents();
     }
-
-    // #[On('events-update')]
-    // public function eventUpdate($events)
-    // {
-        
-    //     $this->events = $events;
-    // }
 
     public function updateEvents()
     {
@@ -95,8 +94,6 @@ class EventList extends Component
             $query->where('league_id', $this->selectedLeague);
         }
 
-        
-        // $this->events = $query->withCount('teams')->get();
         // Получаем коллекцию и группируем по tournament_id
         $groupedEvents = $query->withCount('teams')->get()->groupBy('tournament_id');
 

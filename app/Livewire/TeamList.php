@@ -4,17 +4,21 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\Team;
+use App\Models\Event;
 
 class TeamList extends Component
 {
 
     public $teams;
     public $activeTeamId;
-
+    
     public function mount()
     {
-        $this->teams = Team::where('owner_id', auth()->id())->get();
+        $this->teams = Team::with('event.location')
+            ->where('owner_id', auth()->id())
+            ->get();
         $this->activeTeamId = $this->teams->first()?->id;// Первая команда активна по умолчанию
+        
         // $this->dispatch('team-selected', teamId: $this->activeTeamId);
         $this->dispatch('team-selected', team_id: $this->activeTeamId);
 

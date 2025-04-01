@@ -17,4 +17,9 @@ class Location extends Model
     {
         return $this->belongsTo(District::class, 'district_id');
     }
+
+    public function stadium(): BelongsTo
+    {
+        return $this->belongsTo(Stadium::class, 'stadium_id');
+    }
 }

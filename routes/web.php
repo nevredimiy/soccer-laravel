@@ -80,8 +80,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::post('/balance/deposit/{user}', [BalanceController::class, 'deposit'])->name('balance.deposit');
-    Route::post('/balance/withdraw/{user}', [BalanceController::class, 'withdraw'])->name('balance.withdraw');
+    // Route::post('/balance/deposit/{user}', [BalanceController::class, 'deposit'])->name('balance.deposit');
+    // Route::post('/balance/withdraw/{user}', [BalanceController::class, 'withdraw'])->name('balance.withdraw');
+
+    Route::get('/balance/top-up', [BalanceController::class, 'showForm'])->name('balance.form');
+    Route::post('/balance/top-up', [BalanceController::class, 'processPayment'])->name('balance.process');
+    Route::post('/balance/callback', [BalanceController::class, 'liqpayCallback'])->name('balance.callback');
+    Route::post('/balance/check-payment', [BalanceController::class, 'checkPayment'])->name('balance.check');
 
     Route::post('/liqpay/pay', [LiqPayController::class, 'pay'])->name('liqpay.pay');
     Route::get('/liqpay/result', [LiqPayController::class, 'result'])->name('liqpay.result');
@@ -123,7 +128,7 @@ Route::get('/article/{article}', function (Article $article) {
 Route::get('/archive', [ArchiveController::class, 'index'])->name('archive');
 Route::get('/cities', [CityController::class, 'index'])->name('cities');
 Route::get('/tables', [TableController::class, 'index'])->name('tables');
-Route::get('/stadia', [StadiumController::class, 'index'])->name('stadia');
+Route::get('/stadiums', [StadiumController::class, 'index'])->name('stadiums');
 Route::get('/teams', [TeamController::class, 'index'])->name('teams.index');
 Route::get('/no-access', function () {
     return view('no-access');

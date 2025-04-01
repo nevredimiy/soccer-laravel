@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\TeamColor;
 use Liqpay\Liqpay;
 
+
 class Team extends Model
 {
    protected $fillable = [
@@ -48,6 +49,11 @@ class Team extends Model
         $form = $liqpay->cnb_form($params);
         
         return response()->json(['form' => $form]);
+    }
+
+    public function event(): BelongsTo
+    {
+        return $this->belongsTo(Event::class);
     }
 
     // создает ссылку на оплату. 

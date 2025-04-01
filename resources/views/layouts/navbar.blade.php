@@ -20,7 +20,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('stadia') }}">
+                    <a href="{{ route('stadiums') }}">
                         Стадіони
                     </a>
                 </li>

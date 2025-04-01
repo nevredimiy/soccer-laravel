@@ -15,9 +15,13 @@ return new class extends Migration
             $table->id(); 
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('team_id')->nullable()->constrained('teams')->onDelete('set null');
-            $table->string('full_name');
+            $table->string('last_name');
+            $table->string('first_name'); 
+            $table->string('phone')->nullable();
+            $table->string('tg')->nullable();
+            $table->date('birth_date')->nullable();
             $table->string('photo')->nullable();
-            $table->enum('position', ['goalkeeper', 'defender', 'midfielder', 'forward']);
+            $table->tinyInteger('rating')->nullable();
             $table->timestamps();
         });
     }

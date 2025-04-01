@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->enum('role', ['admin', 'team_owner', 'player', 'viewer'])->default('viewer')->after('password');
+        Schema::table('events', function (Blueprint $table) {
+            $table->enum('size_field', ['40x20', '60x40'])->default('40x20')->after('format');
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('role');
+        Schema::table('size_field', function (Blueprint $table) {
+            //
         });
     }
 };

@@ -11,14 +11,10 @@ use Illuminate\Support\Facades\Auth;
 class TeamController extends Controller
 {
 
-    public $logo;
 
     public function index()
     {
         return view('teams.index');
-    }
-
-
-    
+    }   
     
 }

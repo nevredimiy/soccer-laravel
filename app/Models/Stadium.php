@@ -3,12 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Stadium extends Model
 {
     protected $fillable = [
         'name',
         'address',
+        'location_id',
         'photo',
         'phone',
         'fields_40x20',
@@ -20,9 +22,17 @@ class Stadium extends Model
         'has_toilet'
     ];
 
+    protected $table = 'stadiums';
+
+
     public function setPhotoAttribute($value)
     {
         $this->attributes['photo'] = $value ?: '/img/stadium/stadium_placeholder.png';
+    }
+
+    public function location()
+    {
+        return $this->belongsTo(Location::class, 'location_id');
     }
 
 }

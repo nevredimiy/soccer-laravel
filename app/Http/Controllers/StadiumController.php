@@ -9,7 +9,7 @@ class StadiumController extends Controller
 {
     public function index() 
     {
-        $stadia = Stadium::all();
-        return view('pages.stadia', compact('stadia'));
+        $stadiums = Stadium::all();
+        return view('pages.stadiums', compact('stadiums'));
     }
 }

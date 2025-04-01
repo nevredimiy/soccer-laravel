@@ -9,7 +9,7 @@
         <div class="page__stadiums stadiums">
             <div class="stadiums__block _block">
                 <div class="stadiums__items">
-                    @foreach ( $stadia as $stadium )
+                    @foreach ( $stadiums as $stadium )
                         <div class="stadiums__item item-stadium">
                             <h3 class="item-stadium__title">
                                 {{$stadium->name}}

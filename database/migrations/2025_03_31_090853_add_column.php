@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('players', function (Blueprint $table) {
-            $table->string('tg')->nullable()->after('phone');
+        Schema::table('events', function (Blueprint $table) {
+            $table->enum('format', ['5x5x5', '4x4x4', '9x9x9'])->default('5x5x5')->after('end_time');
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('players', function (Blueprint $table) {
-            $table->dropColumn('tg');
+        Schema::table('events', function (Blueprint $table) {
+            $table->dropColumn('format');
         });
     }
 };
