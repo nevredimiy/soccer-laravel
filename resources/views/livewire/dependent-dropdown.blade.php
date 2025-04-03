@@ -28,7 +28,7 @@
                 <option value="">Вибери локацію</option>
                 @if ($locations)
                     @foreach ($locations as $location)
-                        <option value="{{ $location->id }}"> {{ $location->name }}</option>
+                        <option value="{{ $location->id }}"> {{ $location->address }}</option>
                     @endforeach                                        
                 @endif
             </select>

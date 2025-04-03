@@ -16,7 +16,7 @@
             <div data-rating data-rating-size="10" data-rating-value="8" class="team-card__rating rating">
             </div>
             <div class="team-card__label">
-                {{ $team->event->location->name }}
+                {{ $team->event->stadium->name }}
             </div>
         </button>
         <livewire:team-editor :team="$team" :key="'edit-'.$team->id" />

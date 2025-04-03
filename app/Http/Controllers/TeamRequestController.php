@@ -42,7 +42,7 @@ class TeamRequestController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:teams,name',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'color_id' => 'nullable',
+            'color_id' => 'required',
             'promo_code' => 'nullable|exists:promo_codes,code',
             'event_id' => 'required|integer|exists:events,id',
             'price' => 'required|numeric|min:0',

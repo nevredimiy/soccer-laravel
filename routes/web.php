@@ -21,6 +21,7 @@ use App\Http\Controllers\StadiumController;
 use App\Http\Controllers\PlayerRequestController;
 use App\Http\Controllers\TeamEventController;
 use App\Http\Controllers\TeamRequestController;
+use App\Http\Controllers\TournamentController;
 use App\Models\Article;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -125,6 +126,7 @@ Route::get('/article/{article}', function (Article $article) {
     return view('article.show', compact('article'));
 })->name('article.show');
 
+Route::get('/tournaments', [TournamentController::class, 'index'])->name('tournaments');
 Route::get('/archive', [ArchiveController::class, 'index'])->name('archive');
 Route::get('/cities', [CityController::class, 'index'])->name('cities');
 Route::get('/tables', [TableController::class, 'index'])->name('tables');

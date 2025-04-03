@@ -32,11 +32,6 @@ class LocationResource extends Resource
     {
         return $form
             ->schema([
-                Select::make('stadium_id')
-                    ->label('Стадіон')
-                    ->options(Stadium::all()->pluck('name', 'id'))
-                    ->searchable()
-                    ->preload(),
                 Forms\Components\Select::make('district_id')
                     ->label('Регіон')
                     ->options(District::all()->pluck('name', 'id'))
@@ -54,10 +49,6 @@ class LocationResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('stadium.name')
-                    ->label('Стадіон') 
-                    ->sortable()
-                    ->searchable(),
                 Tables\Columns\TextColumn::make('address')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('district_id')

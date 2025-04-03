@@ -1,9 +1,12 @@
 <div class="mt-4 p-4 border rounded bg-white">
 
     @if($team)
-        <h2 class="text-xl font-bold">{{ $team->name }}</h2>
+    <div class="text-center mb-2">
+        <h2 class="text-xl font-bold">Команда: {{ $team->name }}</h2>
         <p>Статус: {{ $team->status }}</p>
         <p>Цвет: {{ $team->color->name ?? 'Не указан' }}</p>
+
+    </div>
 
         <section class="profile__players players-tournament">
             <h2 class="players-tournament__title section-title section-title--margin">
@@ -123,44 +126,50 @@
                 <div class="prop-profile__subtitle label-prop">
                     Залишок часу на прийняття рішення
                 </div>
-                <div data-simplebar class="prop-profile__body">
+                <div class="prop-profile__body">
                     <div class="prop-profile__requests">
-                        <div class="prop-profile__request request">
-                            <div class="request__time">
-                                16хв
+                        @forelse ($team->applications as $application)
+                            @foreach ($application->user->player as $player)
+                            <div class="prop-profile__request request">
+                                <div class="request__time">
+                                    16хв
+                                </div>
+                                <article class="request__body item-player item-player--stats">
+                                    <a href="#" class="item-player__image-link">
+                                        <img src="img/player/player.webp" alt="Image" class="ibg">
+                                    </a>
+                                    <div class="item-player__name">
+                                        <a href="#">{{ $player['first_name'] }} {{ $player['last_name'] }} </a>
+                                    </div>
+                                    <div class="item-player__details">
+                                        <div class="item-player__info">
+                                            31
+                                            <img src="img/player/field.webp" alt="Image" class="ibg ibg--contain">
+                                        </div>
+                                        <div class="item-player__info">
+                                            28
+                                            <img src="img/player/ball.webp" alt="Image" class="ibg ibg--contain">
+                                        </div>
+                                        <div class="item-player__info item-player__info--yellow-card">
+                                            1
+                                        </div>
+                                        <div class="item-player__info item-player__info--red-card">
+                                            0
+                                        </div>
+                                    </div>
+                                    <div data-rating data-rating-size="10" data-rating-value="8" class="item-player__rating rating">
+                                    </div>
+                                    <div class="item-player__age">{{ \Carbon\Carbon::parse($player['birth_date'])->age }}  років</div>
+                                </article>
+                                <div class="request__footer">
+                                    <button class="request__button request__button--red">ВІДМОВА</button>
+                                    <button class="request__button request__button--green">ПІДПИСАТИ</button>
+                                </div>
                             </div>
-                            <article class="request__body item-player item-player--stats">
-                                <a href="#" class="item-player__image-link">
-                                    <img src="img/player/player.webp" alt="Image" class="ibg">
-                                </a>
-                                <div class="item-player__name">
-                                    <a href="#">МАКСИМ МАМЕДОВ</a>
-                                </div>
-                                <div class="item-player__details">
-                                    <div class="item-player__info">
-                                        31
-                                        <img src="img/player/field.webp" alt="Image" class="ibg ibg--contain">
-                                    </div>
-                                    <div class="item-player__info">
-                                        28
-                                        <img src="img/player/ball.webp" alt="Image" class="ibg ibg--contain">
-                                    </div>
-                                    <div class="item-player__info item-player__info--yellow-card">
-                                        1
-                                    </div>
-                                    <div class="item-player__info item-player__info--red-card">
-                                        0
-                                    </div>
-                                </div>
-                                <div data-rating data-rating-size="10" data-rating-value="8" class="item-player__rating rating">
-                                </div>
-                                <div class="item-player__age">27 років</div>
-                            </article>
-                            <div class="request__footer">
-                                <button class="request__button request__button--red">ВІДМОВА</button>
-                                <button class="request__button request__button--green">ПІДПИСАТИ</button>
-                            </div>
-                        </div>
+                            @endforeach
+                        @empty
+                            <div class="text-gray-500">Немає жодної заявки</div>
+                        @endforelse
                     </div>
                 </div>
             </div>

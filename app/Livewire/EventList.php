@@ -22,10 +22,10 @@ class EventList extends Component
         // $this->selectedDistrict = session('current_district', 0);
         // $this->selectedLocation = session('current_location', 0);
         // $this->selectedLeague = session('current_league', 0);
-        $query = Event::query()->with(['location', 'teams']);
+        $query = Event::query()->with(['stadium', 'teams']);
         
         if ($this->selectedCity) {
-            $query->whereHas('location.district.city', function ($q) {
+            $query->whereHas('stadium.location.district.city', function ($q) {
                 $q->where('id', $this->selectedCity);
             });
         }
@@ -66,28 +66,32 @@ class EventList extends Component
     public function updateLeagueId($league_id)
     {
         $this->selectedLeague = $league_id;
-        dump($this->selectedLeague); // Проверка, приходит ли league_id
         $this->updateEvents();
     }
 
+
+
     public function updateEvents()
     {
-        $query = Event::query()->with(['location', 'teams']);
+        $query = Event::query()->with(['stadium.location', 'teams']);
+
 
         if ($this->selectedCity) {
-            $query->whereHas('location.district.city', function ($q) {
+            $query->whereHas('stadium.location.district.city', function ($q) {
                 $q->where('id', $this->selectedCity);
             });
         }
 
         if ($this->selectedDistrict) {
-            $query->whereHas('location.district', function ($q) {
+            $query->whereHas('stadium.location.district', function ($q) {
                 $q->where('id', $this->selectedDistrict);
             });
         }
 
         if ($this->selectedLocation) {
-            $query->where('location_id', $this->selectedLocation);
+            $query->whereHas('stadium.location', function ($q) {
+                $q->where('id', $this->selectedLocation);
+            });
         }
 
         if ($this->selectedLeague) {

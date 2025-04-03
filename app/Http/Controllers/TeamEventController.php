@@ -45,7 +45,7 @@ class TeamEventController extends Controller
         });
         
         
-        $event = Event::with('location.stadium')->findOrFail($id);
+        $event = Event::with('stadium')->findOrFail($id);
         $colors = TeamColor::all();
       
         // dd($event);

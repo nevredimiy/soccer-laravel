@@ -21,12 +21,8 @@
                         {{ $event['date']}} / 
                         {{ $event['start_time']}} / 
                         {{ $event['end_time']}} / 
-                        @if (isset($event['location']->name))
-                            {{ $event['location']->name }}
-                        @elseif(isset($event['location']['name']))
-                            {{ $event['location']['name'] }}
-                        @endif
-                        
+                        {{ $event['stadium']['name'] }}
+                       {{ $event['stadium']['location']['address']}}
                         {{ $event['teams_count']}}
 
                     </div>
@@ -35,7 +31,7 @@
         </div>
         @endif --}}
 
-        {{-- <pre>{{ print_r($events1, true) }}</pre> --}}
+        {{-- <pre>{{ print_r($events, true) }}</pre> --}}
 
         @if (!empty($events)) 
             @if (!empty($events[1]))             
@@ -65,12 +61,8 @@
                                     <div class="item-bid__info">
                                         <svg class="icon">
                                             <use xlink:href="{{asset('img/icons.svg#location-empty')}}"></use>
-                                        </svg>
-                                        @if (isset($event['location']->name))
-                                            {{ $event['location']->name }}
-                                        @elseif(isset($event['location']['name']))
-                                            {{ $event['location']['name'] }}
-                                        @endif
+                                        </svg>                                      
+                                           {{ $event['stadium']['location']['address'] }}                                      
                                     </div>
                                 </div>
                                 <div class="item-bid__fill">
@@ -143,11 +135,7 @@
                                         <svg class="icon">
                                             <use xlink:href="{{asset('img/icons.svg#location-empty')}}"></use>
                                         </svg>
-                                        @if (isset($event['location']->name))
-                                            {{ $event['location']->name }}
-                                        @elseif(isset($event['location']['name']))
-                                            {{ $event['location']['name'] }}
-                                        @endif
+                                        {{ $event['stadium']['location']['address'] }}
                                     </div>
                                 </div>
                                 <div class="item-bid__fill">

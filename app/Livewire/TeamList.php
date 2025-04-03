@@ -14,7 +14,7 @@ class TeamList extends Component
     
     public function mount()
     {
-        $this->teams = Team::with('event.location')
+        $this->teams = Team::with('event.stadium')
             ->where('owner_id', auth()->id())
             ->get();
         $this->activeTeamId = $this->teams->first()?->id;// Первая команда активна по умолчанию

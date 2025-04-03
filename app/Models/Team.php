@@ -76,4 +76,9 @@ class Team extends Model
         return $liqpay->cnb_form($params);
     }
 
+    public function applications()
+    {
+        return $this->hasMany(TeamPlayerApplication::class);
+    }
+
 }

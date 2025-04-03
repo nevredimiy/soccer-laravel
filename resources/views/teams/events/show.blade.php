@@ -10,18 +10,18 @@
                 <div class="tournament__hero hero-tournament">
                     <div class="hero-tournament__location item-stadium">
                         <h3 class="item-stadium__title">
-                            {{ $event->location->name ?? 'Не указано' }}
+                            {{ $event->stadium->name ?? 'Не указано' }}
                         </h3>
                         <div class="item-stadium__image">
                             <img src="{{asset('img/stadium/preview.webp')}}" alt="Image" class="ibg">
                         </div>
                         <div class="item-stadium__body">
                             <div class="item-stadium__location _icon-location">
-                                {{ $event->location->stadium->address ?? 'Не указано' }} ({{ $event->location->name ?? 'Не указано' }})
+                                {{ $event->stadium->location->address ?? 'Не указано' }} ({{ $event->stadium->name ?? 'Не указано' }})
                             </div>
                             <div class="item-stadium__details">
                                 <div class="item-stadium__info info-stadium">
-                                    {{ $event->location->stadium->fields_40x20 ?? 'Не указано' }}
+                                    {{ $event->stadium->fields_40x20 ?? 'Не указано' }}
                                     <div class="info-stadium__icon">
                                         <div class="info-stadium__field">
                                             40х20
@@ -30,7 +30,7 @@
                                     </div>
                                 </div>
                                 <div class="item-stadium__info info-stadium">
-                                    {{ $event->location->stadium->fields_60x40 ?? 'Не указано' }}
+                                    {{ $event->stadium->fields_60x40 ?? 'Не указано' }}
                                     <div class="info-stadium__icon">
                                         <div class="info-stadium__field">
                                             60x40
@@ -39,27 +39,27 @@
                                     </div>
                                 </div>
                                 <div class="item-stadium__info info-stadium">
-                                    {{ $event->location->stadium->parking_spots ?? 'Не указано' }}
+                                    {{ $event->stadium->parking_spots ?? 'Не указано' }}
                                     <div class="info-stadium__icon">
                                         <img src="{{asset('img/stadium/02.webp')}}" alt="Image">
                                     </div>
                                 </div>
-                                <div class="item-stadium__info info-stadium {{ $event->location->stadium->parking_spots ? '_icon-check' : '_icon-cross' }}">
+                                <div class="item-stadium__info info-stadium {{ $event->stadium->parking_spots ? '_icon-check' : '_icon-cross' }}">
                                     <div class="info-stadium__icon">
                                         <img src="{{asset('img/stadium/03.webp')}}" alt="Image">
                                     </div>
                                 </div>
-                                <div class="item-stadium__info info-stadium {{ $event->location->stadium->has_speaker_system ? '_icon-check' : '_icon-cross' }}">
+                                <div class="item-stadium__info info-stadium {{ $event->stadium->has_speaker_system ? '_icon-check' : '_icon-cross' }}">
                                     <div class="info-stadium__icon">
                                         <img src="{{asset('img/stadium/04.webp')}}" alt="Image">
                                     </div>
                                 </div>
-                                <div class="item-stadium__info info-stadium {{ $event->location->stadium->has_wardrobe ? '_icon-check' : '_icon-cross' }}">
+                                <div class="item-stadium__info info-stadium {{ $event->stadium->has_wardrobe ? '_icon-check' : '_icon-cross' }}">
                                     <div class="info-stadium__icon">
                                         <img src="{{asset('img/stadium/05.webp')}}" alt="Image">
                                     </div>
                                 </div>
-                                <div class="item-stadium__info info-stadium {{ $event->location->stadium->has_toilet ? '_icon-check' : '_icon-cross' }}">
+                                <div class="item-stadium__info info-stadium {{ $event->stadium->has_toilet ? '_icon-check' : '_icon-cross' }}">
                                     <div class="info-stadium__icon">
                                         <img src="{{asset('img/stadium/06.webp')}}" alt="Image">
                                     </div>
@@ -70,7 +70,7 @@
                     <div class="hero-tournament__body">
                         <div class="hero-tournament__info">
                             <div class="hero-tournament__label">
-                                {{ $event->location->stadium->name ?? 'Не вказано' }}
+                                {{ $event->stadium->name ?? 'Не вказано' }}
                             </div>
                         </div>
                         <div class="hero-tournament__info">
@@ -580,6 +580,7 @@
                     <h2 class="reg-tournament__title section-title section-title--margin">
                         ЗАЯВИТИ КОМАНДУ
                     </h2>
+                   
                     <div class="reg-tournament__body">
                         @foreach ($teams as $team)
                             <div style="--color: #F7E10E; --team-color: {{ $team->team_color }};" class="reg-tournament__item reg-tournament__item--join">
@@ -596,9 +597,10 @@
                                     </span>
                                 </div>
                                 @if ($team->player_request_status != 'closed' )
-                                <button class="reg-tournament__button button button--yellow">
+                                {{-- <button class="reg-tournament__button button button--yellow">
                                     Хочу грати
-                                </button>
+                                </button> --}}
+                                @livewire('join-team', ['teamId' => $team->id])
                                 @endif
                             </div>                            
                         @endforeach

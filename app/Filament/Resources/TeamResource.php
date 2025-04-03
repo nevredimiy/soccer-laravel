@@ -56,15 +56,16 @@ class TeamResource extends Resource
                 Forms\Components\Select::make('event_id')
                     ->label('Подія')
                     ->options(function () {
-                        return Event::with('location') // Загружаем связанную локацию
+                        return Event::with('stadium') // Загружаем связанную локацию
                             ->get()
                             ->mapWithKeys(function ($event) {
                                 $date = \Carbon\Carbon::parse($event->date)->format('d.m.Y'); // Форматируем дату
                                 $startTime = \Carbon\Carbon::parse($event->start_time)->format('H:i'); // Форматируем время начала
                                 $endTime = \Carbon\Carbon::parse($event->end_time)->format('H:i'); // Форматируем время конца
-                                $location = $event->location ? $event->location->name : 'Без локації'; // Проверяем наличие локации
+                                $location = $event->stadium->location ? $event->stadium->location->address : 'Без локації'; // Проверяем наличие локации
+                                $stadium = $event->stadium ? $event->stadium->name : 'Без Стадіону'; // Проверяем наличие локации
                 
-                                return [$event->id => "{$date} | {$startTime} - {$endTime} | {$location}"];
+                                return [$event->id => "{$date} | {$startTime} - {$endTime} | {$location} | {$stadium}"];
                             });
                     })
                     ->searchable()

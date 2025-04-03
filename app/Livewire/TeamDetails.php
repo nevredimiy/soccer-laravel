@@ -5,14 +5,23 @@ namespace App\Livewire;
 use Livewire\Component;
 use App\Models\Team;
 use Livewire\Attributes\On; 
+use Illuminate\Support\Facades\Auth;
 
 class TeamDetails extends Component
 {
     public $team;
+    public $teamsWithApplications;
 
     public function mount()
     {
         $this->team = Team::where('owner_id', auth()->id())->first();
+
+        // Загружаем команды пользователя вместе с заявками игроков
+        $this->teamsWithApplications = Team::where('owner_id', Auth::id())
+            ->with('applications.user.player') // Загружаем заявки + информацию о игроках
+            ->get();
+
+            // dd($this->teamsWithApplications);
     }
 
 

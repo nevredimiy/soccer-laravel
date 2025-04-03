@@ -399,6 +399,15 @@ body::after {
   color: #0a2640;
   border: .0625rem solid rgba(10,38,64,.1)
 }
+
+.button--gray {
+  background-color: #728099;
+  color: #fff;
+  border: .0625rem solid rgba(10,38,64,.1);
+  cursor: not-allowed;
+}
+
+
 ._block:not(:last-child) {
   margin-bottom: 1.875rem
 }
@@ -2341,7 +2350,7 @@ body::after {
 }
 .reg-tournament__button {
   justify-content: center;
-  padding: .625rem
+  padding: .625rem;
 }
 .reg-tournament__status {
   font-size: 1.125rem;
@@ -3864,7 +3873,7 @@ body::after {
     margin-bottom: 2rem
   }
   .reg-tournament__button {
-    font-size: .5rem
+    font-size: .5rem;
   }
   .profile__hero:not(:last-child),
   .profile__players:not(:last-child),
@@ -4597,6 +4606,12 @@ body::after {
     background-color: #0053a0;
     color: #fff
   }
+
+  .button--gray:hover {
+    opacity: 0.9;
+    background-color: #728099;
+  }
+
   .nav__list li a:hover {
     background-color: #f7e10e;
     color: #0a2640

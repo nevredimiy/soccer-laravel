@@ -5,9 +5,9 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\EventResource\Pages;
 use App\Filament\Resources\EventResource\RelationManagers;
 use App\Models\Event;
-use App\Models\Location;
 use App\Models\Tournament;
 use App\Models\League;
+use App\Models\Stadium;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -34,24 +34,30 @@ class EventResource extends Resource
                     ->required(),
                 Forms\Components\TimePicker::make('end_time')
                     ->required(),
-                Forms\Components\Select::make('location_id')
+                Forms\Components\Select::make('stadium_id')
                     ->required()
                     ->options(function () {
-                        return Location::with(['district.city']) // Загружаем связанные данные
+                        return Stadium::with(['location.district']) // Загружаем связанные данные
                         ->get()
-                        ->mapWithKeys(function ($location) {
-                            $district = $location->district; // Получаем модель District
+                        ->mapWithKeys(function ($stadium) {
+                            $location = $stadium->location; 
+                            $district = $location->district;
                             $city = $district ? $district->city : null; // Получаем модель City
-                            $name = $location->name;
+                            $label = $stadium->name;
+
+
+                            if ($location) {
+                                $label .= ' - ' . $location->address;
+                            }
 
                             if ($district) {
-                                $name .= ' - ' . $district->name;
+                                $label .= ' - ' . $district->name;
                             }
                             if ($city) {
-                                $name .= ' - ' . $city->name;
+                                $label .= ' - ' . $city->name;
                             }
 
-                            return [$location->id => $name];
+                            return [$stadium->id => $label];
                         });
                     })
                     ->searchable(),
@@ -63,22 +69,23 @@ class EventResource extends Resource
                     ->options(League::all()->pluck('name', 'id'))
                     ->searchable()
                     ->default(null),
-                Forms\Components\Select::make('role')
+                Forms\Components\Select::make('format')
                     ->options([
-                        '5x5x5', 
-                        '4x4x4', 
-                        '9x9x9'
+                        '5x5x5' => '5x5x5', 
+                        '4x4x4' => '4x4x4', 
+                        '9x9x9' => '9x9x9'
                     ])
                     ->default('5x5x5')
                     ->dehydrated()
                     ->label('Формат'),
                 Forms\Components\Select::make('size_field')
                     ->options([
-                        '40x20', 
-                        '60x40'
+                        '40x20' => '40x20', 
+                        '60x40' => '60x40'
                     ])
                     ->default('40x20')
-                    ->label('Формат'),
+                    ->dehydrated()
+                    ->label('Розмір стадіона'),
             ])->columns(3);
     }
 
@@ -93,7 +100,7 @@ class EventResource extends Resource
                 Tables\Columns\TextColumn::make('end_time'),
                 Tables\Columns\TextColumn::make('format')->label('Формат'),
                 Tables\Columns\TextColumn::make('size_field')->label('Розмір поля'),
-                Tables\Columns\TextColumn::make('location.name')
+                Tables\Columns\TextColumn::make('stadium.name')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('tournament.name')                    
                     ->sortable(),

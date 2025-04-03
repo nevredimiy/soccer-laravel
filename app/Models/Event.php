@@ -11,14 +11,18 @@ class Event extends Model
         'date',
         'start_time',
         'end_time',
-        'location_id',
+        'stadium_id',
         'tournament_id',
-        'league_id'
+        'league_id',
+        'format',
+        'size_field'
+
     ];
 
-    public function location(): BelongsTo
+
+    public function stadium(): BelongsTo
     {
-        return $this->belongsTo(Location::class, 'location_id');
+        return $this->belongsTo(Stadium::class, 'stadium_id');
     }
 
     public function tournament(): BelongsTo

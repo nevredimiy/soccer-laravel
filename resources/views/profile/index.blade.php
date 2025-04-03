@@ -35,7 +35,7 @@
                     </div>
                     <div class="profile__hero hero-tournament">
                         <div class="hero-tournament__image">
-                            <img src="{{ asset('storage/' . $player->photo) }}" alt="Image" class="ibg">
+                            <img src="{{ asset('storage/' . $player->photo) }}" alt="Image" class="{{auth()->user()->name}}">
                         </div>
                         <div class="hero-tournament__body">
                             <div class="hero-tournament__info">

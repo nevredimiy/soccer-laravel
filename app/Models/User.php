@@ -91,4 +91,14 @@ class User extends Authenticatable implements FilamentUser
     }
 
  
+    public function managedTeams()
+    {
+        return $this->hasMany(Team::class, 'owner_id');
+    }
+
+    public function player()
+    {
+        return $this->hasMany(Player::class, 'user_id');
+    }
+
 }

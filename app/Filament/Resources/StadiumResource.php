@@ -6,14 +6,12 @@ use App\Filament\Resources\StadiumResource\Pages;
 use App\Filament\Resources\StadiumResource\RelationManagers;
 use App\Models\Stadium;
 use Filament\Forms;
-use App\Models\Location;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Ysfkaya\FilamentPhoneInput\Forms\PhoneInput;
 
 class StadiumResource extends Resource
 {
@@ -21,72 +19,47 @@ class StadiumResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $navigationLabel = 'Стадіони';
-    
-    protected static ?string $pluralModelLabel = 'Список стадіонів';
-    
-    protected static ?string $navigationGroup = 'Дані матчів';
-
-    protected static ?int $navigationSort = 1;
-
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
+                Forms\Components\TextInput::make('location_id')
+                    ->numeric()
+                    ->default(null),
                 Forms\Components\TextInput::make('name')
                     ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('address')
                     ->maxLength(255)
-                    ->label('Назва'),
-                Forms\Components\Select::make('location_id')
+                    ->default(null),
+                Forms\Components\TextInput::make('photo')
                     ->required()
-                    ->options(function () {
-                        return Location::with(['district.city']) // Загружаем связанные данные
-                        ->get()
-                        ->mapWithKeys(function ($location) {
-                            $district = $location->district; // Получаем модель District
-                            $city = $district ? $district->city : null; // Получаем модель City
-                            $name = $location->name;
-
-                            if ($district) {
-                                $name .= ' - ' . $district->name;
-                            }
-                            if ($city) {
-                                $name .= ' - ' . $city->name;
-                            }
-
-                            return [$location->id => $name];
-                        });
-                    })
-                    ->label('Локація')
-                    ->searchable(),
-                Forms\Components\FileUpload::make('photo')
-                    ->image()
-                    ->disk('public')
-                    ->directory('img/stadium')
-                    ->default('/img/stadium/stadium_placeholder.png')
-                    ->label('Фото'),
-                PhoneInput::make('phone')
-                    ->onlyCountries(['ua']),
+                    ->maxLength(255)
+                    ->default('img/stadium/stadium_placeholder.png'),
+                Forms\Components\TextInput::make('phone')
+                    ->tel()
+                    ->maxLength(255)
+                    ->default(null),
                 Forms\Components\TextInput::make('fields_40x20')
+                    ->required()
                     ->numeric()
-                    ->default(0)
-                    ->label('Полів 40х20 (шт.)'),
+                    ->default(0),
                 Forms\Components\TextInput::make('fields_60x40')
+                    ->required()
                     ->numeric()
-                    ->default(0)
-                    ->label('Поле 60х40 (шт.)'),
+                    ->default(0),
                 Forms\Components\TextInput::make('parking_spots')
+                    ->required()
                     ->numeric()
-                    ->default(0)
-                    ->label('Парковчні місця'),
+                    ->default(0),
                 Forms\Components\Toggle::make('has_shower')
-                    ->label('Наявність душа'),
+                    ->required(),
                 Forms\Components\Toggle::make('has_speaker_system')
-                    ->label('Наявність гучномовця'),
+                    ->required(),
                 Forms\Components\Toggle::make('has_wardrobe')
-                    ->label('Наявність гардеробу'),
+                    ->required(),
                 Forms\Components\Toggle::make('has_toilet')
-                    ->label('Наявність туалету'),
+                    ->required(),
             ]);
     }
 
@@ -94,42 +67,34 @@ class StadiumResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('location_id')
+                    ->numeric()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('name')
-                    ->searchable()
-                    ->label('Назва'),
-                Tables\Columns\TextColumn::make('location.name')
-                    ->searchable()
-                    ->sortable()
-                    ->label('Адреса'),
-                Tables\Columns\ImageColumn::make('photo')
-                    ->searchable()
-                    ->label('Фото'),                    
-                    Tables\Columns\TextColumn::make('phone')
-                    ->label('Телефон'),
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('address')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('photo')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('phone')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('fields_40x20')
                     ->numeric()
-                    ->sortable()
-                    ->label('Поле 40х20'),
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('fields_60x40')
                     ->numeric()
-                    ->sortable()
-                    ->label('Поле 60х40'),
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('parking_spots')
                     ->numeric()
-                    ->sortable()
-                    ->label('Парковки'),
+                    ->sortable(),
                 Tables\Columns\IconColumn::make('has_shower')
-                    ->boolean()
-                    ->label('Душ'),
+                    ->boolean(),
                 Tables\Columns\IconColumn::make('has_speaker_system')
-                    ->boolean()
-                    ->label('Гучномовець'),
+                    ->boolean(),
                 Tables\Columns\IconColumn::make('has_wardrobe')
-                    ->boolean()
-                    ->label('Гардероб'),
+                    ->boolean(),
                 Tables\Columns\IconColumn::make('has_toilet')
-                    ->boolean()
-                    ->label('Туалет'),
+                    ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -144,7 +109,6 @@ class StadiumResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -165,7 +129,6 @@ class StadiumResource extends Resource
         return [
             'index' => Pages\ListStadia::route('/'),
             'create' => Pages\CreateStadium::route('/create'),
-            'view' => Pages\ViewStadium::route('/{record}'),
             'edit' => Pages\EditStadium::route('/{record}/edit'),
         ];
     }
