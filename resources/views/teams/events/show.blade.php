@@ -578,7 +578,7 @@
                 </section>
                 <section class="tournament__reg reg-tournament">
                     <h2 class="reg-tournament__title section-title section-title--margin">
-                        ЗАЯВИТИ КОМАНДУ
+                        ЗАЯВЛЕНІ КОМАНДИ
                     </h2>
                    
                     <div class="reg-tournament__body">
@@ -596,12 +596,13 @@
                                        {{ $team->status_text }}
                                     </span>
                                 </div>
-                                @if ($team->player_request_status != 'closed' )
-                                {{-- <button class="reg-tournament__button button button--yellow">
+                                
+                                @if ($team->player_request_status != 'closed' && $player->team_id == NULL )
+                                    @livewire('join-team', ['teamId' => $team->id])
+                                @endif
+                                 {{-- <button class="reg-tournament__button button button--yellow">
                                     Хочу грати
                                 </button> --}}
-                                @livewire('join-team', ['teamId' => $team->id])
-                                @endif
                             </div>                            
                         @endforeach
                     </div>
@@ -609,40 +610,7 @@
                         <a href="{{ route('teams.request.create', ['id' => $event->id]) }}" class="reg-tournament__link button button--yellow"><span>ЗАЯВИТИ КОМАНДУ</span></a>
                     </div>
                 </section>
-                <section class="tournament__reg-view reg-tournament">
-                    <h2 class="reg-tournament__title section-title section-title--margin">
-                        ЗАЯВЛЕНІ КОМАНДИ
-                    </h2>
-                    <div class="reg-tournament__body">
-                        <div style="--color: #F7E10E" class="reg-tournament__item">
-                            <div class="reg-tournament__label">
-                                ПЕРУН
-                            </div>
-                            <div style="--color: #FFF" class="reg-tournament__rating">
-                                <div data-rating data-rating-size="10" data-rating-value="8" class="rating">
-                                </div>
-                            </div>
-                        </div>
-                        <div style="--color: #1B5BA2" class="reg-tournament__item">
-                            <div class="reg-tournament__label">
-                                AFC SPARTA
-                            </div>
-                            <div style="--color: #FFF" class="reg-tournament__rating">
-                                <div data-rating data-rating-size="10" data-rating-value="8" class="rating">
-                                </div>
-                            </div>
-                        </div>
-                        <div style="--color: #59C65D" class="reg-tournament__item">
-                            <div class="reg-tournament__label">
-                                ДНІПРО
-                            </div>
-                            <div style="--color: #FFF" class="reg-tournament__rating">
-                                <div data-rating data-rating-size="10" data-rating-value="8" class="rating">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
+               
             </div>
         </div>
     </div>

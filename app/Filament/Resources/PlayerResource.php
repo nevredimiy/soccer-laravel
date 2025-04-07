@@ -80,10 +80,16 @@ class PlayerResource extends Resource
                     ->options(User::all()->pluck('name', 'id'))
                     ->searchable()
                     ->preload()
-                    ->required()
-                    ->columnSpan([
-                        'sm' => 2,
-                    ]),
+                    ->required(),
+                Select::make('status')
+                    ->label('Статус')
+                    ->options([
+                        'main' => 'Основний',
+                        'reserve' => 'Резервний'
+                    ])
+                    ->searchable()
+                    ->default('reserve')                 
+                    ->required(),
                 Select::make('team_id')
                     ->label('Команда')
                     ->options(Team::all()->pluck('name', 'id'))
@@ -136,6 +142,11 @@ class PlayerResource extends Resource
                     ->label('Команда') 
                     ->sortable()
                     ->searchable(),
+                Tables\Columns\TextColumn::make('status')
+                    ->label('Статус') 
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('tg')
                     ->searchable()
                     ->label('Телеграм')
@@ -165,7 +176,6 @@ class PlayerResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])

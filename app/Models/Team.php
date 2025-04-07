@@ -18,7 +18,11 @@ class Team extends Model
       'event_id',
       'promo_code_id',
       'status',
-      'player_request_status'
+      'player_request_status',
+      'application_lifetime_days',
+      'application_lifetime_hours',
+      'application_lifetime_minutes'
+
    ];
 
    public function owner(): BelongsTo

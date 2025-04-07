@@ -84,6 +84,7 @@
                             </div>
                         @endif                            
                     </section>
+                    
                     @if($user->teams->isNotEmpty())
                     <livewire:team-details />
                     @endif 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Player;
 use App\Models\Team;
+use App\Models\TeamPlayerApplication;
 use Carbon\Carbon;  
 
 class ProfileController extends Controller
@@ -50,5 +51,68 @@ class ProfileController extends Controller
             return redirect()->route('profile')->with('success', 'Рейтинг змінено!');
         }
         return redirect()->route('profile')->with('notice', 'Рейтинг той самий!');
+    }
+
+    
+    public function updatePlayerList(Request $request)
+    {
+        $playerId = $request->input('player_id');
+        $teamId = $request->input('team_id');
+        $userId = $request->input('user_id');
+        $action = $request->input('action'); // Получаем, какая кнопка была нажата
+
+
+        if ($action === 'accept') {
+            
+             // Получаем игрока
+            $player = Player::find($playerId);
+            if (!$player) {
+                return back()->with('error', 'Гравець не знайдений.');
+            }
+
+           // Обновляем team_id у игрока
+            $player->update([
+                'team_id' => $teamId,
+                'status' => 'reserve',
+            ]);
+
+            // Получаем команду
+            $team = Team::find($teamId);
+            if (!$team) {
+                return back()->with('error', 'Команда не знайдена.');
+            }
+
+            // Удаляем заявку
+            TeamPlayerApplication::where('user_id', $userId)->delete();
+
+            return back()->with('success', "Гравець {$player->last_name} підписаний у команду {$team->name}!");
+        }
+
+       
+
+        if ($action === 'reject') {
+            // Удаляем заявку без добавления в команду
+            TeamPlayerApplication::where('user_id', $userId)->where('team_id', $teamId)->delete();
+
+            $player = Player::find($playerId);
+            if (!$player) {
+                return back()->with('error', 'Гравець не знайдений.');
+            }
+
+            return back()->with('notice', "Заявку гравця {$player->last_name}  відхилено.");
+        }
+
+        return back()->with('warning', 'Невідома дія.');
+    }
+
+    public function togglePlayerStatus(Request $request)
+    {
+        $player = Player::findOrFail($request->input('player_id'));
+        $newStatus = $request->input('action') === 'main' ? 'main' : 'reserve';
+
+        $player->status = $newStatus;
+        $player->save();
+
+        return back()->with('success', "Статус гравця {$player->last_name} оновлено.");
     }
 }

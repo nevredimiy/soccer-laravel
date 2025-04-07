@@ -87,7 +87,8 @@
                         <div class="account__label label-acount">
                             *ОБРАТИ СВІЙ РІВЕНЬ
                         </div>
-                        <div data-rating="set" data-rating-size="10" data-rating-value="1" class="account__rating rating">
+                        <div  data-rating-size="10" data-rating-value="1" class="account__rating rating">
+
                            
                             @livewire('rating')
 
@@ -119,7 +120,7 @@
                     </h2>
                     <div class="account__rating-block">
                         <div class="account__label">ГРАВ ДЕКІЛЬКА РАЗ В ЖИТТІ</div>
-                        <div data-rating data-rating-size="10" data-rating-value="1" class="account__rating rating">
+                        <div data-rating-size="10" data-rating-value="1" class="account__rating rating">
                             <div class="rating__items">
                                 @for ($i = 0; $i < 10; $i++)
                                     <label class="rating__item @if ($i == 0) rating__item--active @endif">
@@ -134,7 +135,7 @@
                     </div>
                     <div class="account__rating-block">
                         <div class="account__label">ГРАЮ 1-2 РАЗИ НА РІК</div>
-                        <div data-rating data-rating-size="10" data-rating-value="2" class="account__rating rating">
+                        <div data-rating-size="10" data-rating-value="2" class="account__rating rating">
                             <div class="rating__items">
                                 @for ($i = 0; $i < 10; $i++)
                                     <label class="rating__item @if ($i <= 1) rating__item--active @endif">
@@ -149,7 +150,7 @@
                     </div>
                     <div class="account__rating-block">
                         <div class="account__label">ГРАЮ 1-2 РАЗИ НА МІСЯЦЬ</div>
-                        <div data-rating data-rating-size="10" data-rating-value="3" class="account__rating rating">
+                        <div data-rating-size="10" data-rating-value="3" class="account__rating rating">
                             <div class="rating__items">
                                 @for ($i = 0; $i < 10; $i++)
                                     <label class="rating__item @if ($i <= 2) rating__item--active @endif">

@@ -24,4 +24,9 @@ class TeamPlayerApplication extends Model
     {
         return $this->belongsTo(Team::class);
     }
+
+    // public function player()
+    // {
+    //     return $this->belongsTo(Player::class);
+    // }
 }

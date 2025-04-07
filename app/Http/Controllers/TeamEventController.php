@@ -7,6 +7,8 @@ use App\Models\Event;
 use App\Models\TeamColor;
 use App\Models\PromoCode;
 use App\Models\Team;
+use App\Models\Player;
+use Illuminate\Support\Facades\Auth;
 
 
 class TeamEventController extends Controller
@@ -23,7 +25,11 @@ class TeamEventController extends Controller
 
     public function show($id)
     {
-        
+
+        $user = Auth::id();
+        $player = Player::where('user_id', Auth::id())->first();
+
+               
         $teams = Team::where('event_id', $id)->get()->map(function ($team) {
             $statusColors = [
                 'urgent' => '#b5e61d',
@@ -49,7 +55,7 @@ class TeamEventController extends Controller
         $colors = TeamColor::all();
       
         // dd($event);
-        return view('teams.events.show', compact('event', 'teams', 'colors'));
+        return view('teams.events.show', compact('event', 'teams', 'colors', 'player'));
     }
    
 }
