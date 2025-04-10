@@ -36,7 +36,7 @@ class ProfileController extends Controller
         
 
         $dateString = $player->birth_date;  
-        $date = Carbon::createFromFormat('Y-m-d', $dateString);  
+        $date = Carbon::createFromFormat('Y-m-d', substr($dateString, 0, 10));  
         $formattedBithDate = $date->locale('uk')->translatedFormat('d F Y');  
     
         return view('profile.index', compact('player', 'formattedBithDate', 'user'));
@@ -107,12 +107,23 @@ class ProfileController extends Controller
 
     public function togglePlayerStatus(Request $request)
     {
-        $player = Player::findOrFail($request->input('player_id'));
-        $newStatus = $request->input('action') === 'main' ? 'main' : 'reserve';
+        $team = Team::findOrFail($request->input('team_id'));
+        $maxPlayers  = $team->max_players;
+        
+        
+        $players = Player::where('team_id', $request->input('team_id'))->where('status', 'main')->get();
 
-        $player->status = $newStatus;
-        $player->save();
+        if($players->count() < $maxPlayers){
+            $player = Player::findOrFail($request->input('player_id'));
+            $newStatus = $request->input('action') === 'main' ? 'main' : 'reserve';
+    
+            $player->status = $newStatus;
+            $player->save();
+    
+            return back()->with('success', "Статус гравця {$player->last_name} оновлено.");
+        } else {
+            return back()->with('error', "Статус не оновлено! Кількість основних гравців не повинна перевищувати {$maxPlayers}");
+        }
 
-        return back()->with('success', "Статус гравця {$player->last_name} оновлено.");
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PlayerController extends Controller
 {
@@ -63,6 +64,68 @@ class PlayerController extends Controller
         $player->save();
 
         return redirect()->route('profile')->with('success', 'Данные успешно сохранены!');
+    }
+
+    public function edit()
+    {
+        $user = Auth::user();
+        $player = $user->player()->first();
+
+        return view('players.edit', compact('user', 'player'));
+    }
+
+    public function update(Request $request)
+    {
+
+        
+        $request->validate([
+            'first_name' => 'string|max:255|min:1',
+            'last_name'  => 'string|max:255|min:1',
+            'email'      => 'email|max:255|unique:users,email,' . Auth::id(),
+            'photo'      => 'nullable|image|max:2048',
+            'birth_date' => 'nullable|date|before:today',
+            'phone' => ['required', 'regex:/^\+380\d{9}$/'],
+            'tg' => 'required|string|max:255',
+            
+        ]);
+
+        $user = Auth::user();
+        $player = $user->player()->first();
+
+        $user->email = $request->email;
+        $user->save();
+
+        if ($player) {
+
+            if ($request->has('first_name')) {
+                $player->first_name = $request->first_name;
+            }
+
+            if ($request->has('last_name')) {
+                $player->last_name = $request->last_name;
+            }
+
+            if ($request->has('birth_date')) {
+                $player->birth_date = $request->birth_date;
+            }
+
+            if ($request->has('phone')) {
+                $player->phone = $request->phone;
+            }
+
+            if ($request->has('tg')) {
+                $player->tg = $request->tg;
+            }
+
+            if ($request->hasFile('photo')) {
+                $path = $request->file('photo')->store('players', 'public');
+                $player->photo = $path;
+            }
+
+            $player->save();
+        }
+
+        return redirect()->route('players.edit')->with('success', 'Профіль оновлено');
     }
 
     

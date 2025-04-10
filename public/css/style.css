@@ -218,6 +218,10 @@ body::after {
   transition: all .3s;
   cursor: pointer
 }
+
+.rating__item.disable {
+  cursor:auto;
+}
 .rating__item svg {
   stroke: var(--color,#0053a0);
   fill: #f2f6fa;
@@ -776,7 +780,8 @@ body::after {
 }
 .players-section__body {
   padding-bottom: 1.125rem;
-  margin-right: -.625rem
+  margin-right: -.625rem;
+  overflow: auto;
 }
 .players-section__items {
   display: flex;
@@ -1358,7 +1363,8 @@ body::after {
 .bid__items {
   display: grid;
   grid-template-columns: repeat(4,1fr);
-  gap: .5rem
+  gap: .5rem;
+  margin-bottom: 10px;
 }
 .bid__item {
   min-width: 0;
@@ -2056,8 +2062,8 @@ body::after {
   flex-basis: 1.6875rem
 }
 .hero-tournament__button {
-  font-size: .875rem;
-  padding: .4375rem 1.125rem;
+  font-size: 10px;
+  padding: 6px 3px;
   width: 100%;
   max-width: 12.5rem
 }
@@ -2646,7 +2652,7 @@ body::after {
   color: #000;
   font-weight: 700;
   text-transform: uppercase;
-  width: 3.125rem;
+  width: 8rem;
   height: 2.5rem;
   background-color: #f7e10e;
   text-align: center;
@@ -4780,6 +4786,11 @@ body > div.wrapper > main > div > a:hover {
   background-color: #d7cf2e;  
 }
 
+.alert-error{
+  background-color: #ff3b3b;  
+
+}
+
 .payment-btn{
   font-size: 10px;
 }
@@ -4851,5 +4862,10 @@ body > div.wrapper > main > div > a:hover {
   max-width: 12.5rem;
 }
 
+.prop-profile__block {
+  border: 1px solid #000;
+  border-radius: 10px;
+  padding: 10px 0;
+}
 
 

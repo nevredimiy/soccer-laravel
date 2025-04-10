@@ -44,20 +44,7 @@ class TeamApplicationSettings extends Component
             'application_lifetime_minutes' => $this->minutes,
         ]);
 
-        
-
-        //  // Вычисляем новое время  
-        // $newTime = Carbon::parse($this->team->created_at)  
-        //     ->addDays((int)$this->days)  
-        //     ->addHours((int)$this->hours)  
-        //     ->addMinutes((int)$this->minutes);  
-
-            
-
-        // $this->dispatch('applicationLifetimeUpdated', teamId: $this->team->id);
         $this->dispatch('applicationLifetimeUpdated');
-        // $this->dispatch('applicationLifetimeUpdated', ['teamId' => $this->team->id, 'newTime' => $newTime->toIso8601String()]);
-
 
         session()->flash('success', 'Налаштування часу заявки оновлено.');
     }

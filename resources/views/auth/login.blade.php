@@ -20,17 +20,22 @@
             <div class="account__body">
                 <div class="account__field">
                     <label class="account__label" for="email">Email</label>
-                    <input class="account__input input @if ($errors->has('email') || $errors->has('password')) is-invalid @endif" type="email" name="email" id="email"  value="{{ old('email') }}" required>
+                    <input class="account__input input @if ($errors->has('email') || $errors->has('password')) is-invalid @endif" type="text" name="email" id="email"  value="{{ old('email') }}">
                 </div>
                 <div class="account__field">
                     <label class="account__label" for="password">Пароль</label>
-                    <input class="account__input input @if ($errors->has('email') || $errors->has('password')) is-invalid  @endif" type="password" name="password" id="password" required>
+                    <input class="account__input input @if ($errors->has('email') || $errors->has('password')) is-invalid  @endif" type="password" name="password" id="password">
                 </div>
                 <button class="account__button button button--green flex-content-center" type="submit">Увійти</button>
             </div>
         </form>
-        <div class="item-player__name">
-            <a href="{{ route('register') }}">Зареєструватися</a>
+        <div class="flex justify-between w-full px-8">
+            <div class="item-player__name">
+                <a href="{{ route('register') }}">Зареєструватися</a>
+            </div>
+            <div class="item-player__name">
+                <a href="{{ route('password.request') }}">Забув пароль</a>
+            </div>
         </div>
     </div>
 </div>

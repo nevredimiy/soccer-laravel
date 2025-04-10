@@ -23,7 +23,7 @@ class Player extends Model
     // Добавляем связь с пользователем
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class);
     }
 
     public function setPhotoAttribute($value)
@@ -35,6 +35,10 @@ class Player extends Model
     {
         return $this->belongsTo(Team::class, 'team_id');
     }
+
+    protected $casts = [
+        'birth_date' => 'date',
+    ];
 
 
 }

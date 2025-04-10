@@ -13,6 +13,7 @@ class TeamDetails extends Component
     public $team;
     public $players;
     public $teamsWithApplications;
+    public $applications = [];
 
     public function mount()
     {
@@ -23,9 +24,6 @@ class TeamDetails extends Component
             ->with('applications.user.player') // Загружаем заявки + информацию о игроках
             ->get();
         $this->players = Player::where('team_id', $this->team->id)->get();
-
-            // dd($this->teamsWithApplications);
-            // dump($this->team);
     }
 
 
@@ -33,6 +31,14 @@ class TeamDetails extends Component
     public function updateTeam($team_id)
     {
         $this->team = Team::find($team_id);
+    }
+
+    
+    #[On('applicationsFiltered')]
+    public function updateApplications($applications)
+    {
+        // Обновляем заявки в родительском компоненте
+        $this->applications = $applications;
     }
     
 

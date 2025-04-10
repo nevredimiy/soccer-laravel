@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\TeamColor;
 use Liqpay\Liqpay;
-
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Team extends Model
 {
@@ -19,6 +19,7 @@ class Team extends Model
       'promo_code_id',
       'status',
       'player_request_status',
+      'max_players',
       'application_lifetime_days',
       'application_lifetime_hours',
       'application_lifetime_minutes'
@@ -83,6 +84,11 @@ class Team extends Model
     public function applications()
     {
         return $this->hasMany(TeamPlayerApplication::class);
+    }
+
+    public function players(): HasMany
+    {
+        return $this->hasMany(Player::class, 'team_id');
     }
 
 }

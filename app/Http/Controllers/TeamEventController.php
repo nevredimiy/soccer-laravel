@@ -7,6 +7,7 @@ use App\Models\Event;
 use App\Models\TeamColor;
 use App\Models\PromoCode;
 use App\Models\Team;
+use App\Models\Tournament;
 use App\Models\Player;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,11 +17,9 @@ class TeamEventController extends Controller
     public function index()
     {
         
-        // $oneEvents = Event::where('tournament_id', 1)->withCount('teams')->get();
-        // $manyEvents = Event::where('tournament_id', 2)->withCount('teams')->get();
+        $tournaments = Tournament::with('events.stadium.location.district.city')->whereIn('id', [6, 7])->get(); 
 
-
-        return view('teams.events.index');
+        return view('teams.events.index', compact('tournaments'));
     }
 
     public function show($id)
@@ -28,6 +27,7 @@ class TeamEventController extends Controller
 
         $user = Auth::id();
         $player = Player::where('user_id', Auth::id())->first();
+        
 
                
         $teams = Team::where('event_id', $id)->get()->map(function ($team) {
@@ -49,7 +49,8 @@ class TeamEventController extends Controller
     
             return $team;
         });
-        
+
+       
         
         $event = Event::with('stadium')->findOrFail($id);
         $colors = TeamColor::all();

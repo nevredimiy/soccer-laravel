@@ -29,39 +29,17 @@ Route::get('/districts/{city_id}', [LocationController::class, 'getDistricts']);
 Route::get('/locations/{district_id}', [LocationController::class, 'getLocations']);
 Route::get('/leagues/{location_id}', [LocationController::class, 'getLeagues']);
 
-// Аутентификация
 // Страница входа
-Route::get('/login', function () {
-    return view('auth.login');
-})->name('login');
-
-// Страница входа
+Route::get('/login', [LoginController::class, 'index'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-// Обработка формы входа
-Route::post('/login', function (Request $request) {
-    $credentials = $request->validate([
-        'email' => 'required|email',
-        'password' => 'required|min:6',
-    ]);
+Route::get('forgot-password', [LoginController::class, 'showLinkRequestForm'])->name('password.request');
+Route::post('forgot-password', [LoginController::class, 'sendResetLinkEmail'])->name('password.email');
+Route::get('reset-password/{token}', [LoginController::class, 'showResetForm'])->name('password.reset');
+Route::post('reset-password', [LoginController::class, 'reset'])->name('password.update');
 
-    if (Auth::attempt($credentials)) {
-        $request->session()->regenerate();
-        return redirect()->intended('/profile'); // Перенаправляем после входа
-    }
 
-    return back()->withErrors([
-        'email' => 'Невірний email або пароль',
-    ]);
-});
-
-// Выход из системы
-Route::post('/logout', function () {
-    Auth::logout();
-    request()->session()->invalidate();
-    request()->session()->regenerateToken();
-    return redirect('/'); // Перенаправляем на главную страницу
-})->name('logout');
 
 // Регистрация
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
@@ -80,6 +58,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/profile/toggle-player-status', [ProfileController::class, 'togglePlayerStatus'])->name('profile.togglePlayerStatus');
     Route::get('/players/create', [PlayerController::class, 'create'])->name('players.create'); 
     Route::post('/players', [PlayerController::class, 'store'])->name('players.store'); 
+    Route::get('/players/edit', [PlayerController::class, 'edit'])->name('players.edit'); 
+    Route::post('/players/update', [PlayerController::class, 'update'])->name('players.update');
 });
 
 Route::middleware(['auth'])->group(function () {

@@ -9,30 +9,59 @@ use App\Models\Team;
 
 class EventList extends Component
 {
-    public $events;
     public $eventList;
     public $selectedCity = null;
     public $selectedDistrict = null;
     public $selectedLocation = null;
     public $selectedLeague = null;
-
-    public function mount()
-    {
-        $this->selectedCity = session('current_city', 2);
-        // $this->selectedDistrict = session('current_district', 0);
-        // $this->selectedLocation = session('current_location', 0);
-        // $this->selectedLeague = session('current_league', 0);
-        $query = Event::query()->with(['stadium', 'teams']);
         
-        if ($this->selectedCity) {
-            $query->whereHas('stadium.location.district.city', function ($q) {
-                $q->where('id', $this->selectedCity);
-            });
+    public $events;
+    public $tournament;
+    
+    
+
+    public function mount($tournament)
+    {
+
+        $this->tournament = $tournament;
+        $this->selectedCity = session('current_city', 2);
+
+        $events = $tournament->events;
+        // Загружаем все команды с игроками по событиям турнира
+        $teams = Team::with('players')
+        ->whereIn('event_id', $events->pluck('id'))
+        ->get();
+
+        // Группируем команды по event_id
+        $teamsByEvent = $teams->groupBy('event_id');
+
+       foreach ($events as $event) {
+            $eventTeams = $teamsByEvent[$event->id] ?? collect();
+
+            // Количество команд
+            $event->teams_count = $eventTeams->count();
+
+            // Средний рейтинг игроков
+            $totalRating = 0;
+            $totalPlayers = 0;
+
+            foreach ($eventTeams as $team) {
+                $players = $team->players;
+                $totalRating += $players->sum('rating');
+                $totalPlayers += $players->count();
+            }
+
+            $event->average_player_rating = $totalPlayers > 0
+                ? round($totalRating / $totalPlayers, 2)
+                : 0;
         }
 
-        $this->updateEvents();
-    
+        
+        $this->events = $events;
+        // $this->filterEvents();
+        // $this->updateEvents();
     }
+
 
     #[On('city-selected')]
     public function updateCityId($city_id)
@@ -40,6 +69,7 @@ class EventList extends Component
         $this->selectedCity = $city_id;
         $this->selectedDistrict = null;
         $this->selectedLocation = null;
+        $this->selectedLeague = null;
        
         $this->updateEvents();
     }
@@ -70,11 +100,9 @@ class EventList extends Component
     }
 
 
-
     public function updateEvents()
     {
-        $query = Event::query()->with(['stadium.location', 'teams']);
-
+        $query = $this->tournament->events()->with('stadium.location.district');
 
         if ($this->selectedCity) {
             $query->whereHas('stadium.location.district.city', function ($q) {
@@ -97,13 +125,8 @@ class EventList extends Component
         if ($this->selectedLeague) {
             $query->where('league_id', $this->selectedLeague);
         }
-
-        // Получаем коллекцию и группируем по tournament_id
-        $groupedEvents = $query->withCount('teams')->get()->groupBy('tournament_id');
-
-        // Преобразуем коллекцию в массив, чтобы избежать ошибки
-        $this->events = $groupedEvents->map(fn($events) => $events->toArray())->toArray();
      
+        $this->events = $query->get();
     }
 
     public function render()
