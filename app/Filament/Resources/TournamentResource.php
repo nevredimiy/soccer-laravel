@@ -34,6 +34,14 @@ class TournamentResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
+                Forms\Components\Select::make('type')
+                    ->label('Тип турніра')
+                    ->options([
+                        'team' => 'Командний',
+                        'solo' => 'Індивідуальний',
+                    ])
+                    ->default('team')
+                    ->required(),
             ]);
     }
 
@@ -46,6 +54,13 @@ class TournamentResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('name')
                     ->label('Назва турніру')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('type')
+                    ->label('Тип турніра')
+                    ->formatStateUsing(function ($state) {
+                        return $state === 'team' ? 'Командний' : 'Індивідуальний';
+                    })
+                    ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()

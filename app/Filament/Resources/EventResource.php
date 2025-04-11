@@ -33,7 +33,7 @@ class EventResource extends Resource
                 Forms\Components\TimePicker::make('start_time')
                     ->required(),
                 Forms\Components\TimePicker::make('end_time')
-                    ->required(),
+                ->required(),
                 Forms\Components\Select::make('stadium_id')
                     ->required()
                     ->options(function () {
@@ -86,6 +86,9 @@ class EventResource extends Resource
                     ->default('40x20')
                     ->dehydrated()
                     ->label('Розмір стадіона'),
+                Forms\Components\TextInput::make('price')
+                    ->numeric()
+                    ->inputMode('decimal'),
             ])->columns(3);
     }
 
@@ -98,13 +101,22 @@ class EventResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('start_time'),
                 Tables\Columns\TextColumn::make('end_time'),
-                Tables\Columns\TextColumn::make('format')->label('Формат'),
-                Tables\Columns\TextColumn::make('size_field')->label('Розмір поля'),
+                Tables\Columns\TextColumn::make('format')
+                ->label('Формат')
+                ->sortable()
+                ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('size_field')
+                ->label('Розмір поля')
+                ->sortable()
+                ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('stadium.name')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('tournament.name')                    
                     ->sortable(),
                 Tables\Columns\TextColumn::make('league.name')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('price')
+                    ->numeric(decimalPlaces: 0)
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()

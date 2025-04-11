@@ -16,6 +16,13 @@ return new class extends Migration
             $table->foreignId('owner_id')->constrained('users')->onDelete('cascade');
             $table->string('name')->unique();
             $table->string('logo')->nullable();
+            $table->foreignId('event_id')->constrained('events')->onDelete('cascade');
+            $table->enum('status', ['awaiting_payment', 'paid'])->default('awaiting_payment');
+            $table->enum('player_request_status', ['urgent', 'needed', 'closed'])->default('closed');
+            $table->integer('max_players')->default(6);  
+            $table->integer('application_lifetime_days')->default(6);
+            $table->integer('application_lifetime_hours')->default(0);
+            $table->integer('application_lifetime_minutes')->default(0);
             $table->timestamps();
         });
     }

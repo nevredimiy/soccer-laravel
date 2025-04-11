@@ -5,40 +5,47 @@ namespace App\Livewire;
 use Livewire\Component;
 use App\Models\Team;
 use App\Models\Player;
-use Livewire\Attributes\On; 
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\On; 
 
 class TeamDetails extends Component
 {
-    public $team;
+    public ?Team $team = null;
+    public $teams;
     public $players;
     public $teamsWithApplications;
-    public $applications = [];
+    public array $applications = [];
 
     public function mount()
     {
-        $this->team = Team::where('owner_id', auth()->id())->first();
+        $userId = Auth::id();
 
-        // Загружаем команды пользователя вместе с заявками игроков
-        $this->teamsWithApplications = Team::where('owner_id', Auth::id())
-            ->with('applications.user.player') // Загружаем заявки + информацию о игроках
-            ->get();
-        $this->players = Player::where('team_id', $this->team->id)->get();
+        $this->teams = Team::where('owner_id', $userId)->orderByDesc('id')->get();
+        $this->team = $this->teams->first();
+
+        if ($this->team) {
+            $this->players = $this->getPlayersForTeam($this->team->id);
+        }
+
+        $this->teamsWithApplications = $this->teams->load('applications.user.player');
     }
-
 
     #[On('team-selected')]
     public function updateTeam($team_id)
     {
         $this->team = Team::find($team_id);
+        $this->players = $this->getPlayersForTeam($team_id);
     }
 
-    
     #[On('applicationsFiltered')]
     public function updateApplications($applications)
     {
-        // Обновляем заявки в родительском компоненте
         $this->applications = $applications;
+    }
+
+    protected function getPlayersForTeam($team_id)
+    {
+        return Player::where('team_id', $team_id)->get();
     }
     
 

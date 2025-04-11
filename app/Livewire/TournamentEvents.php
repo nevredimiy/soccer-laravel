@@ -1,0 +1,167 @@
+<?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+use App\Models\District;
+use App\Models\Location;
+use App\Models\Stadium;
+use App\Models\Tournament;
+use App\Models\League;
+use App\Models\Event;
+use Livewire\Attributes\On;
+
+class TournamentEvents extends Component
+{
+    public $events = null;
+    public $activeEvent = null;
+    public $selectedCity = null;
+    public $selectedDistrict = null;
+    public $selectedLocation = null;
+    public $selectedTournament = null;
+    public $selectedTypeTournament = null;
+    public $selectedLeague = null;
+
+    public function mount()
+    {
+        $this->selectedCity = session('current_city', 2);
+        $this->selectedDistrict = session('current_district', 0);
+        $this->selectedLocation = session('current_location', 0);
+        $this->selectedTypeTournament = session('current_type_tournament', 0);
+        $this->selectedLeague = session('current_league', 0);
+        
+        $this->updateEvents();
+    }
+
+    public function selectEvent($eventId)
+    {
+        $this->activeEvent = $eventId;        
+        $this->event = Event::find($eventId);
+        $this->dispatch('eventSelected', eventId: $eventId);
+        session(['current_event' => $eventId]); 
+    }
+    
+    #[On('city-selected')]
+    public function updateCityId($city_id)
+    {
+        $this->selectedCity = $city_id;
+        $this->selectedDistrict = null;
+        $this->selectedLocation = null;
+        $this->selectedTournament = null;
+        $this->selectedTypeTournament = null;
+        $this->selectedLeague = null;
+        $this->updateEvents();
+    }
+
+    #[On('district-selected')]
+    public function updateDistrictId($district_id)
+    {
+        $this->selectedDistrict = $district_id;
+        $this->selectedLocation = null;
+        $this->selectedTournament = null;
+        $this->selectedTypeTournament = null;
+        $this->selectedLeague = null;
+        $this->updateEvents();
+    }
+
+    #[On('location-selected')]
+    public function updateLocationId($location_id)
+    {
+        $this->selectedLocation = $location_id;
+        $this->selectedTournament = null;
+        $this->selectedTypeTournament = null;
+        $this->selectedLeague = null;
+        $this->updateEvents();       
+    }
+
+    #[On('typeTournamentSelected')]
+    public function updateTypeTournament($typeTournament)
+    {
+        $this->selectedTypeTournament = $typeTournament;
+        $this->updateEvents();       
+    }
+
+    #[On('league-selected')]
+    public function updateLeague($league_id)
+    {
+        $this->selectedLeague = $league_id;
+        $this->updateEvents();       
+    }
+
+    public function updateEvents()
+    {
+        if($this->selectedCity){
+            $district_ids = District::where('city_id', $this->selectedCity)->pluck('id');
+            $location_ids = Location::whereIn('district_id', $district_ids)->pluck('id');
+            $stadiums = Stadium::whereIn('location_id', $location_ids)->pluck('id');       
+            $this->events = Event::whereIn('stadium_id', $stadiums)->orderByDesc('id')->get();
+            if ($this->events->isNotEmpty()) {
+                $this->selectEvent($this->events->first()->id);  // передаём ID
+            } else {
+                $this->activeEvent = null;
+            }
+        }
+
+        if($this->selectedDistrict){
+            $location_ids = Location::where('district_id', $this->selectedDistrict)->pluck('id');
+            $stadiums = Stadium::whereIn('location_id', $location_ids)->pluck('id');       
+            $this->events = Event::whereIn('stadium_id', $stadiums)->orderByDesc('id')->get();
+            if ($this->events->isNotEmpty()) {
+                $this->selectEvent($this->events->first()->id);  // передаём ID
+            } else {
+                $this->activeEvent = null;
+            }
+        }
+
+        if($this->selectedLocation){
+            $stadium = Stadium::where('location_id', $this->selectedLocation)->first();  
+            $this->events = Event::where('stadium_id', $stadium->id)->with('tournament')->orderByDesc('id')->get();
+            $this->selectEvent($this->events->first()?->id);
+        }
+
+        if($this->selectedTypeTournament && $this->selectedLocation){
+            $tournament_ids = Tournament::where('type', $this->selectedTypeTournament)->pluck('id');
+            $stadium = Stadium::where('location_id', $this->selectedLocation)->first();
+            $this->events = Event::where('stadium_id', $stadium->id)
+                ->whereIn('tournament_id', $tournament_ids)
+                ->with('tournament')
+                ->orderByDesc('id')
+                ->get();
+            $this->selectEvent($this->events->first()?->id);
+        }
+
+        if($this->selectedLeague && $this->selectedLocation){
+            $league = League::where('id', $this->selectedLeague)->first();
+            $stadium = Stadium::where('location_id', $this->selectedLocation)->first();
+
+            $this->events = Event::where('stadium_id', $stadium->id)
+                ->where('league_id', $league->id)
+                ->with('tournament')
+                ->orderByDesc('id')
+                ->get();
+            $this->selectEvent($this->events->first()?->id);
+        }
+
+        if($this->selectedLeague && $this->selectedLocation && $this->selectedTypeTournament){
+            $league = League::where('id', $this->selectedLeague)->first();
+            $tournament_ids = Tournament::where('type', $this->selectedTypeTournament)->pluck('id');
+            $stadium = Stadium::where('location_id', $this->selectedLocation)->first();
+
+            $this->events = Event::where('stadium_id', $stadium->id)
+                ->where('league_id', $league->id)
+                ->whereIn('tournament_id', $tournament_ids)
+                ->with('tournament')
+                ->orderByDesc('id')
+                ->get();
+            $this->selectEvent($this->events->first()?->id);
+        }
+
+       
+
+    }
+
+    public function render()
+    {
+        return view('livewire.tournament-events');
+    }
+}

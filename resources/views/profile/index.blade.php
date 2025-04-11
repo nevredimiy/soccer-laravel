@@ -98,7 +98,7 @@
                         @endif                            
                     </section>
 
-        <h2>ЗАЯВКА №1 Для игрока одиночного турнира</h2>
+        {{-- <h2>ЗАЯВКА №1 Для игрока одиночного турнира</h2>
                     <section class="team__calendar calendar-team">
                         <h2 class="calendar-team__title section-title section-title--margin">
                             КАЛЕНДАР
@@ -750,7 +750,7 @@
                                 </div>
                             </div>
                         </div>
-                    </section>
+                    </section> --}}
 
                     
                     

@@ -16,6 +16,7 @@ class TeamList extends Component
     {
         $this->teams = Team::with('event.stadium')
             ->where('owner_id', auth()->id())
+            ->orderByDesc('id')
             ->get();
         $this->activeTeamId = $this->teams->first()?->id;// Первая команда активна по умолчанию
         

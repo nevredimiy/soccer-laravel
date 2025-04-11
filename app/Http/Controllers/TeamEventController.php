@@ -17,7 +17,7 @@ class TeamEventController extends Controller
     public function index()
     {
         
-        $tournaments = Tournament::with('events.stadium.location.district.city')->whereIn('id', [6, 7])->get(); 
+        $tournaments = Tournament::with('events.stadium.location.district.city')->whereIn('id', [1, 2])->get(); 
 
         return view('teams.events.index', compact('tournaments'));
     }

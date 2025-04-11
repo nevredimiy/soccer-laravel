@@ -16,8 +16,8 @@ class Event extends Model
         'tournament_id',
         'league_id',
         'format',
-        'size_field'
-
+        'size_field',
+        'price'
     ];
 
 

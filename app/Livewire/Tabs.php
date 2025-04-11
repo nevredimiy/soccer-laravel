@@ -37,6 +37,7 @@ class Tabs extends Component
         $this->activeTab = $tab;
     }
 
+
     public function render()
     {
         return view('livewire.tabs');

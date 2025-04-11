@@ -18,6 +18,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Tables\Columns\ColorColumn;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Unique;
 
 class TeamResource extends Resource
 {
@@ -48,6 +50,14 @@ class TeamResource extends Resource
                     ->columnSpan(3),
                 Forms\Components\TextInput::make('name')
                     ->required()
+                    ->unique(
+                        table: 'teams',
+                        column: 'name',
+                        ignorable: fn ($record) => $record, // для редактирования
+                        modifyRuleUsing: function (Unique $rule, callable $get) {
+                            return $rule->where('event_id', $get('event_id'));
+                        }
+                    )
                     ->maxLength(255),
                 Forms\Components\Select::make('color_id')
                     ->label('Колір')
@@ -73,7 +83,7 @@ class TeamResource extends Resource
                 Forms\Components\Select::make('promo_code_id')
                     ->label('Промокод')
                     ->options(PromoCode::all()->pluck('code', 'id')),
-                    Forms\Components\Select::make('status')
+                Forms\Components\Select::make('status')
                     ->label('Статус')
                     ->options([
                         'awaiting_payment' => 'Очікування оплати',
@@ -86,6 +96,7 @@ class TeamResource extends Resource
                     ->disk('public')
                     ->maxSize(2048)
                     ->directory('img/team_logo')
+                    ->default('img/team_logo/team_placeholder.png')
                     ->deleteUploadedFileUsing(fn ($record) => 
                         $record->logo ? unlink(storage_path('app/public/' . $record->logo)) : null
                     ),
@@ -132,7 +143,6 @@ class TeamResource extends Resource
                     ->preload()
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make()->before(function ($record) {
                     if ($record->logo && file_exists(storage_path('app/public/' . $record->logo))) {

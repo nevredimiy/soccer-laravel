@@ -10,6 +10,7 @@ use App\Models\Event;
 use Illuminate\Support\Facades\Auth;
 use LiqPay\LiqPay;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
 
 class TeamRequestController extends Controller
 {
@@ -40,7 +41,12 @@ class TeamRequestController extends Controller
     public function store(Request $request)
     {        
         $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:teams,name',
+            'name' => [
+                'required',
+                Rule::unique('teams')->where(function ($query) use ($request) {
+                    return $query->where('event_id', $request->event_id);
+                })
+            ],
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'color_id' => 'required',
             'promo_code' => 'nullable|exists:promo_codes,code',

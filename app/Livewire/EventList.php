@@ -14,11 +14,8 @@ class EventList extends Component
     public $selectedDistrict = null;
     public $selectedLocation = null;
     public $selectedLeague = null;
-        
     public $events;
-    public $tournament;
-    
-    
+    public $tournament;    
 
     public function mount($tournament)
     {
@@ -27,15 +24,51 @@ class EventList extends Component
         $this->selectedCity = session('current_city', 2);
 
         $events = $tournament->events;
-        // Загружаем все команды с игроками по событиям турнира
-        $teams = Team::with('players')
-        ->whereIn('event_id', $events->pluck('id'))
-        ->get();
+        $this->events = $this->calculateStats($events);
 
-        // Группируем команды по event_id
+    //     // Загружаем все команды с игроками по событиям турнира
+    //     $teams = Team::with('players')
+    //     ->whereIn('event_id', $events->pluck('id'))
+    //     ->get();
+
+    //     // Группируем команды по event_id
+    //     $teamsByEvent = $teams->groupBy('event_id');
+
+    //    foreach ($events as $event) {
+    //         $eventTeams = $teamsByEvent[$event->id] ?? collect();
+
+    //         // Количество команд
+    //         $event->teams_count = $eventTeams->count();
+
+    //         // Средний рейтинг игроков
+    //         $totalRating = 0;
+    //         $totalPlayers = 0;
+
+    //         foreach ($eventTeams as $team) {
+    //             $players = $team->players;
+    //             $totalRating += $players->sum('rating');
+    //             $totalPlayers += $players->count();
+    //         }
+
+    //         $event->average_player_rating = $totalPlayers > 0
+    //             ? round($totalRating / $totalPlayers, 2)
+    //             : 0;
+    //     }
+
+        
+    //     $this->events = $events;
+    }
+
+    protected function calculateStats($events)
+    {
+        // Загружаем все команды с игроками по событиям
+        $teams = Team::with('players')
+            ->whereIn('event_id', $events->pluck('id'))
+            ->get();
+
         $teamsByEvent = $teams->groupBy('event_id');
 
-       foreach ($events as $event) {
+        foreach ($events as $event) {
             $eventTeams = $teamsByEvent[$event->id] ?? collect();
 
             // Количество команд
@@ -56,11 +89,9 @@ class EventList extends Component
                 : 0;
         }
 
-        
-        $this->events = $events;
-        // $this->filterEvents();
-        // $this->updateEvents();
+        return $events;
     }
+
 
 
     #[On('city-selected')]
@@ -126,7 +157,8 @@ class EventList extends Component
             $query->where('league_id', $this->selectedLeague);
         }
      
-        $this->events = $query->get();
+        // $this->events = $query->get();
+        $this->events = $this->calculateStats($query->get());
     }
 
     public function render()

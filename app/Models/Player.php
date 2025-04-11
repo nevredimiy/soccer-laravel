@@ -17,7 +17,8 @@ class Player extends Model
         'tg',
         'birth_date',
         'photo',
-        'rating'
+        'rating',
+        'number'
     ];
 
     // Добавляем связь с пользователем

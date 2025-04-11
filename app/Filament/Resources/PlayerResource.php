@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Ysfkaya\FilamentPhoneInput\Forms\PhoneInput;
 use Ysfkaya\FilamentPhoneInput\PhoneInputNumberType;
+use Illuminate\Validation\Rule;
 
 
 class PlayerResource extends Resource
@@ -66,6 +67,7 @@ class PlayerResource extends Resource
                     ]),
                 Forms\Components\TextInput::make('tg')
                     ->maxLength(255)
+                    ->unique(ignoreRecord: true)
                     ->label('Телеграм')
                     ->columnSpan([
                         'sm' => 2,
@@ -92,9 +94,22 @@ class PlayerResource extends Resource
                     ->required(),
                 Select::make('team_id')
                     ->label('Команда')
-                    ->options(Team::all()->pluck('name', 'id'))
+                    ->options(
+                        Team::orderByDesc('id')->get()->mapWithKeys(function ($team) {
+                            return [
+                                $team->id => "{$team->name} - ({$team->id})"
+                            ];
+                        })
+                    )
                     ->searchable()
                     ->preload(),
+                Forms\Components\TextInput::make('number')
+                    ->label('Номер гравця')
+                    ->type('number')
+                    ->minValue(0)
+                    ->maxValue(99)
+                    ->numeric()
+                    ->nullable(),                
                 Forms\Components\TextInput::make('rating')
                         ->numeric()
                         ->minValue(1)
@@ -139,7 +154,12 @@ class PlayerResource extends Resource
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('team.name')
-                    ->label('Команда') 
+                    ->label('Команда (ID)')
+                    ->sortable()
+                    ->searchable()
+                    ->formatStateUsing(fn ($state, $record) => "{$state} ({$record->team_id})"),
+                Tables\Columns\TextColumn::make('number')
+                    ->label('Номер')
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('status')

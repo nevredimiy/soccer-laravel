@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\City;
 use App\Models\District;
 use App\Models\Location;
+use App\Models\Tournament;
 use App\Models\League;
 
 class DependentDropdown extends Component
@@ -15,42 +16,69 @@ class DependentDropdown extends Component
     public $city;
     public $districts;
     public $locations;
+    public $tournaments;
+    public $typeTournaments;
     public $leagues;
 
     public $selectedCity = null;
     public $selectedDistrict = null;
     public $selectedLocation = null;
+    public $selectedTournament = null;
+    public $selectedTypeTournament = null;
     public $selectedLeague = null;
 
     public function mount()
     {
         $this->selectedCity = session('current_city', 2);
-        // $this->selectedDistrict = session('current_district', 0);
-        // $this->selectedLocation = session('current_location', 0);
-        // $this->selectedLeague = session('current_league', 0);
+        $this->selectedDistrict = session('current_district', 0);
+        $this->selectedLocation = session('current_location', 0);
+        $this->selectedTypeTournament = session('current_type_tournament', 0);
+
+        $this->selectedLeague = session('current_league', 0);
         $this->cities = City::all(); 
         $this->districts = District::where('city_id', $this->selectedCity)->orderBy('name')->get();
+        $this->locations = Location::where('district_id', $this->selectedDistrict)->orderBy('address')->get();
+        $this->tournaments = Tournament::all();
+        $this->typeTournaments = $this->tournaments
+            ->pluck('type')
+            ->unique()
+            ->values()
+            ->toArray();
+
+        $this->leagues = League::all();
     }
 
     public function updatedSelectedCity($city_id) 
     {
         session(['current_city' => $city_id]);        
+        session(['current_district' => 0]);        
+        session(['current_location' => 0]);   
+        session(['current_type_tournament' => 0]);   
+    
         $this->selectedCity = $city_id;
         $this->selectedDistrict = null;
         $this->selectedLocation = null;
+        $this->selectedTournament = null;
         $this->selectedLeague = null;
         $this->districts = District::where('city_id', $city_id)->orderBy('name')->get();
         $this->locations = [];
+        $this->tournaments = [];
+        $this->typeTournaments = [];
         $this->leagues = [];
         $this->dispatch('city-selected', city_id: $city_id);
     }
 
     public function updatedSelectedDistrict($district_id) 
     {
-        session(['current_district' => $district_id]);        
+        session(['current_district' => $district_id]);     
+        session(['current_location' => 0]);   
+        session(['current_type_tournament' => 0]);     
         $this->selectedLocation = null;
         $this->selectedLeague = null;
+        $this->selectedTournament = null;
         $this->locations = Location::where('district_id', $district_id)->get();
+        $this->tournaments = [];
+        $this->typeTournaments = [];
         $this->leagues = [];
         $this->dispatch('district-selected', district_id: $district_id);
     }
@@ -58,11 +86,33 @@ class DependentDropdown extends Component
     public function updatedSelectedLocation($location_id) 
     {
         session(['current_location' => $location_id]);
+        session(['current_type_tournament' => 0]);   
         $this->selectedLeague = null;
-        $this->leagues = League::where('location_id', $location_id)->get();
+        $this->selectedTournament = null;
+        $this->tournaments = Tournament::all();
+        $this->tournaments
+            ->pluck('type')
+            ->unique()
+            ->values()
+            ->toArray();
+        $this->leagues = League::all();
         $this->dispatch('location-selected', location_id: $location_id);
     }
     
+    public function updatedSelectedTournament($tournament_id)
+    {
+        session(['current_tournament' => $tournament_id]);
+        $this->dispatch('tournament-selected', tournament_id: $tournament_id);
+        
+    }
+    
+    public function updatedSelectedTypeTournament($typeTournament)
+    {
+        session(['current_type_tournament' => $typeTournament]);
+        $this->dispatch('typeTournamentSelected', typeTournament: $typeTournament);
+        
+    }
+
     public function updatedSelectedLeague($league_id)
     {
         session(['current_league' => $league_id]);

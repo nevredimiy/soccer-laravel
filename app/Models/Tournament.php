@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Tournament extends Model
 {
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'type'];
 
     public function events()
     {

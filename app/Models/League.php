@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class League extends Model
 {
@@ -10,4 +11,9 @@ class League extends Model
         'name',
         'location_id'
     ];
+
+    public function location()
+    {
+        return $this->belongsTo(Location::class);
+    }
 }
