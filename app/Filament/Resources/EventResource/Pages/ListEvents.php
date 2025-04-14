@@ -16,4 +16,5 @@ class ListEvents extends ListRecords
             Actions\CreateAction::make(),
         ];
     }
+
 }

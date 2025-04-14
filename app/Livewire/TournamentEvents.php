@@ -32,14 +32,6 @@ class TournamentEvents extends Component
         
         $this->updateEvents();
     }
-
-    public function selectEvent($eventId)
-    {
-        $this->activeEvent = $eventId;        
-        $this->event = Event::find($eventId);
-        $this->dispatch('eventSelected', eventId: $eventId);
-        session(['current_event' => $eventId]); 
-    }
     
     #[On('city-selected')]
     public function updateCityId($city_id)
@@ -88,6 +80,15 @@ class TournamentEvents extends Component
         $this->updateEvents();       
     }
 
+
+    public function selectEvent($eventId)
+    {
+        $this->activeEvent = $eventId;        
+        $this->event = Event::find($eventId);
+        $this->dispatch('eventSelected', eventId: $eventId);
+        session(['current_event' => $eventId]); 
+    }
+
     public function updateEvents()
     {
         if($this->selectedCity){
@@ -99,6 +100,7 @@ class TournamentEvents extends Component
                 $this->selectEvent($this->events->first()->id);  // передаём ID
             } else {
                 $this->activeEvent = null;
+                $this->dispatch('eventSelected', eventId: null);
             }
         }
 

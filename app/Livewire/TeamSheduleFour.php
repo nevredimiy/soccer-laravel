@@ -4,35 +4,15 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\Team;
-use Livewire\Attributes\On;
 
-
-class TournamentInfo extends Component
+class TeamSheduleFour extends Component
 {
-    
-    public $teams = [];
-    public $eventId = null;
-    public array $roman = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
-    public $colors = [
-        '#ff0000', 
-        '#00b050',
-        '#ffff00',
-        '#ff7f27',
-        '#0070c0',
-        '#808080',
-        '#99d9ea',
-        '#9bbb59',
-        '#ff99ff',
-    ];
-
     protected array $tourTemplate = [
         ['Червоний', 'Зелений', 'Жовтий'], 
         ['Червоний', 'Зелений', 'Рожевий'],
         ['Червоний', 'Жовтий', 'Рожевий'], 
         ['Зелений', 'Жовтий', 'Рожевий'], 
     ];
-
-    public array $series1 = [];
 
     protected array $colorClasses = [
         'Червоний' => 'red-bg',
@@ -56,12 +36,6 @@ class TournamentInfo extends Component
             ['Зелений', 'Жовтий', 'Рожевий'], 
         ];
     }
-
-    public function getBgClass($colorName): string
-    {
-        return $this->colorClasses[$colorName] ?? 'default-bg';
-    }
-
 
     public function getScheduleProperty($teams)
     {
@@ -94,26 +68,13 @@ class TournamentInfo extends Component
         return $schedule;
     }
 
-
-    #[On('eventSelected')]
-    public function updateEventId($eventId)
+    public function getBgClass($colorName): string
     {
-        if($eventId){
-            $this->eventId = $eventId;
-            $this->updateTournament();
-        } else {
-            $this->teams = [];
-        }
+        return $this->colorClasses[$colorName] ?? 'default-bg';
     }
-
-    protected function updateTournament()
-    {
-        $this->teams = Team::where('event_id', $this->eventId)->get();
-    }
-
 
     public function render()
     {
-        return view('livewire.tournament-info');
+        return view('livewire.team-shedule-four');
     }
 }

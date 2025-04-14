@@ -63,12 +63,28 @@ class EventResource extends Resource
                     ->searchable(),
                 Forms\Components\Select::make('tournament_id')
                     ->required()
-                    ->options(Tournament::all()->pluck('name', 'id'))
+                    ->options(
+                        Tournament::all()->mapWithKeys(function ($tournament) {
+                            $tournamentType = $tournament->type == 'team' ? 'командний' : 'індивідуальний';
+                            return [
+                                $tournament->id => $tournament->name . ' (' . $tournamentType . ')',
+                            ];
+                        })->toArray()
+                    )
                     ->searchable(),
                 Forms\Components\Select::make('league_id')
                     ->options(League::all()->pluck('name', 'id'))
                     ->searchable()
                     ->default(null),
+                Forms\Components\Select::make('format_scheme')
+                    ->options([
+                        '4' => '4 команди', 
+                        '6' => '6 команд',
+                        '9' => '9 команд'
+                    ])
+                    ->default('6')
+                    ->dehydrated()
+                    ->label('Схема турніру'),
                 Forms\Components\Select::make('format')
                     ->options([
                         '5x5x5' => '5x5x5', 
@@ -96,11 +112,17 @@ class EventResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('id')
+                    ->numeric()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('date')
                     ->date()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('start_time'),
                 Tables\Columns\TextColumn::make('end_time'),
+                Tables\Columns\TextColumn::make('format_scheme')
+                ->label('Схема турніру')
+                ->sortable(),
                 Tables\Columns\TextColumn::make('format')
                 ->label('Формат')
                 ->sortable()
@@ -126,7 +148,7 @@ class EventResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-            ])
+            ])->defaultSort('id', 'desc')
             ->filters([
                 //
             ])

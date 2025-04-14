@@ -17,7 +17,8 @@ class Event extends Model
         'league_id',
         'format',
         'size_field',
-        'price'
+        'price',
+        'format_scheme'
     ];
 
 

@@ -11,12 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('match_events', function (Blueprint $table) {
+        Schema::create('matche_events', function (Blueprint $table) {
             $table->id();
             $table->foreignId('match_id')->constrained('matches')->onDelete('cascade');
+            $table->foreignId('team_id')->constrained('teams')->onDelete('cascade');
             $table->foreignId('player_id')->constrained('players')->onDelete('cascade');
-            $table->enum('event_type', ['goal', 'assist', 'yellow_card', 'red_card', 'substitution', 'corner', 'penalty']);
-            $table->integer('event_minute');
+            $table->enum('type', ['goal', 'assist', 'yellow_card', 'red_card', 'own_goal']);
+            $table->unsignedTinyInteger('minute');
+            $table->foreignId('assister_id')->nullable()->constrained('players')->nullOnDelete();
+            $table->text('comment')->nullable();
             $table->timestamps();
         });
     }
@@ -24,8 +27,9 @@ return new class extends Migration
     /**
      * Reverse the migrations.
      */
+    
     public function down(): void
     {
-        Schema::dropIfExists('match_events');
+        Schema::dropIfExists('matche_events');
     }
 };

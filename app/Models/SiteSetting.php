@@ -13,6 +13,8 @@ class SiteSetting extends Model
         'site_name',
         'logo',
         'meta_tags',
-        'contacts'
+        'contacts',
+        'facebook',
+        'instagram'
     ];
 }

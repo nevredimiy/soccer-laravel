@@ -38,6 +38,10 @@ class SiteSettingResource extends Resource
                     ->columnSpanFull(),
                 PhoneInput::make('contacts')
                     ->onlyCountries(['ua']),
+                Forms\Components\TextInput::make('facebook')
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('instagram')
+                    ->maxLength(255),
             ]);
     }
 
@@ -53,6 +57,14 @@ class SiteSettingResource extends Resource
                     ->height(110),
                 Tables\Columns\TextColumn::make('contacts')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('facebook')
+                    ->searchable()
+                    ->wrap()
+                    ->lineClamp(2),
+                Tables\Columns\TextColumn::make('instagram')
+                    ->searchable()
+                    ->wrap()
+                    ->lineClamp(2),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

@@ -13,12 +13,12 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $siteSettings = SiteSetting::first();
+        $siteSettings = SiteSetting::latest()->first();
 
         $cities = City::all();
 
         $phone = $this->formatPhoneNumber($siteSettings->contacts);
-
+        
         return view('home.index', compact('siteSettings', 'phone', 'cities'));
     }
 

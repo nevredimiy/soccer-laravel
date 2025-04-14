@@ -90,7 +90,7 @@ class DependentDropdown extends Component
         $this->selectedLeague = null;
         $this->selectedTournament = null;
         $this->tournaments = Tournament::all();
-        $this->tournaments
+        $this->typeTournaments = $this->tournaments
             ->pluck('type')
             ->unique()
             ->values()

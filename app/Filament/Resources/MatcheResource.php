@@ -5,6 +5,8 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\MatcheResource\Pages;
 use App\Filament\Resources\MatcheResource\RelationManagers;
 use App\Models\Matche;
+use App\Models\Event;
+use App\Models\Team;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -12,6 +14,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Forms\Get;
 
 class MatcheResource extends Resource
 {
@@ -31,27 +34,71 @@ class MatcheResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('tournament_id')
+                Forms\Components\Select::make('event_id')
+                    ->options(function () {
+                        return Event::with(['stadium'])
+                        ->orderBy('id', 'desc')
+                        ->get()
+                        ->mapWithKeys(function ($event) {
+                            $stadium = $event->stadium;
+                            $location = $stadium->location;
+                            $district = $location->district;
+                            $city = $district ? $district->city : null;
+                            $label = $event->date;
+                            if($stadium) {
+                                $label .= ' - ' . $stadium->name;
+                            }
+                            if($location) {
+                                $label .= ' - ' . $location->address;
+                            }
+
+                            if($city) {
+                                $label .= ' - ' . $city->name;
+                            }
+
+                            return [$event->id => $label];
+
+                        });
+                    })
+                    ->searchable()
+                    ->live()
                     ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('team_home_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('team_away_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\DateTimePicker::make('match_date')
+                    ->label('Подія')
+                    ->columnSpan([
+                        'sm' => 2,
+                    ]),
+                Forms\Components\Select::make('team1_id')
+                    ->options(fn (Get $get): array => Team::where('event_id', $get('event_id'))
+                        ->pluck('name', 'id')
+                        ->toArray())
+                    ->label('Команда 1')
                     ->required(),
-                Forms\Components\TextInput::make('score_home')
-                    ->required()
+                Forms\Components\Select::make('team2_id')
+                    ->options(fn (Get $get): array => Team::where('event_id', $get('event_id'))
+                        ->pluck('name', 'id')
+                        ->toArray())
+                    ->label('Команда 2')
+                    ->required(),                    
+                Forms\Components\TextInput::make('score_team1')
                     ->numeric()
+                    ->label('Рахунок першої команди')
                     ->default(0),
-                Forms\Components\TextInput::make('score_away')
-                    ->required()
+                Forms\Components\TextInput::make('score_team2')
                     ->numeric()
+                    ->label('Рахунок другої команди')
                     ->default(0),
-                Forms\Components\TextInput::make('status')
+                Forms\Components\DateTimePicker::make('start_time')
+                    ->label('Початок матчу')    
                     ->required(),
+                Forms\Components\Select::make('status')
+                    ->required()
+                    ->default('scheduled')
+                    ->label('Статус')
+                    ->options([
+                        'scheluded' => 'Заплановано',
+                        'finished' => 'Закінчений',
+                        'canceled' => 'Відмінений',
+                    ]),
             ]);
     }
 
@@ -59,22 +106,22 @@ class MatcheResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('tournament_id')
+                Tables\Columns\TextColumn::make('event_id')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('team_home_id')
+                Tables\Columns\TextColumn::make('team1_id')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('team_away_id')
+                Tables\Columns\TextColumn::make('team2_id')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('match_date')
+                Tables\Columns\TextColumn::make('start_time')
                     ->dateTime()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('score_home')
+                Tables\Columns\TextColumn::make('score_time1')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('score_away')
+                Tables\Columns\TextColumn::make('score_time2')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('status'),

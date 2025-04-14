@@ -7,7 +7,7 @@
             </h2>
     
             <div class="prop-profile__radiobox">
-                @foreach ([1, 2, 6, 7, 8, 9] as $num)
+                @foreach ([6, 7, 8, 9] as $num)
                     <label class="prop-profile__radio">
                         {{ $num }}
                         <input type="radio" 

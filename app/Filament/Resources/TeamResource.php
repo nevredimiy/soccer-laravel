@@ -66,7 +66,8 @@ class TeamResource extends Resource
                 Forms\Components\Select::make('event_id')
                     ->label('Подія')
                     ->options(function () {
-                        return Event::with('stadium') // Загружаем связанную локацию
+                        return Event::with('stadium')
+                            ->orderBy('id', 'desc')
                             ->get()
                             ->mapWithKeys(function ($event) {
                                 $date = \Carbon\Carbon::parse($event->date)->format('d.m.Y'); // Форматируем дату
@@ -79,6 +80,7 @@ class TeamResource extends Resource
                             });
                     })
                     ->searchable()
+                    ->required()
                     ->columnSpan(3),
                 Forms\Components\Select::make('promo_code_id')
                     ->label('Промокод')

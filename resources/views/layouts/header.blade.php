@@ -67,10 +67,14 @@
         <div class="header__contacts">
             <a href="tel:{{ $siteSettings->contacts }}" class="header__phone">{{ $phone }}</a>
             <div class="header__social social">
-                <a href="#" class="social__item _icon-s-fb">
+                @if ($siteSettings->facebook)
+                <a href="{{$siteSettings->facebook}}" class="social__item _icon-s-fb">                    
                 </a>
-                <a href="#" class="social__item _icon-s-inst">
-                </a>
+                @endif
+                @if ($siteSettings->instagram)
+                <a href="{{$siteSettings->instagram}}" class="social__item _icon-s-inst">
+                </a>                    
+                @endif
             </div>
         </div>
     </div>

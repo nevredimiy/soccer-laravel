@@ -11,6 +11,7 @@
                 <span class="text-xs">
                     {{ \Carbon\Carbon::parse($event->date)->translatedFormat('d F') }} 
                     ({{$event->id}})
+                    ({{$event->format_scheme}} команд)
                     ({{$event->tournament->name}}) 
                     ({{$event->tournament->type}}) 
     

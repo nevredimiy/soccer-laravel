@@ -1,0 +1,90 @@
+<section class="home__calendar calendar-section">
+    <h2 class="calendar-section__title section-title section-title--margin">
+        Календар
+    </h2>
+    <div class="calendar-section__body">
+    
+        <div class="calendar-section__block">
+            <div class="calendar-section__series">
+                СЕРІЯ I ЧТ 20:00
+            </div>
+            <div class="calendar-section__items">
+                @foreach($series1 as $index => $triplet)
+                <div class="calendar-section__item item-calendar item-calendar--gray-bg">
+                    <div class="item-calendar__date">
+                        30.03
+                    </div>
+                    <div class="item-calendar__wrapper">
+                        <div class="item-calendar__label">
+                            {{$index}} Тур
+                        </div>
+                        <div class="item-calendar__body">
+                            @foreach($triplet as $colorName)
+                            <span class="{{ $this->getBgClass($colorName) }}"></span>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+               
+                <div class="calendar-section__item item-calendar ">
+                    <div class="item-calendar__date">
+                        30.03
+                    </div>
+                    <div class="item-calendar__wrapper">
+                        <div class="item-calendar__label">
+                            ФІНАЛ (I)
+                        </div>
+                        <div class="item-calendar__body">
+                            <span class="-bg"></span>
+                            <span class="-bg"></span>
+                            <span class="-bg"></span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>    
+        <div class="calendar-section__block">
+            <div class="calendar-section__series">
+                СЕРІЯ II ЧТ 21:30
+            </div>
+            <div class="calendar-section__items">
+                @foreach($series2 as $index => $triplet)
+                <div class="calendar-section__item item-calendar item-calendar--gray-bg">
+                    <div class="item-calendar__date">
+                        30.03
+                    </div>
+                    <div class="item-calendar__wrapper">
+                        <div class="item-calendar__label">
+                            {{$index}} Тур
+                        </div>
+                        <div class="item-calendar__body">
+                            @foreach($triplet as $colorName)
+                            <span class="{{ $this->getBgClass($colorName) }}"></span>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+                <div class="calendar-section__item item-calendar ">
+                    <div class="item-calendar__date">
+                        30.03
+                    </div>
+                    <div class="item-calendar__wrapper">
+                        <div class="item-calendar__label">
+                            ФІНАЛ (II)
+                        </div>
+                        <div class="item-calendar__body">
+                            <span class="-bg"></span>
+                            <span class="-bg"></span>
+                            <span class="-bg"></span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div> 
+                        
+    </div>
+</section>   
