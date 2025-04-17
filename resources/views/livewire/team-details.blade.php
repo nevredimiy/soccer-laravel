@@ -121,8 +121,6 @@
                 </div>
 
                 <div class="prop-profile__body">
-                    
-                  
 
                     <div class="prop-profile__requests">
                         @forelse ($applications as $application)
@@ -132,6 +130,8 @@
                         @empty
                             <div class="text-gray-500 m-auto">Немає жодної заявки</div>
                         @endforelse
+
+                        
                     </div>
                     
                 </div>

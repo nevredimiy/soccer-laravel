@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\Player;
+use App\Models\Team;
 use Illuminate\Support\Facades\Auth;
 
 class RemovePlayerFromTeam extends Component
@@ -30,18 +31,30 @@ class RemovePlayerFromTeam extends Component
 
     public function remove()
     {
-        if (Auth::id() !== $this->player->team->owner_id) {
+       
+    
+        if (!$this->team) {
+            session()->flash('error', 'Гравець не належить до жодної команди.');
+            return;
+        }
+
+        if (Auth::id() !== $this->team->owner_id) {
             session()->flash('error', 'У вас немає права видалити цього гравця.');
             return;
         }
 
-        $this->player->team_id = null;
-        $this->player->status = 'reserve';
-        $this->player->save();
+        
+        // Удаляем игрока из команды (из pivot-таблицы)
+        $this->player->teams()->detach($this->team->id);
 
+
+        // Закрываем модалку
         $this->confirming = false;
+
+        // Успешное сообщение
         session()->flash('success', "Гравця {$this->player->last_name} успішно видалено з команди {$this->team->name}.");
 
+        
         // // Если нужно скрыть карточку игрока
         // $this->dispatch('playerRemoved', playerId: $this->player->id);
         return redirect(request()->header('Referer'));

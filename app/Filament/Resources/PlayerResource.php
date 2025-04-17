@@ -13,11 +13,14 @@ use Filament\Forms\Components\Select;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Ysfkaya\FilamentPhoneInput\Forms\PhoneInput;
 use Ysfkaya\FilamentPhoneInput\PhoneInputNumberType;
 use Illuminate\Validation\Rule;
+use Filament\Forms\Components\Section;
 
 
 class PlayerResource extends Resource
@@ -38,22 +41,33 @@ class PlayerResource extends Resource
     {
         return $form
             ->schema([
-                
-                Forms\Components\TextInput::make('last_name')
-                    ->required()
-                    ->maxLength(255)
-                    ->label('Прізвище')
-                    ->columnSpan([
-                        'sm' => 3,
+                Section::make('Основні дані')
+                ->schema([
+                    Select::make('user_id')
+                        ->label('Користувач')
+                        ->options(User::all()->pluck('name', 'id'))
+                        ->searchable()
+                        ->preload()
+                        ->required()
+                        ->columnSpan([
+                            'sm' => 2,
+                        ]),
 
-                    ]),
-                Forms\Components\TextInput::make('first_name')
-                    ->required()
-                    ->maxLength(255)
-                    ->label('Ім\'я')
-                    ->columnSpan([
-                        'sm' => 3,
-                    ]),
+                    Forms\Components\TextInput::make('last_name')
+                        ->required()
+                        ->maxLength(255)
+                        ->label('Прізвище')
+                        ->columnSpan([
+                            'sm' => 2,
+                        ]),
+                    Forms\Components\TextInput::make('first_name')
+                        ->required()
+                        ->maxLength(255)
+                        ->label('Ім\'я')
+                        ->columnSpan([
+                            'sm' => 2,
+                        ]),
+                ])->columns(6),
                 PhoneInput::make('phone')
                     ->required()
                     ->validateFor(
@@ -77,12 +91,7 @@ class PlayerResource extends Resource
                     ->columnSpan([
                         'sm' => 2,
                     ]),
-                Select::make('user_id')
-                    ->label('Користувач')
-                    ->options(User::all()->pluck('name', 'id'))
-                    ->searchable()
-                    ->preload()
-                    ->required(),
+               
                 Select::make('status')
                     ->label('Статус')
                     ->options([
@@ -92,17 +101,20 @@ class PlayerResource extends Resource
                     ->searchable()
                     ->default('reserve')                 
                     ->required(),
-                Select::make('team_id')
+                Select::make('teams')
+                    ->multiple()
                     ->label('Команда')
+                    ->relationship('teams', 'name')
                     ->options(
-                        Team::orderByDesc('id')->get()->mapWithKeys(function ($team) {
+                        Team::orderBy('id', 'desc')->get()->mapWithKeys(function ($team) {
                             return [
-                                $team->id => "{$team->name} - ({$team->id})"
+                                $team->id => "{$team->name} ({$team->id})"
                             ];
                         })
                     )
                     ->searchable()
-                    ->preload(),
+                    ->preload()
+                    ->required(),
                 Forms\Components\TextInput::make('number')
                     ->label('Номер гравця')
                     ->type('number')
@@ -135,59 +147,62 @@ class PlayerResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')
+                TextColumn::make('id')
                     ->numeric()
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('user.name')
+                TextColumn::make('user.name')
                     ->label('Користувач') 
                     ->sortable()
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('last_name')
+                TextColumn::make('last_name')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('first_name')
+                TextColumn::make('first_name')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('phone')
+                TextColumn::make('phone')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('team.name')
-                    ->label('Команда (ID)')
-                    ->sortable()
-                    ->searchable()
-                    ->formatStateUsing(fn ($state, $record) => "{$state} ({$record->team_id})"),
-                Tables\Columns\TextColumn::make('number')
+                TextColumn::make('teams.name')                    
+                    ->label('Назва команди')
+                    ->formatStateUsing(function ($state, $record) {
+                        return $record->teams
+                            ->map(fn ($team) => "{$team->name} ({$team->id})")
+                            ->implode(', ');
+                    }),
+                    
+                TextColumn::make('number')
                     ->label('Номер')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('status')
+                TextColumn::make('status')
                     ->label('Статус') 
                     ->sortable()
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('tg')
+                TextColumn::make('tg')
                     ->searchable()
                     ->label('Телеграм')
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\ImageColumn::make('photo')
+                ImageColumn::make('photo')
                     ->disk('public')
                     ->height(50)
                     ->width(50)
                     ->label('Фото')
                     ->toggleable(isToggledHiddenByDefault: true), 
-                Tables\Columns\TextColumn::make('birth_date')
+                TextColumn::make('birth_date')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('rating')
+                TextColumn::make('rating')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
+                TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

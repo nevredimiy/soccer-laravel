@@ -1,5 +1,7 @@
 <div class='filter__container max-w-md mx-auto'>
-    <div class="flex gap-4 flex-wrap justify-center mb-4">
+    
+
+     <div class="flex gap-4 flex-wrap justify-center mb-4">
         <!-- Город -->
         <div class="">
             <select class="bg-[#00539f] text-white py-1.5 px-2 min-w-44 rounded" wire:model.live="selectedCity" name="cities" id="">
@@ -88,6 +90,25 @@
                 @endif
             </select>
         </div>
+
+
+         <!-- Мої турніри -->
+         @if ($myTounaments)
+         <div class="">
+            <select wire:model.live="selectedLeague" class="bg-[#00539f] text-white py-1.5 px-2 min-w-44 rounded" name="league" id="">
+                 <option value="">Мої турніри</option>
+                 @if ($leagues)
+                     @foreach ($leagues as $league)
+                         <option value="{{ $league->id }}"> {{ $league->name }}</option>
+                     @endforeach                                        
+                 @endif
+             </select>
+         </div>             
+         @endif
+
+
     </div>
+
+
 
 </div>

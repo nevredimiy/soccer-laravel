@@ -35,6 +35,11 @@ class TeamDetails extends Component
     {
         $this->team = Team::find($team_id);
         $this->players = $this->getPlayersForTeam($team_id);
+
+        $this->applications = \App\Models\TeamPlayerApplication::with('user.player')
+        ->where('team_id', $team_id)
+        ->get()
+        ->toArray();
     }
 
     #[On('applicationsFiltered')]
@@ -45,8 +50,13 @@ class TeamDetails extends Component
 
     protected function getPlayersForTeam($team_id)
     {
-        return Player::where('team_id', $team_id)->get();
+        return Player::whereIn('id', function ($query) use ($team_id) {
+            $query->select('player_id')
+                  ->from('player_teams')
+                  ->where('team_id', $team_id);
+        })->get();
     }
+    
     
 
     public function render()

@@ -10,14 +10,22 @@ use Illuminate\Support\Collection;
 class TransferFilter extends Component
 {
     public Team $team;
+    public $team_id = null;
     public $minAge = 16;
     public $maxAge = null;
     public $minRating = 1;
 
+    
     public function mount(Team $team)
     {
-
+        $this->team_id = TeamPlayerApplication::with('user.player')
+        ->where('team_id', $team->id)->get('team_id');
         $this->team = $team;
+    }
+
+    #[On('team-selected')]
+    public function updateTeam($team_id){
+        $this->team_id = $team_id;
     }
     
     public function getFilteredApplicationsProperty(): Collection
@@ -48,6 +56,8 @@ class TransferFilter extends Component
         $this->dispatch('applicationsFiltered', applications: $applications);
         return $applications;
     }
+
+    
 
     public function render()
     {

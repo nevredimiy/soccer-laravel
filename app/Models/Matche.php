@@ -21,13 +21,17 @@ class Matche extends Model
         return $this->belongsTo(Event::class, 'event_id');
     }
     
-    public function team1()
+    public function teams()
     {
-        return $this->belongsTo(Team::class, 'team1_id');
+        return $this->belongsToMany(Team::class, 'player_teams', 'player_id', 'team_id')
+                    ->withTimestamps();
     }
 
-    public function team2()
+    public function players()
     {
-        return $this->belongsTo(Team::class, 'team2_id');
+        return $this->belongsToMany(Player::class, 'player_teams', 'team_id', 'player_id')
+                    ->withTimestamps();
     }
+
+    
 }

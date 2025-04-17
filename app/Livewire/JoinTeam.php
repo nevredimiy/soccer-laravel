@@ -17,51 +17,55 @@ class JoinTeam extends Component
     {
         $this->teamId = $teamId;
 
-        // Проверяем, подана ли заявка
-        $hasApplication = TeamPlayerApplication::where('team_id', $teamId)
-        ->where('user_id', Auth::id())
-        ->exists();
+        $userId = Auth::id();
 
-        // Проверяем, находится ли игрок в команде
-        $isInTeam = \App\Models\Player::where('user_id', Auth::id()) 
-            ->where('team_id', $teamId)
+        // Проверка: есть ли уже заявка
+        $hasApplication = TeamPlayerApplication::where('team_id', $teamId)
+            ->where('user_id', $userId)
             ->exists();
 
-        // Если игрок уже в команде или подал заявку, отключаем кнопку
-        $this->applied = $hasApplication || $isInTeam;
+        // Проверка: состоит ли уже в команде через player_teams
+        $player = \App\Models\Player::where('user_id', $userId)->first();
 
+        $isInTeam = $player && $player->teams()->where('team_id', $teamId)->exists();
+
+        $this->applied = $hasApplication || $isInTeam;
+        
     }
+
 
     public function apply()
     {
         $user = Auth::user();
-
-        // Проверяем, не подал ли игрок уже заявку в эту команду или не состоит в ней
+    
+        // Проверка: есть ли уже заявка от игрока в эту команду
         $existingApplication = TeamPlayerApplication::where('user_id', $user->id)
             ->where('team_id', $this->teamId)
             ->exists();
-
-        $isInTeam = Player::where('user_id', $user->id)
-            ->where('team_id', $this->teamId)
-            ->exists();
-
+    
+        // Проверка: состоит ли уже игрок в этой команде (через pivot)
+        $player = Player::where('user_id', $user->id)->first();
+    
+        $isInTeam = $player && $player->teams()->where('team_id', $this->teamId)->exists();
+    
         if ($existingApplication || $isInTeam) {
             session()->flash('message', 'Вы уже подали заявку в эту команду или уже состоите в ней.');
             return;
         }
-
+    
         // Записываем заявку
         TeamPlayerApplication::create([
             'user_id' => $user->id,
             'team_id' => $this->teamId,
             'status' => 'pending',
         ]);
-
+    
         // Делаем кнопку неактивной
         $this->applied = true;
-
+    
         session()->flash('message', 'Заявка успешно отправлена.');
     }
+    
 
     public function render()
     {

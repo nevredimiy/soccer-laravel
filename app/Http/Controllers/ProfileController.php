@@ -7,6 +7,8 @@ use App\Models\Player;
 use App\Models\Team;
 use App\Models\TeamPlayerApplication;
 use Carbon\Carbon;  
+use Illuminate\Support\Facades\DB;
+
 
 class ProfileController extends Controller
 {
@@ -17,6 +19,7 @@ class ProfileController extends Controller
 
         // Проверяем, есть ли пользователь в таблице players
         $player = Player::where('user_id', $user->id)->first();
+
 
               
         // Если игрока нет, перенаправляем на создание профиля
@@ -61,20 +64,19 @@ class ProfileController extends Controller
         $userId = $request->input('user_id');
         $action = $request->input('action'); // Получаем, какая кнопка была нажата
 
+        // Получаем игрока
+        $player = Player::find($playerId);
+        if (!$player) {
+            return back()->with('error', 'Гравець не знайдений.');
+        }
 
+        // Если действие "accept"
         if ($action === 'accept') {
-            
-             // Получаем игрока
-            $player = Player::find($playerId);
-            if (!$player) {
-                return back()->with('error', 'Гравець не знайдений.');
-            }
+            // Добавляем игрока в команду с статусом 'reserve' через связующую таблицу player_teams
+            $player->teams()->attach($teamId, ['status' => 'reserve']);
 
-           // Обновляем team_id у игрока
-            $player->update([
-                'team_id' => $teamId,
-                'status' => 'reserve',
-            ]);
+            // Удаляем заявку
+            TeamPlayerApplication::where('user_id', $userId)->where('team_id', $teamId)->delete();
 
             // Получаем команду
             $team = Team::find($teamId);
@@ -82,48 +84,47 @@ class ProfileController extends Controller
                 return back()->with('error', 'Команда не знайдена.');
             }
 
-            // Удаляем заявку
-            TeamPlayerApplication::where('user_id', $userId)->delete();
-
             return back()->with('success', "Гравець {$player->last_name} підписаний у команду {$team->name}!");
         }
 
-       
-
+        // Если действие "reject"
         if ($action === 'reject') {
             // Удаляем заявку без добавления в команду
             TeamPlayerApplication::where('user_id', $userId)->where('team_id', $teamId)->delete();
 
-            $player = Player::find($playerId);
-            if (!$player) {
-                return back()->with('error', 'Гравець не знайдений.');
-            }
-
-            return back()->with('notice', "Заявку гравця {$player->last_name}  відхилено.");
+            return back()->with('notice', "Заявку гравця {$player->last_name} відхилено.");
         }
 
         return back()->with('warning', 'Невідома дія.');
     }
 
+
     public function togglePlayerStatus(Request $request)
     {
-        $team = Team::findOrFail($request->input('team_id'));
-        $maxPlayers  = $team->max_players;
-        
-        
-        $players = Player::where('team_id', $request->input('team_id'))->where('status', 'main')->get();
-
-        if($players->count() < $maxPlayers){
-            $player = Player::findOrFail($request->input('player_id'));
-            $newStatus = $request->input('action') === 'main' ? 'main' : 'reserve';
+        $teamId = $request->input('team_id');
+        $playerId = $request->input('player_id');
+        $newStatus = $request->input('action') === 'main' ? 'main' : 'reserve';
     
-            $player->status = $newStatus;
-            $player->save();
+        $team = Team::findOrFail($teamId);
+        $maxPlayers = $team->max_players;
     
+        // Подсчёт "main"-игроков через player_teams
+        $mainCount = DB::table('player_teams')
+            ->where('team_id', $teamId)
+            ->where('status', 'main')
+            ->count();
+    
+        if ($mainCount < $maxPlayers || $newStatus === 'reserve') {
+            DB::table('player_teams')
+                ->where('team_id', $teamId)
+                ->where('player_id', $playerId)
+                ->update(['status' => $newStatus]);
+    
+            $player = Player::findOrFail($playerId);
             return back()->with('success', "Статус гравця {$player->last_name} оновлено.");
         } else {
             return back()->with('error', "Статус не оновлено! Кількість основних гравців не повинна перевищувати {$maxPlayers}");
         }
-
     }
+    
 }

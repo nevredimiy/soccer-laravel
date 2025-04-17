@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Models\TeamColor;
 use Liqpay\Liqpay;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -86,9 +87,11 @@ class Team extends Model
         return $this->hasMany(TeamPlayerApplication::class);
     }
 
-    public function players(): HasMany
+    public function players(): BelongsToMany
     {
-        return $this->hasMany(Player::class, 'team_id');
+        return $this->belongsToMany(\App\Models\Player::class, 'player_teams')
+            ->withPivot('status')
+            ->withTimestamps();
     }
 
 }

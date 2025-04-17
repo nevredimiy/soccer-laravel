@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('players', function (Blueprint $table) {
             $table->id(); 
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
-            $table->foreignId('team_id')->nullable()->constrained('teams')->onDelete('set null');
             $table->enum('status', ['main', 'reserve'])->default('reserve');
             $table->string('last_name');
             $table->string('first_name'); 

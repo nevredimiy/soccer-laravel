@@ -9,7 +9,6 @@ class Player extends Model
 {
     protected $fillable = [
         'user_id',
-        'team_id',
         'status',
         'last_name',
         'first_name',
@@ -32,10 +31,20 @@ class Player extends Model
         $this->attributes['photo'] = $value ?: '/img/avatars/default_avatar.jpg';
     }
 
-    public function team():BelongsTo
+
+    public function playerTeams()
     {
-        return $this->belongsTo(Team::class, 'team_id');
+        return $this->hasMany(\App\Models\PlayerTeam::class)->withTimestamps();;
     }
+
+
+    public function teams()
+    {
+        return $this->belongsToMany(\App\Models\Team::class, 'player_teams')
+        ->withPivot('status')
+            ->withTimestamps();
+    }
+
 
     protected $casts = [
         'birth_date' => 'date',

@@ -16,7 +16,7 @@
                     </div>
                     <div class="item-calendar__wrapper">
                         <div class="item-calendar__label">
-                            {{$index}} Тур
+                            {{$index + 1}} Тур
                         </div>
                         <div class="item-calendar__body">
                             @foreach($triplet as $colorName)
@@ -57,7 +57,7 @@
                     </div>
                     <div class="item-calendar__wrapper">
                         <div class="item-calendar__label">
-                            {{$index}} Тур
+                            {{$index + 1}} Тур
                         </div>
                         <div class="item-calendar__body">
                             @foreach($triplet as $colorName)

@@ -110,10 +110,18 @@ class MatcheResource extends Resource
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('team1_id')
-                    ->numeric()
+                    ->label('Команда 1')
+                    ->getStateUsing(function ($record) {
+                        $team = Team::find($record->team1_id);
+                        return $team ? $team->name . ' (' . $team->id . ')' : 'Не указана';
+                    })
                     ->sortable(),
                 Tables\Columns\TextColumn::make('team2_id')
-                    ->numeric()
+                    ->label('Команда 2')
+                    ->getStateUsing(function ($record) {
+                        $team = Team::find($record->team2_id);
+                        return $team ? $team->name . ' (' . $team->id . ')' : 'Не указана';
+                    })
                     ->sortable(),
                 Tables\Columns\TextColumn::make('start_time')
                     ->dateTime()

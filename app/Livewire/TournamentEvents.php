@@ -29,7 +29,9 @@ class TournamentEvents extends Component
         $this->selectedLocation = session('current_location', 0);
         $this->selectedTypeTournament = session('current_type_tournament', 0);
         $this->selectedLeague = session('current_league', 0);
-        
+        $this->activeEvent = session('current_event', 0);
+
+        $this->selectEvent($this->activeEvent);
         $this->updateEvents();
     }
     
@@ -94,54 +96,109 @@ class TournamentEvents extends Component
         if($this->selectedCity){
             $district_ids = District::where('city_id', $this->selectedCity)->pluck('id');
             $location_ids = Location::whereIn('district_id', $district_ids)->pluck('id');
-            $stadiums = Stadium::whereIn('location_id', $location_ids)->pluck('id');       
+            $stadiums = Stadium::whereIn('location_id', $location_ids)->pluck('id');
+            
             $this->events = Event::whereIn('stadium_id', $stadiums)->orderByDesc('id')->get();
-            if ($this->events->isNotEmpty()) {
-                $this->selectEvent($this->events->first()->id);  // передаём ID
+            if ($this->activeEvent && count($this->events) > 0) {
+                $this->selectEvent($this->activeEvent);
+            } elseif(count($this->events) > 0) {
+                $this->selectEvent($this->events->first()->id);
             } else {
-                $this->activeEvent = null;
-                $this->dispatch('eventSelected', eventId: null);
+                session()->forget('current_event');
             }
         }
 
         if($this->selectedDistrict){
             $location_ids = Location::where('district_id', $this->selectedDistrict)->pluck('id');
-            $stadiums = Stadium::whereIn('location_id', $location_ids)->pluck('id');       
+            $stadiums = Stadium::whereIn('location_id', $location_ids)->pluck('id');
+            
             $this->events = Event::whereIn('stadium_id', $stadiums)->orderByDesc('id')->get();
-            if ($this->events->isNotEmpty()) {
-                $this->selectEvent($this->events->first()->id);  // передаём ID
-            } else {
-                $this->activeEvent = null;
+            
+            $found = false;
+            foreach ($this->events as $event) {
+                if ($event->id == $this->activeEvent) {
+                    $this->selectEvent($this->activeEvent);
+                    $found = true;
+                    break;
+                }
             }
+            if (!$found && count($this->events) > 0) {
+                $this->selectEvent($this->events->first()->id);
+            } elseif (count($this->events) === 0) {
+                session()->forget('current_event');
+            }
+
         }
 
         if($this->selectedLocation){
             $stadium = Stadium::where('location_id', $this->selectedLocation)->first();  
+            if (!$stadium) {
+                $this->events = [];
+                session()->forget('current_event');
+                return;
+            }
             $this->events = Event::where('stadium_id', $stadium->id)->with('tournament')->orderByDesc('id')->get();
-            $this->selectEvent($this->events->first()?->id);
+            
+            
+            if ($this->activeEvent && count($this->events) > 0) {
+                $this->selectEvent($this->activeEvent);
+            } elseif(count($this->events) > 0) {
+                $this->selectEvent($this->events->first()->id);
+            } else {
+                session()->forget('current_event');
+            }
         }
 
         if($this->selectedTypeTournament && $this->selectedLocation){
             $tournament_ids = Tournament::where('type', $this->selectedTypeTournament)->pluck('id');
             $stadium = Stadium::where('location_id', $this->selectedLocation)->first();
+           
+            if (!$stadium) {
+                $this->events = [];
+                session()->forget('current_event');
+                return;
+            }
+
             $this->events = Event::where('stadium_id', $stadium->id)
                 ->whereIn('tournament_id', $tournament_ids)
                 ->with('tournament')
                 ->orderByDesc('id')
                 ->get();
-            $this->selectEvent($this->events->first()?->id);
+            
+            if ($this->activeEvent && count($this->events) > 0) {
+                $this->selectEvent($this->activeEvent);
+            } elseif(count($this->events) > 0) {
+                $this->selectEvent($this->events->first()->id);
+            } else {
+                session()->forget('current_event');
+            }
         }
 
         if($this->selectedLeague && $this->selectedLocation){
             $league = League::where('id', $this->selectedLeague)->first();
             $stadium = Stadium::where('location_id', $this->selectedLocation)->first();
 
+            if (!$stadium) {
+                $this->events = [];
+                session()->forget('current_event');
+                return;
+            }
+
             $this->events = Event::where('stadium_id', $stadium->id)
                 ->where('league_id', $league->id)
                 ->with('tournament')
                 ->orderByDesc('id')
                 ->get();
-            $this->selectEvent($this->events->first()?->id);
+
+            
+                if ($this->activeEvent && count($this->events) > 0) {
+                    $this->selectEvent($this->activeEvent);
+                } elseif(count($this->events) > 0) {
+                    $this->selectEvent($this->events->first()->id);
+                } else {
+                    session()->forget('current_event');
+                }
+
         }
 
         if($this->selectedLeague && $this->selectedLocation && $this->selectedTypeTournament){
@@ -149,13 +206,26 @@ class TournamentEvents extends Component
             $tournament_ids = Tournament::where('type', $this->selectedTypeTournament)->pluck('id');
             $stadium = Stadium::where('location_id', $this->selectedLocation)->first();
 
+            if (!$stadium) {
+                $this->events = [];
+                session()->forget('current_event');
+                return;
+            }
+
             $this->events = Event::where('stadium_id', $stadium->id)
                 ->where('league_id', $league->id)
                 ->whereIn('tournament_id', $tournament_ids)
                 ->with('tournament')
                 ->orderByDesc('id')
                 ->get();
-            $this->selectEvent($this->events->first()?->id);
+            
+            if ($this->activeEvent && count($this->events) > 0) {
+                $this->selectEvent($this->activeEvent);
+            } elseif(count($this->events) > 0) {
+                $this->selectEvent($this->events->first()->id);
+            } else {
+                session()->forget('current_event');
+            }
         }
 
        

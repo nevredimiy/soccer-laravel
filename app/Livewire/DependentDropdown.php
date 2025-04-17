@@ -8,6 +8,10 @@ use App\Models\District;
 use App\Models\Location;
 use App\Models\Tournament;
 use App\Models\League;
+use App\Models\Event;
+use App\Models\Player;
+use App\Models\PlayerTeam;
+use App\Models\Team;
 
 class DependentDropdown extends Component
 {
@@ -26,6 +30,8 @@ class DependentDropdown extends Component
     public $selectedTournament = null;
     public $selectedTypeTournament = null;
     public $selectedLeague = null;
+
+    public $myTounaments = null;
 
     public function mount()
     {
@@ -46,6 +52,23 @@ class DependentDropdown extends Component
             ->toArray();
 
         $this->leagues = League::all();
+
+        if(auth()->id()){
+            $teamIds = Team::pluck('id')->toArray();
+            
+            $player = Player::where('user_id', auth()->id())->first();
+            $playerTeamIds = PlayerTeam::where('player_id', $player->id)
+                ->pluck('team_id');
+            $teams = Team::with('event.stadium')
+                ->where('owner_id', auth()->id())
+                ->orWhereIn('id', $playerTeamIds)
+                ->orderByDesc('id')
+                ->pluck('event_id');
+            $events = Event::whereIn('id', $teams)->pluck('id');
+            dump($teams);
+            dump($events);
+           
+        }
     }
 
     public function updatedSelectedCity($city_id) 

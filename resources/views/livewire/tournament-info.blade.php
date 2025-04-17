@@ -187,6 +187,59 @@
 
         @livewire('team-shedule-six')
 
+        @elseif (count($teams) == 9)
+
+        <section class="home__calendar calendar-section">
+            <h2 class="calendar-section__title section-title section-title--margin">
+                Календар
+            </h2>
+            <div class="calendar-section__body">
+                @foreach ($romeNum as $num)
+                <div class="calendar-section__block">
+                    <div class="calendar-section__series">
+                        СЕРІЯ {{$num}} ЧТ 18:30
+                    </div>
+                    <div class="calendar-section__items">
+
+                        @for ($i=0; $i<12; $i++)
+                            <div class="calendar-section__item item-calendar item-calendar--gray-bg">
+                                <div class="item-calendar__date">
+                                    30.03
+                                </div>
+                                <div class="item-calendar__wrapper">
+                                    <div class="item-calendar__label">
+                                        {{$i+1}} Тур
+                                    </div>
+                                    <div class="item-calendar__body">
+                                        <span class="blue-bg"></span>
+                                        <span class="red-bg"></span>
+                                        <span class="yellow-bg"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        @endfor
+                      
+                        <div class="calendar-section__item item-calendar item-calendar--border">
+                            <div class="item-calendar__date">
+                                30.03
+                            </div>
+                            <div class="item-calendar__wrapper">
+                                <div class="item-calendar__label">
+                                    ФІНАЛ ({{$num}})
+                                </div>
+                                <div class="item-calendar__body">
+                                    <span class="red-bg"></span>
+                                    <span class="orange-bg"></span>
+                                    <span class="green-bg"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>                    
+                @endforeach
+            </div>
+        </section>
+
                 
 
         @endif
@@ -1160,8 +1213,56 @@
                 Склади команд на гру
             </h2>
             <div class="teams-section__body">
+                @foreach ($teams as $team)
+                <div style="--color: {{$team->color->color_picker}}" class="teams-section__item item-team-home">
+                    <div data-rating-size="10" data-rating-value="7" class="item-team-home__team-rating rating">
+                        <div class="rating__items">
+                            @for ($i=0; $i<10; $i++)
+                                    <label class="rating__item @if ($i <= $team->rating)
+                                        rating__item--active
+                                        @endif">
+                                <svg width="18" height="19" viewBox="0 0 18 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M0.669408 7.82732C0.398804 7.57384 0.545797 7.11561 0.911812 7.07165L6.09806 6.44858C6.24723 6.43066 6.3768 6.33578 6.43972 6.19761L8.62721 1.39406C8.78159 1.05505 9.25739 1.05499 9.41177 1.39399L11.5993 6.19751C11.6622 6.33568 11.7909 6.43082 11.9401 6.44873L17.1266 7.07165C17.4926 7.11561 17.6392 7.57398 17.3686 7.82745L13.5347 11.4193C13.4244 11.5226 13.3753 11.6764 13.4046 11.8256L14.4221 17.0141C14.4939 17.3803 14.1092 17.664 13.7876 17.4816L9.23042 14.8972C9.09934 14.8228 8.94009 14.8232 8.80901 14.8975L4.25138 17.481C3.92976 17.6633 3.54432 17.3802 3.61615 17.0141L4.63382 11.8259C4.66309 11.6767 4.61412 11.5226 4.50383 11.4193L0.669408 7.82732Z" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </label>
+                            @endfor 
+                        </div>
+                    </div>
+                    <div class="item-team-home__header">
+                        <div class="item-team-home__title">
+                            №
+                        </div>
+                        <div class="item-team-home__title">
+                            ГРАВЕЦЬ
+                        </div>
+                        <div class="item-team-home__icon">
+                            <img src="img/player/ball.webp" alt="Image" class="ibg ibg--contain">
+                        </div>
+                        <div class="item-team-home__icon">
+                            <img src="img/player/shoe.svg" alt="Image" class="ibg ibg--contain">
+                        </div>
+                    </div>
+                    <ol class="item-team-home__list">
+                        @foreach ($team->players as $player)
+                        <li class="item-team-home__member">
+                            <div class="item-team-home__circle"></div>
+                            <span class="active">{{$player->first_name}} {{$player->last_name}}</span>
+                            <div class="item-team-home__value">2</div>
+                            <div class="item-team-home__value">0</div>
+                        </li>    
+                        @endforeach
+                        
+                       
+                    </ol>
+                </div>
+                @endforeach
+            </div>
+            <div class="teams-section__body">
                 <div style="--color: #0053A0" class="teams-section__item item-team-home">
-                    <div data-rating data-rating-size="10" data-rating-value="7" class="item-team-home__team-rating rating">
+                    <div data-rating-size="10" data-rating-value="7" class="item-team-home__team-rating rating">
+                        <div class="rating__items">
+                            
+                        </div>
                     </div>
                     <div class="item-team-home__header">
                         <div class="item-team-home__title">

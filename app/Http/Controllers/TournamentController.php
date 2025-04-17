@@ -32,7 +32,7 @@ class TournamentController extends Controller
 
 
 
-        return view('pages.tournaments', compact('tours', 'series1', 'series2'));
+        return view('pages.tournaments');
     }
 
 

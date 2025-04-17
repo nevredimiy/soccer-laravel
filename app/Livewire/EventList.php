@@ -85,7 +85,7 @@ class EventList extends Component
             }
 
             $event->average_player_rating = $totalPlayers > 0
-                ? round($totalRating / $totalPlayers, 2)
+                ? round($totalRating / $totalPlayers)
                 : 0;
         }
 

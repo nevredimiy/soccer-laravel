@@ -31,7 +31,7 @@
                     Команд зареєстровано
                 </div>
                 <div data-prgs="6" data-prgs-value="{{ $event['teams_count'] }}" class="item-bid__progress item-bid__progress--rect progress-bloc">
-                    @for ( $i = 1; $i <= 6; $i++)
+                    @for ( $i = 1; $i <= $event['format_scheme']; $i++)
                         <span 
                         @if ($i <= $event['teams_count'])
                             class="_active"

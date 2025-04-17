@@ -10,6 +10,7 @@ use Livewire\Attributes\On;
 class TournamentInfo extends Component
 {
     
+    public $romeNum = ['I', 'II', 'III'];
     public $teams = [];
     public $eventId = null;
     public array $roman = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
@@ -46,15 +47,33 @@ class TournamentInfo extends Component
     public function mount()
     {
         $eventId = session('current_event', 0);
-        $this->teams = Team::where('event_id', $eventId)->with('color')->get();
+        $this->teams = $this->getTeams($eventId);
         $this->shedule = $this->getScheduleProperty($this->teams);
 
+        
         $this->series1 = [
             ['Червоний', 'Зелений', 'Жовтий'], 
             ['Червоний', 'Зелений', 'Рожевий'],
             ['Червоний', 'Жовтий', 'Рожевий'], 
             ['Зелений', 'Жовтий', 'Рожевий'], 
-        ];
+        ];        
+    }
+
+    private function getTeams($eventId)
+    {
+        $teams = Team::where('event_id', $eventId)->with(['color', 'players'])->get();
+        foreach($teams as $team){
+            $totalRating = 0;
+            $totalPlayers = 0;
+            $players = $team->players;
+            
+            $totalRating = $players->sum('rating');
+            $totalPlayers = $players->count();
+            $team->rating = $totalPlayers > 0 ? round($totalRating / $totalPlayers) : 0;
+        }
+
+        return $teams;
+
     }
 
     public function getBgClass($colorName): string
@@ -100,16 +119,16 @@ class TournamentInfo extends Component
     {
         if($eventId){
             $this->eventId = $eventId;
-            $this->updateTournament();
+            $this->teams = $this->getTeams($eventId);
         } else {
             $this->teams = [];
         }
     }
 
-    protected function updateTournament()
-    {
-        $this->teams = Team::where('event_id', $this->eventId)->get();
-    }
+    // protected function updateTournament()
+    // {
+    //     $this->teams = Team::where('event_id', $this->eventId)->get();
+    // }
 
 
     public function render()

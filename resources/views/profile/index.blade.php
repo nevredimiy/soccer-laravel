@@ -87,7 +87,7 @@
                         <h2 class="teams-profile__title section-title section-title--margin">
                             УПРАВЛІННЯ КОМАНДАМИ
                         </h2>                          
-                        @if($user->teams->isNotEmpty())
+                        @if($user->teams->isNotEmpty() || $player->team_id > 0)
 
                               <livewire:team-list />
 
@@ -98,8 +98,8 @@
                         @endif                            
                     </section>
 
-        {{-- <h2>ЗАЯВКА №1 Для игрока одиночного турнира</h2>
-                    <section class="team__calendar calendar-team">
+        <h2>ЗАЯВКА №1 Для командного турнира</h2>
+                    {{-- <section class="team__calendar calendar-team">
                         <h2 class="calendar-team__title section-title section-title--margin">
                             КАЛЕНДАР
                         </h2>
@@ -225,7 +225,7 @@
                                 </div>
                             </div>
                         </div>
-                    </section>
+                    </section> --}}
                     <section class="team__latest-series latest-series">
                         <h2 class="latest-series__title section-title section-title--margin">
                             ЗАЯВКА НА НАЙБЛИЖЧУ СЕРІЮ
@@ -390,8 +390,8 @@
 
 
 
-                    <h2>ЗАЯВКА №2 Для игрока одиночного турнира (відкритий)</h2>
-                    <section class="tournament__schedule schedule-tournament">
+                    <h2>ЗАЯВКА №2 Для индивидуального турнира (відкритий)</h2>
+                    {{-- <section class="tournament__schedule schedule-tournament">
                         <h2 class="schedule-tournament__title section-title section-title--margin">
                             РОЗКЛАД
                         </h2>
@@ -499,7 +499,7 @@
                         <button class="schedule-tournament__button button button--yellow">
                             <span>ЗАЯВИТИСЬ НА ТУРНІР</span>
                         </button>
-                    </section>
+                    </section> --}}
 
                     <section class="tournament__players players-tournament">
                         <h2 class="players-tournament__title section-title section-title--margin">
@@ -533,7 +533,7 @@
                         </div>
                     </section>
 
-                    <h2>ЗАЯВКА №3 Для игрока одиночного турнира (приватний)</h2>
+                    <h2>ЗАЯВКА №3 Для индивидуального турнира (приватний)</h2>
                     <section class="tournament__players players-tournament">
                         <h2 class="players-tournament__title section-title section-title--margin">
                             Гравців зареєстровано
@@ -750,7 +750,7 @@
                                 </div>
                             </div>
                         </div>
-                    </section> --}}
+                    </section>
 
                     
                     

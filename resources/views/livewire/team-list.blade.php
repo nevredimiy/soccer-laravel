@@ -19,7 +19,11 @@
                 {{ $team->event->stadium->name }}
             </div>
         </button>
+        @if ($team->owner_id == $userId)
         <livewire:team-editor :team="$team" :key="'edit-'.$team->id" />
+            
+        @endif
+
         @if ($team->status != 'paid')
         <div class="flex flex-col gap-2 items-center mt-2">
             <div class="">
