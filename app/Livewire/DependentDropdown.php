@@ -12,6 +12,7 @@ use App\Models\Event;
 use App\Models\Player;
 use App\Models\PlayerTeam;
 use App\Models\Team;
+use Livewire\Attributes\On; 
 
 class DependentDropdown extends Component
 {
@@ -30,8 +31,9 @@ class DependentDropdown extends Component
     public $selectedTournament = null;
     public $selectedTypeTournament = null;
     public $selectedLeague = null;
+    public $selectedMyEvent = null;
 
-    public $myTounaments = null;
+    public $myEvents = null;
 
     public function mount()
     {
@@ -53,22 +55,7 @@ class DependentDropdown extends Component
 
         $this->leagues = League::all();
 
-        if(auth()->id()){
-            $teamIds = Team::pluck('id')->toArray();
-            
-            $player = Player::where('user_id', auth()->id())->first();
-            $playerTeamIds = PlayerTeam::where('player_id', $player->id)
-                ->pluck('team_id');
-            $teams = Team::with('event.stadium')
-                ->where('owner_id', auth()->id())
-                ->orWhereIn('id', $playerTeamIds)
-                ->orderByDesc('id')
-                ->pluck('event_id');
-            $events = Event::whereIn('id', $teams)->pluck('id');
-            dump($teams);
-            dump($events);
-           
-        }
+        $this->displayMyEvents();
     }
 
     public function updatedSelectedCity($city_id) 
@@ -141,6 +128,40 @@ class DependentDropdown extends Component
         session(['current_league' => $league_id]);
         $this->dispatch('league-selected', league_id: $league_id);
         
+    }
+
+    public function updatedSelectedMyEvent($event_id)
+    {
+        $event = Event::with('stadium.location.district.city')->find($event_id);
+        
+        $city_id = $event->stadium->location->district->city->id;
+        $district_id = $event->stadium->location->district->id;
+        $location_id = $event->stadium->location->id;
+        $this->updatedSelectedCity($city_id);
+        $this->updatedSelectedDistrict($district_id);
+        $this->updatedSelectedLocation($location_id);
+
+        
+    }
+
+    #[On('city-selected')]
+    public function displayMyEvents()
+    {
+        if(auth()->id()){
+            $teamIds = Team::pluck('id')->toArray();
+            
+            $player = Player::where('user_id', auth()->id())->first();
+            if($player){
+                $playerTeamIds = PlayerTeam::where('player_id', $player->id)
+                    ->pluck('team_id');
+                $teams = Team::with('event.stadium')
+                    ->where('owner_id', auth()->id())
+                    ->orWhereIn('id', $playerTeamIds)
+                    ->orderByDesc('id')
+                    ->pluck('event_id');
+                $this->myEvents = Event::whereIn('id', $teams)->with(['tournament', 'stadium.location'])->get();
+            }           
+        }
     }
 
  

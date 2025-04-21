@@ -58,7 +58,7 @@
                             @foreach ($teams as $key => $team)
                             <tr>
                                 <td>
-                                    <span class="fz-big">{{$key +1}}</span>
+                                    <span class="fz-big">{{$key}}</span>
                                 </td>
                                 <td class="color">
                                     <span style="background-color: {{$team->color->color_picker}}">
@@ -174,10 +174,6 @@
     </div>
 
     <div class="home__block _block">
-{{-- 
-        @foreach ($teams as $team )
-            {{$team->color->name}}            
-        @endforeach --}}
 
         @if (count($teams) == 4)
 
@@ -189,56 +185,7 @@
 
         @elseif (count($teams) == 9)
 
-        <section class="home__calendar calendar-section">
-            <h2 class="calendar-section__title section-title section-title--margin">
-                Календар
-            </h2>
-            <div class="calendar-section__body">
-                @foreach ($romeNum as $num)
-                <div class="calendar-section__block">
-                    <div class="calendar-section__series">
-                        СЕРІЯ {{$num}} ЧТ 18:30
-                    </div>
-                    <div class="calendar-section__items">
-
-                        @for ($i=0; $i<12; $i++)
-                            <div class="calendar-section__item item-calendar item-calendar--gray-bg">
-                                <div class="item-calendar__date">
-                                    30.03
-                                </div>
-                                <div class="item-calendar__wrapper">
-                                    <div class="item-calendar__label">
-                                        {{$i+1}} Тур
-                                    </div>
-                                    <div class="item-calendar__body">
-                                        <span class="blue-bg"></span>
-                                        <span class="red-bg"></span>
-                                        <span class="yellow-bg"></span>
-                                    </div>
-                                </div>
-                            </div>
-                        @endfor
-                      
-                        <div class="calendar-section__item item-calendar item-calendar--border">
-                            <div class="item-calendar__date">
-                                30.03
-                            </div>
-                            <div class="item-calendar__wrapper">
-                                <div class="item-calendar__label">
-                                    ФІНАЛ ({{$num}})
-                                </div>
-                                <div class="item-calendar__body">
-                                    <span class="red-bg"></span>
-                                    <span class="orange-bg"></span>
-                                    <span class="green-bg"></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>                    
-                @endforeach
-            </div>
-        </section>
+        @livewire('team-shedule-nine')
 
                 
 

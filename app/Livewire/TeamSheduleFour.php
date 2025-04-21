@@ -7,71 +7,58 @@ use App\Models\Team;
 
 class TeamSheduleFour extends Component
 {
-    protected array $tourTemplate = [
-        ['Червоний', 'Зелений', 'Жовтий'], 
-        ['Червоний', 'Зелений', 'Помаранчевий'],
-        ['Червоний', 'Жовтий', 'Помаранчевий'], 
-        ['Зелений', 'Жовтий', 'Помаранчевий'], 
-    ];
+    public $teams = null;
+    public array $series1 = [];
 
     protected array $colorClasses = [
-        'Червоний' => 'red-bg',
-        'Зелений' => 'green-bg',
         'Жовтий' => 'yellow-bg',
         'Помаранчевий' => 'orange-bg',
+        'Зелений' => 'green-bg',
+        'Сірий' => 'gray-bg',
+        'Синій' => 'blue-bg',
+        'Червоний' => 'red-bg',
+        'Рожевий' => 'pink-bg',
+        'Голубий' => 'sky-bg',
+        'Лаймовий' => 'lime-bg'
     ];
 
-    public $shedule;
 
     public function mount()
     {
         $eventId = session('current_event', 0);
         $this->teams = Team::where('event_id', $eventId)->with('color')->get();
-        $this->shedule = $this->getScheduleProperty($this->teams);
+        $teamIds = $this->teams->pluck('id')->toArray();
 
+        // Шаблоны туров
         $this->series1 = [
-            ['Червоний', 'Зелений', 'Жовтий'], 
-            ['Червоний', 'Зелений', 'Помаранчевий'],
-            ['Червоний', 'Жовтий', 'Помаранчевий'], 
-            ['Зелений', 'Жовтий', 'Помаранчевий'], 
+            [$teamIds[0], $teamIds[1], $teamIds[2]],
+            [$teamIds[0], $teamIds[1], $teamIds[3]],
+            [$teamIds[0], $teamIds[2], $teamIds[3]],
+            [$teamIds[1], $teamIds[2], $teamIds[3]],
+            [$teamIds[0], $teamIds[1], $teamIds[2]],
+            [$teamIds[0], $teamIds[1], $teamIds[3]],
+            [$teamIds[0], $teamIds[2], $teamIds[3]],
+            [$teamIds[1], $teamIds[2], $teamIds[3]],
+            [$teamIds[0], $teamIds[1], $teamIds[2]],
+            [$teamIds[0], $teamIds[1], $teamIds[3]],
+            [$teamIds[0], $teamIds[2], $teamIds[3]],
+            [$teamIds[1], $teamIds[2], $teamIds[3]],
         ];
-    }
-
-    public function getScheduleProperty($teams)
-    {
-                
-        // Преобразуем в удобный массив: "Красная" => Team
-        $teamsByColor = $teams->mapWithKeys(function ($team) {
-            return [$team->color->name => $team];
-        });
-
-        $schedule = [];
-
-        // Всего 12 туров, шаблон повторяется каждые 4
-        for ($i = 0; $i < 12; $i++) {
-            $templateIndex = $i % 4;
-            $playingColors = $this->tourTemplate[$templateIndex];
-
-            $playingTeams = collect($playingColors)
-                ->map(fn($color) => $teamsByColor[$color] ?? null)
-                ->filter(); // на случай, если какой-то команды нет
-
-            $restingTeam = $teams->diff($playingTeams)->first();
-
-            $schedule[] = [
-                'round' => $i + 1,
-                'playing' => $playingTeams,
-                'resting' => $restingTeam,
-            ];
-        }
-
-        return $schedule;
     }
 
     public function getBgClass($colorName): string
     {
         return $this->colorClasses[$colorName] ?? 'default-bg';
     }
+
+   
+
+    public function getColorClassByTeamId($teamId)
+        {
+            $team = $this->teams->firstWhere('id', $teamId);
+            return $team ? $this->getBgClass($team->color->name ?? '') : 'default-bg';
+        }
+
 
     public function render()
     {

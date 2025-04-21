@@ -93,15 +93,13 @@
 
 
          <!-- Мої турніри -->
-         @if ($myTounaments)
-         <div class="">
-            <select wire:model.live="selectedLeague" class="bg-[#00539f] text-white py-1.5 px-2 min-w-44 rounded" name="league" id="">
+         @if ($myEvents && $myEvents->count())
+         <div class="w-full flex justify-center">
+            <select wire:model.live="selectedMyEvent" class="bg-[#f7e10e] py-1.5 px-2 min-w-44 rounded" name="league" id="">
                  <option value="">Мої турніри</option>
-                 @if ($leagues)
-                     @foreach ($leagues as $league)
-                         <option value="{{ $league->id }}"> {{ $league->name }}</option>
+                     @foreach ($myEvents as $event)
+                         <option value="{{ $event->id }}"> {{ $event->stadium->name }} - {{ $event->stadium->location->address }}</option>
                      @endforeach                                        
-                 @endif
              </select>
          </div>             
          @endif

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->enum('type', ['team', 'solo'])->default('team');
+            $table->enum('subtype', ['one-day', 'regular'])->default('regular');
             $table->timestamps();
         });
     }

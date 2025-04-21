@@ -9,24 +9,22 @@
                 СЕРІЯ I ЧТ 18:30
             </div>
             <div class="calendar-section__items">
-                @foreach ($shedule as $round)
-
+                @foreach($series1 as $index => $triplet)
                 <div class="calendar-section__item item-calendar item-calendar--gray-bg">
                     <div class="item-calendar__date">
                         30.03
                     </div>
                     <div class="item-calendar__wrapper">
                         <div class="item-calendar__label">
-                            {{ $round['round'] }} Тур
+                            {{$index + 1}} Тур
                         </div>
                         <div class="item-calendar__body">
-                            @foreach($round['playing'] as $team)
-                            <span class="{{ $this->getBgClass($team->color->name) }}"></span>
+                            @foreach($triplet as $teamId)
+                            <span class="{{ $this->getColorClassByTeamId($teamId) }}"></span>
                             @endforeach
                         </div>
                     </div>
                 </div>
-                    
                 @endforeach
                 <div class="calendar-section__item item-calendar item-calendar--border">
                     <div class="item-calendar__date">

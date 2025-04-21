@@ -8,8 +8,10 @@
                     {{ $team->status == 'paid' ? 'Сплачено' : 'Очікування оплати' }}
                 </p>
             @endif
-            
-            <h3 class="team-card__name">{{ $team->name }}</h3>
+            <div class="flex gap-2">
+                <div style="background-color: {{$team->color->color_picker}}" class="w-4 h-4 rounded"></div>
+                <h3 class="team-card__name">{{ $team->name }}</h3>
+            </div>
             <div class="team-card__logo">
                 <img src="{{ asset('storage/' . $team->logo) }}" alt="Image" class="ibg ibg--contain">
             </div>
@@ -19,9 +21,9 @@
                 {{ $team->event->stadium->name }}
             </div>
         </button>
+        
         @if ($team->owner_id == $userId)
-        <livewire:team-editor :team="$team" :key="'edit-'.$team->id" />
-            
+            <livewire:team-editor :team="$team" :key="'edit-'.$team->id" />            
         @endif
 
         @if ($team->status != 'paid')

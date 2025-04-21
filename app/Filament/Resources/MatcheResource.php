@@ -15,6 +15,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Get;
+use Filament\Forms\Components\Section;
 
 class MatcheResource extends Resource
 {
@@ -34,39 +35,95 @@ class MatcheResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('event_id')
-                    ->options(function () {
-                        return Event::with(['stadium'])
-                        ->orderBy('id', 'desc')
-                        ->get()
-                        ->mapWithKeys(function ($event) {
-                            $stadium = $event->stadium;
-                            $location = $stadium->location;
-                            $district = $location->district;
-                            $city = $district ? $district->city : null;
-                            $label = $event->date;
-                            if($stadium) {
-                                $label .= ' - ' . $stadium->name;
-                            }
-                            if($location) {
-                                $label .= ' - ' . $location->address;
-                            }
+                Section::make('Основний вибір')
+                    ->description('Спочатку виберіть подію, потім серію і потім тур')
+                    ->schema([
+                        Forms\Components\Select::make('event_id')
+                            ->options(function () {
+                                return Event::with(['stadium'])
+                                ->orderBy('id', 'desc')
+                                ->get()
+                                ->mapWithKeys(function ($event) {
+                                    $stadium = $event->stadium;
+                                    $location = $stadium->location;
+                                    $district = $location->district;
+                                    $city = $district ? $district->city : null;
+                                    $label = $event->date;
+                                    if($stadium) {
+                                        $label .= ' - ' . $stadium->name;
+                                    }
+                                    if($location) {
+                                        $label .= ' - ' . $location->address;
+                                    }
+        
+                                    if($city) {
+                                        $label .= ' - ' . $city->name;
+                                    }
+        
+                                    return [$event->id => $label];
+        
+                                });
+                            })
+                            ->searchable()
+                            ->live()
+                            ->required()
+                            ->label('Подія')
+                            ->columnSpan(['sm' => 4]),
+                        Forms\Components\Select::make('series')
+                            ->label('Серія')
+                            ->required()
+                            ->reactive()
+                            ->options(function (callable $get) {
+                                $eventId = $get('event_id');
+                        
+                                if (!$eventId) {
+                                    return [];
+                                }
+                        
+                                $event = \App\Models\Event::find($eventId);
+                        
+                                $map = [
+                                    4 => 1,
+                                    6 => 2,
+                                    9 => 3,
+                                ];
+                        
+                                $count = $map[$event?->format_scheme ?? 4] ?? 1;
+                        
+                                return array_combine(range(1, $count), range(1, $count));
+                            })
+                            ->default(1),
+                        Forms\Components\Select::make('round')
+                            ->reactive()
+                            ->required()
+                            ->label('Тур')
+                            ->options(function (callable $get) {
+                                $eventId = $get('event_id');
+                        
+                                if (!$eventId) {
+                                    return [];
+                                }
+                        
+                                $event = \App\Models\Event::find($eventId);
+                        
+                                $map = [
+                                    4 => 12,
+                                    6 => 10,
+                                    9 => 12,
+                                ];
+                        
+                                $count = $map[$event?->format_scheme ?? 4] ?? 1;
+                        
+                                $rounds = array_combine(range(1, $count), range(1, $count));
 
-                            if($city) {
-                                $label .= ' - ' . $city->name;
-                            }
+                                // Добавим '0' => 'Фінал' в конец
+                                $rounds[0] = 'Фінал';
 
-                            return [$event->id => $label];
-
-                        });
-                    })
-                    ->searchable()
-                    ->live()
-                    ->required()
-                    ->label('Подія')
-                    ->columnSpan([
-                        'sm' => 2,
-                    ]),
+                                return $rounds;
+                            })
+                            ->default(1),
+                    ])->columns(6),
+                
                 Forms\Components\Select::make('team1_id')
                     ->options(fn (Get $get): array => Team::where('event_id', $get('event_id'))
                         ->pluck('name', 'id')
@@ -79,14 +136,7 @@ class MatcheResource extends Resource
                         ->toArray())
                     ->label('Команда 2')
                     ->required(),                    
-                Forms\Components\TextInput::make('score_team1')
-                    ->numeric()
-                    ->label('Рахунок першої команди')
-                    ->default(0),
-                Forms\Components\TextInput::make('score_team2')
-                    ->numeric()
-                    ->label('Рахунок другої команди')
-                    ->default(0),
+               
                 Forms\Components\DateTimePicker::make('start_time')
                     ->label('Початок матчу')    
                     ->required(),
@@ -95,7 +145,7 @@ class MatcheResource extends Resource
                     ->default('scheduled')
                     ->label('Статус')
                     ->options([
-                        'scheluded' => 'Заплановано',
+                        'scheduled' => 'Заплановано',
                         'finished' => 'Закінчений',
                         'canceled' => 'Відмінений',
                     ]),
@@ -124,15 +174,30 @@ class MatcheResource extends Resource
                     })
                     ->sortable(),
                 Tables\Columns\TextColumn::make('start_time')
-                    ->dateTime()
+                    ->dateTime('d F H:i')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('score_time1')
+                Tables\Columns\TextColumn::make('series')
                     ->numeric()
+                    ->label('Серія')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('score_time2')
+                Tables\Columns\TextColumn::make('round')
                     ->numeric()
+                    ->label('Тур')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('status'),
+                Tables\Columns\TextColumn::make('status')
+                    ->label('Статус')
+                    ->formatStateUsing(fn ($state) => [
+                        'scheduled' => 'Заплановано',
+                        'finished' => 'Закінчений',
+                        'canceled' => 'Відмінений',
+                    ][$state] ?? $state)
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'scheduled' => 'warning',
+                        'finished' => 'success',
+                        'canceled' => 'gray',
+                    })
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -146,8 +211,8 @@ class MatcheResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

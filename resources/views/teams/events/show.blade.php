@@ -132,399 +132,60 @@
                         РОЗКЛАД
                     </h2>
                     <div class="schedule-tournament__body">
-                        <div class="schedule-tournament__block">
-                            <div class="schedule-tournament__item schedule-tournament__item--info schedule-tournament__item--center">
-                                <div class="schedule-tournament__label">
-                                    10 КВІТНЯ
-                                </div>
-                                <div class="schedule-tournament__label">
-                                    ВІВТОРОК
-                                </div>
-                            </div>
-                            <div class="schedule-tournament__item schedule-tournament__item--info">
-                                <div class="schedule-tournament__label">
-                                    ЧАС
-                                </div>
-                                <div class="schedule-tournament__label">
-                                    19:00
-                                </div>
-                                <div class="schedule-tournament__label">
-                                    19:45
-                                </div>
-                            </div>
-                            <div class="schedule-tournament__item schedule-tournament__item--info">
-                                <div class="schedule-tournament__label">
-                                    1 ТУР
-                                </div>
-                                <div class="schedule-tournament__label">
-                                    СЕРІЯ А
-                                </div>
-                                <div class="schedule-tournament__label">
-                                    СЕРІЯ В
-                                </div>
-                            </div>
-                            <div class="schedule-tournament__item">
-                                <div class="schedule-tournament__label">
-                                    МАТЧ 1
-                                </div>
-                                <div class="schedule-tournament__colors">
-                                    <span class="blue-bg"></span>
-                                    <span class="yellow-bg"></span>
-                                    <span class="red-bg"></span>
-                                    <span class="green-bg"></span>
-                                </div>
-                            </div>
-                            <div class="schedule-tournament__item">
-                                <div class="schedule-tournament__label">
-                                    МАТЧ 2
-                                </div>
-                                <div class="schedule-tournament__colors">
-                                    <span class="orange-bg"></span>
-                                    <span class="gray-bg"></span>
-                                    <span class="red-bg"></span>
-                                    <span class="yellow-bg"></span>
-                                </div>
-                            </div>
-                            <div class="schedule-tournament__item">
-                                <div class="schedule-tournament__label">
-                                    МАТЧ 3
-                                </div>
-                                <div class="schedule-tournament__colors">
-                                    <span class="blue-bg"></span>
-                                    <span class="yellow-bg"></span>
-                                    <span class="red-bg"></span>
-                                    <span class="green-bg"></span>
-                                </div>
-                            </div>
-                            <div class="schedule-tournament__item">
-                                <div class="schedule-tournament__label">
-                                    МАТЧ 4
-                                </div>
-                                <div class="schedule-tournament__colors">
-                                    <span class="orange-bg"></span>
-                                    <span class="gray-bg"></span>
-                                    <span class="red-bg"></span>
-                                    <span class="yellow-bg"></span>
-                                </div>
-                            </div>
-                            <div class="schedule-tournament__item">
-                                <div class="schedule-tournament__label">
-                                    МАТЧ 5
-                                </div>
-                                <div class="schedule-tournament__colors">
-                                    <span class="blue-bg"></span>
-                                    <span class="yellow-bg"></span>
-                                    <span class="red-bg"></span>
-                                    <span class="green-bg"></span>
-                                </div>
-                            </div>
-                            <div class="schedule-tournament__item">
-                                <div class="schedule-tournament__label">
-                                    МАТЧ 6
-                                </div>
-                                <div class="schedule-tournament__colors">
-                                    <span class="orange-bg"></span>
-                                    <span class="gray-bg"></span>
-                                    <span class="red-bg"></span>
-                                    <span class="yellow-bg"></span>
-                                </div>
-                            </div>
-                            <div class="schedule-tournament__item">
-                                <div class="schedule-tournament__label">
-                                    МАТЧ 7
-                                </div>
-                                <div class="schedule-tournament__colors">
-                                    <span class="blue-bg"></span>
-                                    <span class="yellow-bg"></span>
-                                    <span class="red-bg"></span>
-                                    <span class="green-bg"></span>
-                                </div>
-                            </div>
-                            <div class="schedule-tournament__item">
-                                <div class="schedule-tournament__label">
-                                    МАТЧ 8
-                                </div>
-                                <div class="schedule-tournament__colors">
-                                    <span class="orange-bg"></span>
-                                    <span class="gray-bg"></span>
-                                    <span class="red-bg"></span>
-                                    <span class="yellow-bg"></span>
-                                </div>
-                            </div>
-                            <div class="schedule-tournament__item">
-                                <div class="schedule-tournament__label">
-                                    МАТЧ 9
-                                </div>
-                                <div class="schedule-tournament__colors">
-                                    <span class="blue-bg"></span>
-                                    <span class="yellow-bg"></span>
-                                    <span class="red-bg"></span>
-                                    <span class="green-bg"></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="schedule-tournament__block">
-                            <div class="schedule-tournament__item schedule-tournament__item--info schedule-tournament__item--center">
-                                <div class="schedule-tournament__label">
-                                    10 КВІТНЯ
-                                </div>
-                                <div class="schedule-tournament__label">
-                                    ВІВТОРОК
-                                </div>
-                            </div>
-                            <div class="schedule-tournament__item schedule-tournament__item--info">
-                                <div class="schedule-tournament__label">
-                                    ЧАС
-                                </div>
-                                <div class="schedule-tournament__label">
-                                    19:00
-                                </div>
-                                <div class="schedule-tournament__label">
-                                    19:45
-                                </div>
-                            </div>
-                            <div class="schedule-tournament__item schedule-tournament__item--info">
-                                <div class="schedule-tournament__label">
-                                    1 ТУР
-                                </div>
-                                <div class="schedule-tournament__label">
-                                    СЕРІЯ А
-                                </div>
-                                <div class="schedule-tournament__label">
-                                    СЕРІЯ В
-                                </div>
-                            </div>
-                            <div class="schedule-tournament__item">
-                                <div class="schedule-tournament__label">
-                                    МАТЧ 1
-                                </div>
-                                <div class="schedule-tournament__colors">
-                                    <span class="blue-bg"></span>
-                                    <span class="yellow-bg"></span>
-                                    <span class="red-bg"></span>
-                                    <span class="green-bg"></span>
-                                </div>
-                            </div>
-                            <div class="schedule-tournament__item">
-                                <div class="schedule-tournament__label">
-                                    МАТЧ 2
-                                </div>
-                                <div class="schedule-tournament__colors">
-                                    <span class="orange-bg"></span>
-                                    <span class="gray-bg"></span>
-                                    <span class="red-bg"></span>
-                                    <span class="yellow-bg"></span>
-                                </div>
-                            </div>
-                            <div class="schedule-tournament__item">
-                                <div class="schedule-tournament__label">
-                                    МАТЧ 3
-                                </div>
-                                <div class="schedule-tournament__colors">
-                                    <span class="blue-bg"></span>
-                                    <span class="yellow-bg"></span>
-                                    <span class="red-bg"></span>
-                                    <span class="green-bg"></span>
-                                </div>
-                            </div>
-                            <div class="schedule-tournament__item">
-                                <div class="schedule-tournament__label">
-                                    МАТЧ 4
-                                </div>
-                                <div class="schedule-tournament__colors">
-                                    <span class="orange-bg"></span>
-                                    <span class="gray-bg"></span>
-                                    <span class="red-bg"></span>
-                                    <span class="yellow-bg"></span>
-                                </div>
-                            </div>
-                            <div class="schedule-tournament__item">
-                                <div class="schedule-tournament__label">
-                                    МАТЧ 5
-                                </div>
-                                <div class="schedule-tournament__colors">
-                                    <span class="blue-bg"></span>
-                                    <span class="yellow-bg"></span>
-                                    <span class="red-bg"></span>
-                                    <span class="green-bg"></span>
-                                </div>
-                            </div>
-                            <div class="schedule-tournament__item">
-                                <div class="schedule-tournament__label">
-                                    МАТЧ 6
-                                </div>
-                                <div class="schedule-tournament__colors">
-                                    <span class="orange-bg"></span>
-                                    <span class="gray-bg"></span>
-                                    <span class="red-bg"></span>
-                                    <span class="yellow-bg"></span>
-                                </div>
-                            </div>
-                            <div class="schedule-tournament__item">
-                                <div class="schedule-tournament__label">
-                                    МАТЧ 7
-                                </div>
-                                <div class="schedule-tournament__colors">
-                                    <span class="blue-bg"></span>
-                                    <span class="yellow-bg"></span>
-                                    <span class="red-bg"></span>
-                                    <span class="green-bg"></span>
-                                </div>
-                            </div>
-                            <div class="schedule-tournament__item">
-                                <div class="schedule-tournament__label">
-                                    МАТЧ 8
-                                </div>
-                                <div class="schedule-tournament__colors">
-                                    <span class="orange-bg"></span>
-                                    <span class="gray-bg"></span>
-                                    <span class="red-bg"></span>
-                                    <span class="yellow-bg"></span>
-                                </div>
-                            </div>
-                            <div class="schedule-tournament__item">
-                                <div class="schedule-tournament__label">
-                                    МАТЧ 9
-                                </div>
-                                <div class="schedule-tournament__colors">
-                                    <span class="blue-bg"></span>
-                                    <span class="yellow-bg"></span>
-                                    <span class="red-bg"></span>
-                                    <span class="green-bg"></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="schedule-tournament__block">
-                            <div class="schedule-tournament__item schedule-tournament__item--info schedule-tournament__item--center">
-                                <div class="schedule-tournament__label">
-                                    10 КВІТНЯ
-                                </div>
-                                <div class="schedule-tournament__label">
-                                    ВІВТОРОК
-                                </div>
-                            </div>
-                            <div class="schedule-tournament__item schedule-tournament__item--info">
-                                <div class="schedule-tournament__label">
-                                    ЧАС
-                                </div>
-                                <div class="schedule-tournament__label">
-                                    19:00
-                                </div>
-                                <div class="schedule-tournament__label">
-                                    19:45
-                                </div>
-                            </div>
-                            <div class="schedule-tournament__item schedule-tournament__item--info">
-                                <div class="schedule-tournament__label">
-                                    1 ТУР
-                                </div>
-                                <div class="schedule-tournament__label">
-                                    СЕРІЯ А
-                                </div>
-                                <div class="schedule-tournament__label">
-                                    СЕРІЯ В
-                                </div>
-                            </div>
-                            <div class="schedule-tournament__item">
-                                <div class="schedule-tournament__label">
-                                    МАТЧ 1
-                                </div>
-                                <div class="schedule-tournament__colors">
-                                    <span class="blue-bg"></span>
-                                    <span class="yellow-bg"></span>
-                                    <span class="red-bg"></span>
-                                    <span class="green-bg"></span>
-                                </div>
-                            </div>
-                            <div class="schedule-tournament__item">
-                                <div class="schedule-tournament__label">
-                                    МАТЧ 2
-                                </div>
-                                <div class="schedule-tournament__colors">
-                                    <span class="orange-bg"></span>
-                                    <span class="gray-bg"></span>
-                                    <span class="red-bg"></span>
-                                    <span class="yellow-bg"></span>
-                                </div>
-                            </div>
-                            <div class="schedule-tournament__item">
-                                <div class="schedule-tournament__label">
-                                    МАТЧ 3
-                                </div>
-                                <div class="schedule-tournament__colors">
-                                    <span class="blue-bg"></span>
-                                    <span class="yellow-bg"></span>
-                                    <span class="red-bg"></span>
-                                    <span class="green-bg"></span>
-                                </div>
-                            </div>
-                            <div class="schedule-tournament__item">
-                                <div class="schedule-tournament__label">
-                                    МАТЧ 4
-                                </div>
-                                <div class="schedule-tournament__colors">
-                                    <span class="orange-bg"></span>
-                                    <span class="gray-bg"></span>
-                                    <span class="red-bg"></span>
-                                    <span class="yellow-bg"></span>
-                                </div>
-                            </div>
-                            <div class="schedule-tournament__item">
-                                <div class="schedule-tournament__label">
-                                    МАТЧ 5
-                                </div>
-                                <div class="schedule-tournament__colors">
-                                    <span class="blue-bg"></span>
-                                    <span class="yellow-bg"></span>
-                                    <span class="red-bg"></span>
-                                    <span class="green-bg"></span>
-                                </div>
-                            </div>
-                            <div class="schedule-tournament__item">
-                                <div class="schedule-tournament__label">
-                                    МАТЧ 6
-                                </div>
-                                <div class="schedule-tournament__colors">
-                                    <span class="orange-bg"></span>
-                                    <span class="gray-bg"></span>
-                                    <span class="red-bg"></span>
-                                    <span class="yellow-bg"></span>
-                                </div>
-                            </div>
-                            <div class="schedule-tournament__item">
-                                <div class="schedule-tournament__label">
-                                    МАТЧ 7
-                                </div>
-                                <div class="schedule-tournament__colors">
-                                    <span class="blue-bg"></span>
-                                    <span class="yellow-bg"></span>
-                                    <span class="red-bg"></span>
-                                    <span class="green-bg"></span>
-                                </div>
-                            </div>
-                            <div class="schedule-tournament__item">
-                                <div class="schedule-tournament__label">
-                                    МАТЧ 8
-                                </div>
-                                <div class="schedule-tournament__colors">
-                                    <span class="orange-bg"></span>
-                                    <span class="gray-bg"></span>
-                                    <span class="red-bg"></span>
-                                    <span class="yellow-bg"></span>
-                                </div>
-                            </div>
-                            <div class="schedule-tournament__item">
-                                <div class="schedule-tournament__label">
-                                    МАТЧ 9
-                                </div>
-                                <div class="schedule-tournament__colors">
-                                    <span class="blue-bg"></span>
-                                    <span class="yellow-bg"></span>
-                                    <span class="red-bg"></span>
-                                    <span class="green-bg"></span>
-                                </div>
-                            </div>
-                        </div>
+                        @foreach ($matchesByRound as $round => $roundMatches)
+                           
+                            <div class="schedule-tournament__block">
+                                
+                                <div class="schedule-tournament__item schedule-tournament__item--info schedule-tournament__item--center">
+                                    <div class="schedule-tournament__label">                                        
+                                        {{ Str::upper($roundMatches->dayMonth) }}
+                                    </div>
+                                    <div class="schedule-tournament__label">
+                                        {{ Str::upper($roundMatches->weekday) }}
+                                    </div>
+                                </div>
+                                <div class="schedule-tournament__item schedule-tournament__item--info">
+                                    <div class="schedule-tournament__label">
+                                        ЧАС
+                                    </div>
+                                    @foreach ($series as $v)
+                                        <div class="schedule-tournament__label">
+                                            {{ $v ? \Carbon\Carbon::parse($v->start_time)->format('H:i') : '' }}
+                                        </div>                                        
+                                    @endforeach
+                                </div>
+                                <div class="schedule-tournament__item schedule-tournament__item--info">
+                                    <div class="schedule-tournament__label">
+                                        {{$round}} ТУР
+                                    </div>
+                                    @foreach ($series as $k => $v)
+                                    <div class="schedule-tournament__label">
+                                        СЕРІЯ {{$k}}
+                                    </div>                                        
+                                    @endforeach
+                                   
+                                </div>
+
+                                   
+
+                                    @foreach ($matchTeamColors[$round] as $k => $mat)
+                                    <div class="schedule-tournament__item">
+                                        <div class="schedule-tournament__label">
+                                            МАТЧ {{$k}}
+                                        </div>
+                                        <div class="schedule-tournament__colors">
+                                            @foreach ($mat as $v)
+                                                <span class="{{$v}}"></span>                                                
+                                            @endforeach
+                                            
+                                        </div>         
+                                    </div>     
+                                    @endforeach
+                               
+                               
+                            </div>                            
+                        @endforeach
+                       
                     </div>
                 </section>
                 <section class="tournament__price price-tournament">
@@ -619,22 +280,10 @@
                                        {{ $team->status_text }}
                                     </span>
                                 </div>
-
-                                {{-- @php
-                                    $hasApplication = \App\Models\TeamPlayerApplication::where('team_id', $team->id)
-                                        ->where('user_id', Auth::id())
-                                        ->exists();
-
-                                    $isInTeam = $player && $player->teams()->where('team_id', $team->id)->exists();
-                                @endphp --}}
-                                
-                                {{-- @if ($team->player_request_status != 'closed' && !$isInTeam && !$hasApplication ) --}}
+                               
                                 @if ($team->player_request_status != 'closed' )
                                     @livewire('join-team', ['teamId' => $team->id])
                                 @endif
-                                 {{-- <button class="reg-tournament__button button button--yellow">
-                                    Хочу грати
-                                </button> --}}
                             </div>                            
                         @endforeach
                     </div>

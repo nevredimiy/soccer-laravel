@@ -11,8 +11,8 @@ class Matche extends Model
         'team1_id',
         'team2_id',
         'start_time',
-        'score_team1',
-        'score_team2',
+        'series',
+        'round',
         'status'
     ];
 
@@ -31,6 +31,16 @@ class Matche extends Model
     {
         return $this->belongsToMany(Player::class, 'player_teams', 'team_id', 'player_id')
                     ->withTimestamps();
+    }
+
+    public function team1()
+    {
+        return $this->belongsTo(Team::class, 'team1_id');
+    }
+
+    public function team2()
+    {
+        return $this->belongsTo(Team::class, 'team2_id');
     }
 
     

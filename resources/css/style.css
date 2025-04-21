@@ -328,6 +328,18 @@ body::after {
 .green-bg {
   background-color: #59c65d
 }
+.pink-bg {
+  background-color: #ff99ff
+}
+.sky-bg {
+  background-color: #99d9ea
+}
+.lime-bg {
+  background-color: #9bbb59
+}
+.default-bg {
+  background-color: #ffffff
+}
 .filter-block {
   display: grid;
   gap: .5rem .625rem

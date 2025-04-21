@@ -18,11 +18,6 @@ class TeamApplicationSettings extends Component
 
     public function mount(Team $team)
     {
-        // Проверяем, что текущий пользователь владелец
-        if (Auth::id() !== $team->owner_id) {
-            abort(403);
-        }
-
         $this->team = $team;
         $this->days = $team->application_lifetime_days;
         $this->hours = $team->application_lifetime_hours;

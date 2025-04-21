@@ -22,6 +22,7 @@ use App\Http\Controllers\PlayerRequestController;
 use App\Http\Controllers\TeamEventController;
 use App\Http\Controllers\TeamRequestController;
 use App\Http\Controllers\TournamentController;
+
 use App\Models\Article;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -117,3 +118,7 @@ Route::get('/teams', [TeamController::class, 'index'])->name('teams.index');
 Route::get('/no-access', function () {
     return view('no-access');
 })->name('no-access');
+
+
+
+

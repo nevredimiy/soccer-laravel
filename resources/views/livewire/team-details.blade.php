@@ -1,13 +1,436 @@
-<div class="mt-4 p-4 border rounded bg-white">
+<div class="">
+    <div class="">
+        @if ($team->event->tournament->type == 'team')
+                 
+        
+            <section class="team__latest-series latest-series">
+                <h2 class="latest-series__title section-title section-title--margin">
+                    ЗАЯВКА НА НАЙБЛИЖЧУ СЕРІЮ
+                </h2>
+                <div class="latest-series__match-info match-info">
+                    <div class="match-info__details">
+                        <div class="match-info__label">
+                            27 Червня
+                        </div>
+                        <div class="match-info__label">
+                            ВТ
+                        </div>
+                        <div class="match-info__label">
+                            19:45
+                        </div>
+                        <div class="match-info__label">
+                            9 ТУР
+                        </div>
+                        <div class="match-info__label">
+                            СЕРІЯ Б
+                        </div>
+                    </div>
+                    <div class="match-info__teams">
+                        <div class="match-info__label blue-bg">
+                            AFC SPARTA
+                        </div>
+                        <div class="match-info__label green-bg">
+                            ДИНАМО ВІДРАДНИЙ
+                        </div>
+                        <div class="match-info__label gray-bg">
+                            КЗПТО
+                        </div>
+                    </div>
+                </div>
+                <div class="latest-series__items">
+                    <div class="latest-series__item">
+                        <article class="item-player item-player--stats">
+                            <a href="#" class="item-player__image-link">
+                                <img src="img/player/player.webp" alt="Image" class="ibg">
+                            </a>
+                            <div class="item-player__name">
+                                <a href="#">МАКСИМ МАМЕДОВ 1</a>
+                            </div>
+                            <div class="item-player__details">
+                                <div class="item-player__info">
+                                    31
+                                    <img src="img/player/field.webp" alt="Image" class="ibg ibg--contain">
+                                </div>
+                                <div class="item-player__info">
+                                    28
+                                    <img src="img/player/ball.webp" alt="Image" class="ibg ibg--contain">
+                                </div>
+                                <div class="item-player__info item-player__info--yellow-card">
+                                    1
+                                </div>
+                                <div class="item-player__info item-player__info--red-card">
+                                    0
+                                </div>
+                            </div>
+                            <div data-rating="" data-rating-size="10" data-rating-value="8" class="item-player__rating rating">
+                            </div>
+                        </article>
+                    </div>
+                    <div class="latest-series__item">
+                        <article class="item-player item-player--stats">
+                            <a href="#" class="item-player__image-link">
+                                <img src="img/player/player.webp" alt="Image" class="ibg">
+                            </a>
+                            <div class="item-player__name">
+                                <a href="#">МАКСИМ МАМЕДОВ 2</a>
+                            </div>
+                            <div class="item-player__details">
+                                <div class="item-player__info">
+                                    31
+                                    <img src="img/player/field.webp" alt="Image" class="ibg ibg--contain">
+                                </div>
+                                <div class="item-player__info">
+                                    28
+                                    <img src="img/player/ball.webp" alt="Image" class="ibg ibg--contain">
+                                </div>
+                                <div class="item-player__info item-player__info--yellow-card">
+                                    1
+                                </div>
+                                <div class="item-player__info item-player__info--red-card">
+                                    0
+                                </div>
+                            </div>
+                            <div data-rating="" data-rating-size="10" data-rating-value="8" class="item-player__rating rating">
+                        </div>
+                        </article>
+                    </div>
+                    <div class="latest-series__item">
+                        <button class="latest-series__empty">
+                            ЗАЙНЯТИ МІСЦЕ
+                        </button>
+                    </div>
+                    <div class="latest-series__item">
+                        <article class="item-player item-player--stats">
+                            <a href="#" class="item-player__image-link">
+                                <img src="img/player/player.webp" alt="Image" class="ibg">
+                            </a>
+                            <div class="item-player__name">
+                                <a href="#">МАКСИМ МАМЕДОВ 3</a>
+                            </div>
+                            <div class="item-player__details">
+                                <div class="item-player__info">
+                                    31
+                                    <img src="img/player/field.webp" alt="Image" class="ibg ibg--contain">
+                                </div>
+                                <div class="item-player__info">
+                                    28
+                                    <img src="img/player/ball.webp" alt="Image" class="ibg ibg--contain">
+                                </div>
+                                <div class="item-player__info item-player__info--yellow-card">
+                                    1
+                                </div>
+                                <div class="item-player__info item-player__info--red-card">
+                                    0
+                                </div>
+                            </div>
+                            <div data-rating="" data-rating-size="10" data-rating-value="8" class="item-player__rating rating">
+                            </div>
+                        </article>
+                    </div>
+                    <div class="latest-series__item">
+                        <button class="latest-series__empty">
+                            ЗАЙНЯТИ МІСЦЕ
+                        </button>
+                    </div>
+                    <div class="latest-series__item">
+                        <article class="item-player item-player--stats">
+                            <a href="#" class="item-player__image-link">
+                                <img src="img/player/player.webp" alt="Image" class="ibg">
+                            </a>
+                            <div class="item-player__name">
+                                <a href="#">МАКСИМ МАМЕДОВ 4</a>
+                            </div>
+                            <div class="item-player__details">
+                                <div class="item-player__info">
+                                    31
+                                    <img src="img/player/field.webp" alt="Image" class="ibg ibg--contain">
+                                </div>
+                                <div class="item-player__info">
+                                    28
+                                    <img src="img/player/ball.webp" alt="Image" class="ibg ibg--contain">
+                                </div>
+                                <div class="item-player__info item-player__info--yellow-card">
+                                    1
+                                </div>
+                                <div class="item-player__info item-player__info--red-card">
+                                    0
+                                </div>
+                            </div>
+                            <div data-rating="" data-rating-size="10" data-rating-value="8" class="item-player__rating rating">
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </section>
 
-    @if($team)
-    <div class="text-center mb-2">
-        <h2 class="text-xl font-bold">Команда: {{ $team->name }}</h2>
-        <p>Статус: {{ $team->status }}</p>
-        <p>Цвет: {{ $team->color->name ?? 'Не указан' }}</p>
+        @elseif ($team->event->tournament->type == 'solo')
 
+            <h2>ЗАЯВКА №2 Для индивидуального турнира (відкритий)</h2>
+            <section class="tournament__players players-tournament">
+                <h2 class="players-tournament__title section-title section-title--margin">
+                    Гравців зареєстровано
+                </h2>
+                <div data-prgs="18" data-prgs-value="13" class="players-tournament__progress">
+                    @for ($i = 0; $i < 18; $i++)
+                        <span @if ($i < 13)
+                            class="_active"
+                        @endif></span>
+                        
+                    @endfor
+                </div>
+                <div class="players-tournament__items">
+                    <div style="--color: #0053A0" class="players-tournament__team">
+                        @for ($i=0; $i<6; $i++)
+                        <div class="players-tournament__item">
+                            <article class="item-player item-player--stats">
+                                <a href="#" class="item-player__image-link">
+                                    <img src="img/player/player.webp" alt="Image" class="ibg">
+                                </a>
+                                <div class="item-player__name">
+                                    <a href="#">МАКСИМ МАМЕДОВ</a>
+                                </div>
+                                <div data-rating data-rating-size="10" data-rating-value="8" class="item-player__rating rating">
+                                </div>
+                            </article>
+                        </div>                                    
+                        @endfor                               
+                    </div>
+                </div>
+            </section>
+        @else
+
+            <h2>ЗАЯВКА №3 Для индивидуального турнира (приватний)</h2>
+            <section class="tournament__players players-tournament">
+                <h2 class="players-tournament__title section-title section-title--margin">
+                    Гравців зареєстровано
+                </h2>
+                <div data-prgs="18" data-prgs-value="13" class="players-tournament__progress">
+                    @for ($i = 0; $i < 18; $i++)
+                        <span @if ($i < 13)
+                            class="_active"
+                        @endif></span>
+                        
+                    @endfor
+                </div>
+                <div class="players-tournament__items">
+                    <div style="--color: #0053A0" class="players-tournament__team">
+                    
+                        <div class="players-tournament__item">
+                            <article class="item-player item-player--stats">
+                                <a href="#" class="item-player__image-link">
+                                    <img src="img/player/player.webp" alt="Image" class="ibg">
+                                </a>
+                                <div class="item-player__name">
+                                    <a href="#">МАКСИМ МАМЕДОВ</a>
+                                </div>
+                                <div data-rating data-rating-size="10" data-rating-value="8" class="item-player__rating rating">
+                                </div>
+                            </article>
+                        </div>
+                        <div class="players-tournament__item">
+                            <article class="item-player item-player--stats">
+                                <a href="#" class="item-player__image-link">
+                                    <img src="img/player/player.webp" alt="Image" class="ibg">
+                                </a>
+                                <div class="item-player__name">
+                                    <a href="#">МАКСИМ МАМЕДОВ</a>
+                                </div>
+                                <div data-rating data-rating-size="10" data-rating-value="8" class="item-player__rating rating">
+                                </div>
+                            </article>
+                        </div>
+                        <div class="players-tournament__item">
+                            <button class="players-tournament__empty">
+                                <span>
+                                    ЗАЙНЯТИ МІСЦЕ
+                                </span>
+                            </button>
+
+                        </div>
+                        <div class="players-tournament__item">
+                            <article class="item-player item-player--stats">
+                                <a href="#" class="item-player__image-link">
+                                    <img src="img/player/player.webp" alt="Image" class="ibg">
+                                </a>
+                                <div class="item-player__name">
+                                    <a href="#">МАКСИМ МАМЕДОВ</a>
+                                </div>
+                                <div data-rating data-rating-size="10" data-rating-value="8" class="item-player__rating rating">
+                                </div>
+                            </article>
+                        </div>
+                        <div class="players-tournament__item">
+                            <article class="item-player item-player--stats">
+                                <a href="#" class="item-player__image-link">
+                                    <img src="img/player/player.webp" alt="Image" class="ibg">
+                                </a>
+                                <div class="item-player__name">
+                                    <a href="#">МАКСИМ МАМЕДОВ</a>
+                                </div>
+                                <div data-rating data-rating-size="10" data-rating-value="8" class="item-player__rating rating">
+                                </div>
+                            </article>
+                        </div>
+                        <div class="players-tournament__item">
+                            <article class="item-player item-player--stats">
+                                <a href="#" class="item-player__image-link">
+                                    <img src="img/player/player.webp" alt="Image" class="ibg">
+                                </a>
+                                <div class="item-player__name">
+                                    <a href="#">МАКСИМ МАМЕДОВ</a>
+                                </div>
+                                <div data-rating data-rating-size="10" data-rating-value="8" class="item-player__rating rating">
+                                </div>
+                            </article>
+                        </div>
+                    </div>
+                    <div style="--color: #F7E10E" class="players-tournament__team">
+                        <div class="players-tournament__item">
+                            <button class="players-tournament__empty">
+                                <span>
+                                    ЗАЙНЯТИ МІСЦЕ
+                                </span>
+                            </button>
+                        </div>
+                        <div class="players-tournament__item">
+                            <article class="item-player item-player--stats">
+                                <a href="#" class="item-player__image-link">
+                                    <img src="img/player/player.webp" alt="Image" class="ibg">
+                                </a>
+                                <div class="item-player__name">
+                                    <a href="#">МАКСИМ МАМЕДОВ</a>
+                                </div>
+                                <div data-rating data-rating-size="10" data-rating-value="8" class="item-player__rating rating">
+                                </div>
+                            </article>
+                        </div>
+                        <div class="players-tournament__item">
+                            <button class="players-tournament__empty">
+                                <span>
+                                    ЗАЙНЯТИ МІСЦЕ
+                                </span>
+                            </button>
+
+                        </div>
+                        <div class="players-tournament__item">
+                            <article class="item-player item-player--stats">
+                                <a href="#" class="item-player__image-link">
+                                    <img src="img/player/player.webp" alt="Image" class="ibg">
+                                </a>
+                                <div class="item-player__name">
+                                    <a href="#">МАКСИМ МАМЕДОВ</a>
+                                </div>
+                                <div data-rating data-rating-size="10" data-rating-value="8" class="item-player__rating rating">
+                                </div>
+                            </article>
+                        </div>
+                        <div class="players-tournament__item">
+                            <article class="item-player item-player--stats">
+                                <a href="#" class="item-player__image-link">
+                                    <img src="img/player/player.webp" alt="Image" class="ibg">
+                                </a>
+                                <div class="item-player__name">
+                                    <a href="#">МАКСИМ МАМЕДОВ</a>
+                                </div>
+                                <div data-rating data-rating-size="10" data-rating-value="8" class="item-player__rating rating">
+                                </div>
+                            </article>
+                        </div>
+                        <div class="players-tournament__item">
+                            <article class="item-player item-player--stats">
+                                <a href="#" class="item-player__image-link">
+                                    <img src="img/player/player.webp" alt="Image" class="ibg">
+                                </a>
+                                <div class="item-player__name">
+                                    <a href="#">МАКСИМ МАМЕДОВ</a>
+                                </div>
+                                <div data-rating data-rating-size="10" data-rating-value="8" class="item-player__rating rating">
+                                </div>
+                            </article>
+                        </div>
+                    </div>
+                    <div style="--color: #59C65D" class="players-tournament__team">
+                        <div class="players-tournament__item">
+                            <article class="item-player item-player--stats">
+                                <a href="#" class="item-player__image-link">
+                                    <img src="img/player/player.webp" alt="Image" class="ibg">
+                                </a>
+                                <div class="item-player__name">
+                                    <a href="#">МАКСИМ МАМЕДОВ</a>
+                                </div>
+                                <div data-rating data-rating-size="10" data-rating-value="8" class="item-player__rating rating">
+                                </div>
+                            </article>
+                        </div>
+                        <div class="players-tournament__item">
+                            <article class="item-player item-player--stats">
+                                <a href="#" class="item-player__image-link">
+                                    <img src="img/player/player.webp" alt="Image" class="ibg">
+                                </a>
+                                <div class="item-player__name">
+                                    <a href="#">МАКСИМ МАМЕДОВ</a>
+                                </div>
+                                <div data-rating data-rating-size="10" data-rating-value="8" class="item-player__rating rating">
+                                </div>
+                            </article>
+                        </div>
+                        <div class="players-tournament__item">
+                            <button class="players-tournament__empty">
+                                <span>
+                                    ЗАЙНЯТИ МІСЦЕ
+                                </span>
+                            </button>
+
+                        </div>
+                        <div class="players-tournament__item">
+                            <button class="players-tournament__empty">
+                                <span>
+                                    ЗАЙНЯТИ МІСЦЕ
+                                </span>
+                            </button>
+
+                        </div>
+                        <div class="players-tournament__item">
+                            <article class="item-player item-player--stats">
+                                <a href="#" class="item-player__image-link">
+                                    <img src="img/player/player.webp" alt="Image" class="ibg">
+                                </a>
+                                <div class="item-player__name">
+                                    <a href="#">МАКСИМ МАМЕДОВ</a>
+                                </div>
+                                <div data-rating data-rating-size="10" data-rating-value="8" class="item-player__rating rating">
+                                </div>
+                            </article>
+                        </div>
+                        <div class="players-tournament__item">
+                            <article class="item-player item-player--stats">
+                                <a href="#" class="item-player__image-link">
+                                    <img src="img/player/player.webp" alt="Image" class="ibg">
+                                </a>
+                                <div class="item-player__name">
+                                    <a href="#">МАКСИМ МАМЕДОВ</a>
+                                </div>
+                                <div data-rating data-rating-size="10" data-rating-value="8" class="item-player__rating rating">
+                                </div>
+                            </article>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        @endif
     </div>
 
+    @if($team && $team->owner_id == $userId)
+    <div class="mt-4 p-4 border rounded bg-white">
+    
+        <div class="text-center mb-2">
+            <h2 class="text-xl font-bold">Команда: {{ $team->name }}</h2>
+            <p>Статус: {{ $team->status }}</p>
+            <p>Цвет: {{ $team->color->name ?? 'Не указан' }}</p>
+    
+        </div>
+    
         <section class="profile__players players-tournament">
             <h2 class="players-tournament__title section-title section-title--margin">
                 Гравців зареєстровано
@@ -29,7 +452,7 @@
             @endif --}}
             <div class="players-tournament__items">
                 @forelse ($players as $player)
-                <div class="players-tournament__item">
+                <div wire:key="{{$player->id}}" class="players-tournament__item">
                     <article class="item-player item-player--stats">
                         <a href="#" class="item-player__image-link">
                             <img src="{{ asset('storage/' . $player->photo) }}" alt="Image" class="ibg">
@@ -69,7 +492,7 @@
                             {{ $player->status === 'main' ? 'ОСНОВИЙ' : 'РЕЗЕРВНИЙ' }}
                         </div>
 
-                      
+                        
                         
                         <form action="{{ route('profile.togglePlayerStatus') }}" method="POST">
                             @csrf
@@ -90,11 +513,11 @@
                         
                     </div>
                 </div>
-                   
+                    
                 @empty
                 <div class="text-gray-500">Немає жодного гравця у цій команді</div>
                 @endforelse
-              
+                
             </div>
             <div class="players-tournament__info">
                 <div class="players-tournament__info-item _icon-star">
@@ -137,20 +560,15 @@
                 </div>
             </div>
 
-
-          
-            
-            <livewire:transfer-filter :team="$team" />
-
+            <livewire:transfer-filter :team="$team" />    
 
             <livewire:team-application-settings :team="$team" />
 
         </div>
 
         <livewire:team-player-status :team="$team" wire:key="team-player-status-{{ $team->id }}"/>
-
-
-    @else
-        <p>Виберіть команду для перегляду інформації</p>
+    
+   
+    </div>
     @endif
 </div>

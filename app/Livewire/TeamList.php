@@ -27,14 +27,20 @@ class TeamList extends Component
                     ->limit(1);
             })
             ->pluck('team_id');
-    
-        $this->teams = Team::with('event.stadium')
+        
+        $this->teams = Team::with(['event.stadium', 'color'])
             ->where('owner_id', $this->userId)
             ->orWhereIn('id', $playerTeamIds)
             ->orderByDesc('id')
             ->get();
     
-        $this->activeTeamId = $this->teams->first()?->id;
+        foreach($this->teams as $team){
+            if($team->owner_id == $this->userId){
+                $this->activeTeamId = $team->id;
+                break;
+            }
+        }
+            
     
         $this->dispatch('team-selected', team_id: $this->activeTeamId);
     }

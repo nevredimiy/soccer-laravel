@@ -42,6 +42,14 @@ class TournamentResource extends Resource
                     ])
                     ->default('team')
                     ->required(),
+                Forms\Components\Select::make('subtype')
+                    ->label('Підтип турніра')
+                    ->options([
+                        'one-day' => 'Одноденний',
+                        'regular' => 'Регулярний',
+                    ])
+                    ->default('regular')
+                    ->required(),
             ]);
     }
 

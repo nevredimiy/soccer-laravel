@@ -14,33 +14,24 @@ class ProfileController extends Controller
 {
     public function index()
     {
-
         $user = auth()->user();
+        
 
+        
         // Проверяем, есть ли пользователь в таблице players
-        $player = Player::where('user_id', $user->id)->first();
-
-
+        $player = Player::where('user_id', $user->id)->with('teams')->first();
+        
               
         // Если игрока нет, перенаправляем на создание профиля
         if (!$player) {
             return redirect()->route('players.create')->with('success', 'Ваш email було успішно підтверджено!');;
         }
 
-        // // Формируем массив статусов команд
-        // $teams = $user->teams->map(function ($team) {
-        //     return [
-        //         'data' => $team,
-        //         'status_message' => $team->status === 'awaiting_payment' ? 'Очікування на оплату' :
-        //                             ($team->status === 'paid' ? 'Сплачено' : null),
-        //         'status' => $team->status === 'awaiting_payment' ? 0 : ($team->status === 'paid' ? 1 : null)
-        //     ];
-        // });
-        
-
         $dateString = $player->birth_date;  
         $date = Carbon::createFromFormat('Y-m-d', substr($dateString, 0, 10));  
         $formattedBithDate = $date->locale('uk')->translatedFormat('d F Y');  
+
+        
     
         return view('profile.index', compact('player', 'formattedBithDate', 'user'));
     }
