@@ -15,7 +15,7 @@
         <div class="page__wrapper">
             <livewire:tournament-events />
             <livewire:tournament-info />
-            <livewire:tabs />
+            {{-- <livewire:tabs /> --}}
         </div>
     </div>
 @endsection	

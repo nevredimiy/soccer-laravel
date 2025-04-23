@@ -162,27 +162,20 @@
                                     <div class="schedule-tournament__label">
                                         СЕРІЯ {{$k}}
                                     </div>                                        
-                                    @endforeach
-                                   
+                                    @endforeach                                   
                                 </div>
-
-                                   
-
-                                    @foreach ($matchTeamColors[$round] as $k => $mat)
-                                    <div class="schedule-tournament__item">
-                                        <div class="schedule-tournament__label">
-                                            МАТЧ {{$k}}
-                                        </div>
-                                        <div class="schedule-tournament__colors">
-                                            @foreach ($mat as $v)
-                                                <span class="{{$v}}"></span>                                                
-                                            @endforeach
-                                            
-                                        </div>         
-                                    </div>     
-                                    @endforeach
-                               
-                               
+                                @foreach ($matchTeamColors[$round] as $k => $mat)
+                                <div class="schedule-tournament__item">
+                                    <div class="schedule-tournament__label">
+                                        МАТЧ {{$k}}
+                                    </div>
+                                    <div class="schedule-tournament__colors">
+                                        @foreach ($mat as $v)
+                                            <span class="{{$v}}"></span>                                                
+                                        @endforeach                                            
+                                    </div>         
+                                </div>     
+                                @endforeach
                             </div>                            
                         @endforeach
                        

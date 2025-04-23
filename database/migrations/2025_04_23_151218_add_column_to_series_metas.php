@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('player_teams', function (Blueprint $table) {
-            $table->string('status')->default('reserve');
+        Schema::table('series_metas', function (Blueprint $table) {
+            $table->foreignId('event_id')->constrained('events')->onDelete('cascade');
+            $table->unsignedTinyInteger('round');
         });
     }
 
@@ -21,8 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('player_teams', function (Blueprint $table) {
-            $table->dropColumn('status');
+        Schema::table('series_metas', function (Blueprint $table) {
+            //
         });
     }
 };

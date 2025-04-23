@@ -18,9 +18,13 @@ class BalanceController extends Controller
         $this->balanceService = $balanceService;
     }
 
-    public function showForm()
+    public function showForm(Request $request)
     {
-        return view('balance.top-up');
+        $amount = 0;
+        if($request->get('amount')){
+            $amount = $request->get('amount');
+        }
+        return view('balance.top-up', compact('amount'));
     }
 
     public function processPayment(Request $request)

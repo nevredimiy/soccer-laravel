@@ -16,7 +16,7 @@
             <div class="account__body">
                 <div class="account__field">
                     <label class="account__label" for="amount">Введіть суму:</label>
-                    <input class="account__input input" type="number" name="amount" min="1" required>
+                    <input class="account__input input" type="number" name="amount" min="1" value="{{$amount}}" required>
                 </div>
                 <button class="account__button button button--green flex-content-center"  type="submit">Оплатити</button>
             </div>

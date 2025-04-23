@@ -39,6 +39,7 @@ class TournamentResource extends Resource
                     ->options([
                         'team' => 'Командний',
                         'solo' => 'Індивідуальний',
+                        'solo_private' => 'Індивідуальний (приватний)',
                     ])
                     ->default('team')
                     ->required(),
@@ -66,7 +67,14 @@ class TournamentResource extends Resource
                 Tables\Columns\TextColumn::make('type')
                     ->label('Тип турніра')
                     ->formatStateUsing(function ($state) {
-                        return $state === 'team' ? 'Командний' : 'Індивідуальний';
+                        switch ($state) {
+                            case 'team' : 
+                                return 'Командний';
+                            case 'solo': 
+                                return 'Індивідуальний';
+                            default:
+                            return 'Індивідуальний (приватний)';
+                    }
                     })
                     ->sortable()
                     ->searchable(),

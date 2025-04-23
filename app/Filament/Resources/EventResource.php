@@ -427,6 +427,8 @@ class EventResource extends Resource
                     [$teamIds[1], $teamIds[4], $teamIds[7]],
                     [$teamIds[1], $teamIds[5], $teamIds[0]],
                     [$teamIds[1], $teamIds[6], $teamIds[8]],
+                    [$teamIds[2], $teamIds[3], $teamIds[4]],
+                    [$teamIds[2], $teamIds[5], $teamIds[6]],
                     [$teamIds[2], $teamIds[6], $teamIds[1]],
                     [$teamIds[2], $teamIds[7], $teamIds[0]],
                 ];
@@ -440,6 +442,8 @@ class EventResource extends Resource
                     [$teamIds[2], $teamIds[5], $teamIds[8]],
                     [$teamIds[2], $teamIds[6], $teamIds[7]],
                     [$teamIds[2], $teamIds[4], $teamIds[0]],
+                    [$teamIds[5], $teamIds[6], $teamIds[7]],
+                    [$teamIds[3], $teamIds[6], $teamIds[0]],
                     [$teamIds[3], $teamIds[7], $teamIds[8]],
                     [$teamIds[3], $teamIds[5], $teamIds[1]],
                 ];    
@@ -451,6 +455,8 @@ class EventResource extends Resource
                     [$teamIds[2], $teamIds[4], $teamIds[6]],
                     [$teamIds[7], $teamIds[8], $teamIds[0]],
                     [$teamIds[3], $teamIds[6], $teamIds[0]],
+                    [$teamIds[3], $teamIds[4], $teamIds[8]],
+                    [$teamIds[3], $teamIds[5], $teamIds[7]],
                     [$teamIds[8], $teamIds[0], $teamIds[1]],
                     [$teamIds[4], $teamIds[7], $teamIds[1]],
                     [$teamIds[4], $teamIds[5], $teamIds[0]],

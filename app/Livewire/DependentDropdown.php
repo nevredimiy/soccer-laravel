@@ -24,6 +24,7 @@ class DependentDropdown extends Component
     public $tournaments;
     public $typeTournaments;
     public $leagues;
+    public $myEvents = null;
 
     public $selectedCity = null;
     public $selectedDistrict = null;
@@ -33,7 +34,6 @@ class DependentDropdown extends Component
     public $selectedLeague = null;
     public $selectedMyEvent = null;
 
-    public $myEvents = null;
 
     public function mount()
     {
@@ -109,12 +109,12 @@ class DependentDropdown extends Component
         $this->dispatch('location-selected', location_id: $location_id);
     }
     
-    public function updatedSelectedTournament($tournament_id)
-    {
-        session(['current_tournament' => $tournament_id]);
-        $this->dispatch('tournament-selected', tournament_id: $tournament_id);
+    // public function updatedSelectedTournament($tournament_id)
+    // {
+    //     session(['current_tournament' => $tournament_id]);
+    //     $this->dispatch('tournament-selected', tournament_id: $tournament_id);
         
-    }
+    // }
     
     public function updatedSelectedTypeTournament($typeTournament)
     {
@@ -132,24 +132,34 @@ class DependentDropdown extends Component
 
     public function updatedSelectedMyEvent($event_id)
     {
-        $event = Event::with('stadium.location.district.city')->find($event_id);
-        
-        $city_id = $event->stadium->location->district->city->id;
-        $district_id = $event->stadium->location->district->id;
-        $location_id = $event->stadium->location->id;
-        $this->updatedSelectedCity($city_id);
-        $this->updatedSelectedDistrict($district_id);
-        $this->updatedSelectedLocation($location_id);
+        $event = Event::with(['stadium.location.district.city', 'tournament', 'league'])->find($event_id);
 
-        
+        if($event){
+            $city_id = $event->stadium->location->district->city->id;
+            $district_id = $event->stadium->location->district->id;
+            // dump('district', $district_id);
+            $location_id = $event->stadium->location->id;
+            // dump('location_id', $location_id);
+            $typeTournament = $event->tournament->type;
+            $league_id = $event->league->id;
+            
+            $this->updatedSelectedCity($city_id);
+            $this->updatedSelectedDistrict($district_id);
+            $this->updatedSelectedLocation($location_id);
+            $this->updatedSelectedTypeTournament($typeTournament);
+            $this->updatedSelectedLeague($league_id);
+        }        
     }
 
-    #[On('city-selected')]
+    // #[On('city-selected')]
+    // #[On('district-selected')]
+    // #[On('location-selected')]
+    // #[On('typeTournamentSelected')]
+    // #[On('league-selected')]
     public function displayMyEvents()
     {
         if(auth()->id()){
-            $teamIds = Team::pluck('id')->toArray();
-            
+                      
             $player = Player::where('user_id', auth()->id())->first();
             if($player){
                 $playerTeamIds = PlayerTeam::where('player_id', $player->id)

@@ -9,7 +9,7 @@ class TeamMaxPlayers extends Component
 {
 
     public ?Team $team = null;
-    public $max_players;
+    public $max_players = 6;
 
     public function mount($team)
     {
@@ -21,6 +21,7 @@ class TeamMaxPlayers extends Component
     {
         if ($this->team) {
             $this->team->update(['max_players' => $this->max_players]);
+            $this->dispatch('updateMaxPlayer', $this->max_players);
         }
     }
 

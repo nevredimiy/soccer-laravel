@@ -14,6 +14,7 @@ use Livewire\Attributes\On;
 class TournamentEvents extends Component
 {
     public $events = null;
+    public $event = null;
     public $activeEvent = null;
     public $selectedCity = null;
     public $selectedDistrict = null;
@@ -33,6 +34,8 @@ class TournamentEvents extends Component
 
         $this->selectEvent($this->activeEvent);
         $this->updateEvents();
+
+
     }
     
     #[On('city-selected')]

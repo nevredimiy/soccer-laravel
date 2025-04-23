@@ -95,24 +95,24 @@ class ProfileController extends Controller
         $teamId = $request->input('team_id');
         $playerId = $request->input('player_id');
         $newStatus = $request->input('action') === 'main' ? 'main' : 'reserve';
-    
         $team = Team::findOrFail($teamId);
         $maxPlayers = $team->max_players;
-    
+        
         // Подсчёт "main"-игроков через player_teams
         $mainCount = DB::table('player_teams')
-            ->where('team_id', $teamId)
-            ->where('status', 'main')
-            ->count();
-    
+        ->where('team_id', $teamId)
+        ->where('status', 'main')
+        ->count();
+        
         if ($mainCount < $maxPlayers || $newStatus === 'reserve') {
             DB::table('player_teams')
-                ->where('team_id', $teamId)
-                ->where('player_id', $playerId)
-                ->update(['status' => $newStatus]);
-    
+            ->where('team_id', $teamId)
+            ->where('player_id', $playerId)
+            ->update(['status' => $newStatus]);
+            
             $player = Player::findOrFail($playerId);
             return back()->with('success', "Статус гравця {$player->last_name} оновлено.");
+            // return route('profile')->with('success', "Статус гравця {$player->last_name} оновлено.");
         } else {
             return back()->with('error', "Статус не оновлено! Кількість основних гравців не повинна перевищувати {$maxPlayers}");
         }

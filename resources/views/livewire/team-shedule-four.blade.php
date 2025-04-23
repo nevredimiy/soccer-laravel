@@ -10,7 +10,7 @@
             </div>
             <div class="calendar-section__items">
                 @foreach($series1 as $index => $triplet)
-                <div class="calendar-section__item item-calendar item-calendar--gray-bg">
+                <div wire:key="{{$index}}" class="calendar-section__item item-calendar item-calendar--gray-bg">
                     <div class="item-calendar__date">
                         30.03
                     </div>
@@ -19,8 +19,8 @@
                             {{$index + 1}} Тур
                         </div>
                         <div class="item-calendar__body">
-                            @foreach($triplet as $teamId)
-                            <span class="{{ $this->getColorClassByTeamId($teamId) }}"></span>
+                            @foreach($triplet as $idx => $teamId)
+                            <span wire:key="{{$idx}}" class="{{ $this->getColorClassByTeamId($teamId) }}"></span>
                             @endforeach
                         </div>
                     </div>

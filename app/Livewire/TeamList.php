@@ -34,20 +34,22 @@ class TeamList extends Component
             ->orderByDesc('id')
             ->get();
     
-        foreach($this->teams as $team){
-            if($team->owner_id == $this->userId){
-                $this->activeTeamId = $team->id;
-                break;
-            }
-        }
+            $this->activeTeamId = ($this->teams->first())->id;
+        // foreach($this->teams as $team){
+        //     if($team->owner_id == $this->userId){
+        //         $this->activeTeamId = $team->id;
+        //         break;
+        //     }
+        // }
             
     
-        $this->dispatch('team-selected', team_id: $this->activeTeamId);
+        // $this->dispatch('team-selected', team_id: $this->activeTeamId);
     }
     
 
     public function selectTeam($teamId)
     {
+        
         $this->activeTeamId = $teamId;
         $this->dispatch('team-selected', team_id: $teamId);
     }

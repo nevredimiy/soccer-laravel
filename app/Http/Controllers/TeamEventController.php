@@ -135,9 +135,7 @@ class TeamEventController extends Controller
                 }
             }
         }
-        // dump($roundMatchesBySeries);
 
-        // dump($matchTeamColors);
            
         return view('teams.events.show', compact(
                                             'event', 

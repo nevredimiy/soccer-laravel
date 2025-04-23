@@ -56,7 +56,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
     Route::post('/profile/update-rating', [ProfileController::class, 'updateRating'])->name('profile.updateRating');
     Route::post('/profile/update-player-list', [ProfileController::class, 'updatePlayerList'])->name('profile.updatePlayerList');
-    Route::post('/profile/toggle-player-status', [ProfileController::class, 'togglePlayerStatus'])->name('profile.togglePlayerStatus');
+    // Route::post('/profile/toggle-player-status', [ProfileController::class, 'togglePlayerStatus'])->name('profile.togglePlayerStatus');
     Route::get('/players/create', [PlayerController::class, 'create'])->name('players.create'); 
     Route::post('/players', [PlayerController::class, 'store'])->name('players.store'); 
     Route::get('/players/edit', [PlayerController::class, 'edit'])->name('players.edit'); 

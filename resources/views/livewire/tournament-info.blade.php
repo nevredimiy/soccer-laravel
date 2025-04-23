@@ -58,7 +58,7 @@
                             @foreach ($teams as $key => $team)
                             <tr>
                                 <td>
-                                    <span class="fz-big">{{$key}}</span>
+                                    <span class="fz-big">{{$key + 1}}</span>
                                 </td>
                                 <td class="color">
                                     <span style="background-color: {{$team->color->color_picker}}">
@@ -1204,7 +1204,7 @@
                 </div>
                 @endforeach
             </div>
-            <div class="teams-section__body">
+            {{-- <div class="teams-section__body">
                 <div style="--color: #0053A0" class="teams-section__item item-team-home">
                     <div data-rating-size="10" data-rating-value="7" class="item-team-home__team-rating rating">
                         <div class="rating__items">
@@ -1385,7 +1385,7 @@
                         </li>
                     </ol>
                 </div>
-            </div>
+            </div> --}}
         </section>
         <section class="home__gallery gallery-home">
             <h2 class="gallery-home__title section-title section-title--margin">

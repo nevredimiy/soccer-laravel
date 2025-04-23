@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\Team;
 use App\Models\TeamPlayerApplication;
 use Illuminate\Support\Collection;
+use Carbon\Carbon;
 
 class TransferFilter extends Component
 {
@@ -18,16 +19,35 @@ class TransferFilter extends Component
     
     public function mount(Team $team)
     {
-        $this->team_id = TeamPlayerApplication::with('user.player')
-        ->where('team_id', $team->id)->get('team_id');
         $this->team = $team;
+
+        $this->team_id = $team->id;
+            
     }
 
     #[On('team-selected')]
     public function updateTeam($team_id){
-        $this->team_id = $team_id;
+        $this->team = TeamPlayerApplication::with('user.player')
+        ->where('team_id', $team->id)->get();
     }
-    
+
+
+    public function updatedMaxAge()
+    {
+        $this->getFilteredApplicationsProperty();
+    }
+
+    public function updatedMinAge()
+    {
+        $this->getFilteredApplicationsProperty();
+    }
+   
+    public function updatedMinRating()
+    {
+        $this->getFilteredApplicationsProperty();
+    }
+
+      
     public function getFilteredApplicationsProperty(): Collection
     {
         $query = TeamPlayerApplication::with('user.player')
@@ -35,13 +55,27 @@ class TransferFilter extends Component
 
         if ($this->minAge) {
             $query->whereHas('user.player', function ($q) {
-                $q->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, NOW()) >= ?', [$this->minAge]);
+                $minBirthDate = Carbon::now()->subYears($this->minAge);
+                $q->where('birth_date', '<=', $minBirthDate);
             });
-        }
+        }            
+
+        // if ($this->minAge) {
+        //     $query->whereHas('user.player', function ($q) {
+        //         $q->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, NOW()) >= ?', [$this->minAge]);
+        //     });
+        // }
+
+        // if ($this->maxAge) {
+        //     $query->whereHas('user.player', function ($q) {
+        //         $q->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, NOW()) <= ?', [$this->maxAge]);
+        //     });
+        // }
 
         if ($this->maxAge) {
             $query->whereHas('user.player', function ($q) {
-                $q->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, NOW()) <= ?', [$this->maxAge]);
+                $maxBirthDate = Carbon::now()->subYears($this->maxAge + 1)->addDay(); // чтобы учесть день рождения
+                $q->where('birth_date', '>=', $maxBirthDate);
             });
         }
 
@@ -53,7 +87,7 @@ class TransferFilter extends Component
 
         $applications = $query->get();
 
-        $this->dispatch('applicationsFiltered', applications: $applications);
+        $this->dispatch('applicationsFiltered', playerApplications: $applications);
         return $applications;
     }
 
@@ -61,8 +95,6 @@ class TransferFilter extends Component
 
     public function render()
     {
-        return view('livewire.transfer-filter', [
-            'applications' => $this->filteredApplications,
-        ]);
+        return view('livewire.transfer-filter');
     }
 }
