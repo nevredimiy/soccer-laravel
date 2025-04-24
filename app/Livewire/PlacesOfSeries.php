@@ -66,7 +66,7 @@ class PlacesOfSeries extends Component
     public function dropRegPlayer($player_id)
     {
         PlayerSeriesRegistration::where('player_id', $player_id)
-            ->where('event_id', $this->team->event->id)
+            ->where('team_id', $this->team->id)
             ->where('series_number', $this->matche->series)
             ->delete();
         $this->getPlayerSeriesRegistration();
@@ -92,26 +92,32 @@ class PlacesOfSeries extends Component
         }
     }
 
+    public function closeModal()
+    {
+        $this->showModal = false;
+    }
+
     public function takePlace($numPlayer = 0)
     {
 
+        // Проверка баланса
         $user = User::find($this->userId);
         $balance = $user->balance;
         $price = SeriesMeta::where('event_id',$this->team->event->id)
-            ->where('series', $this->matche->series)
-            ->where('round', $this->matche->round)->value('price');
-        $this->minBalance = $price / 6;
+        ->where('series', $this->matche->series)
+        ->where('round', $this->matche->round)->value('price');
+        $this->minBalance = ceil($price / 6);
         $this->desiredBalance = $this->minBalance - $balance;
-        
-        if($this->minBalance >= $balance){
+            
+        if($this->minBalance > $balance){
             $this->showModal = true;
             return;
         }
 
-
+        // Проверка повторной регистрации
         $existing = PlayerSeriesRegistration::where('player_id', $this->playerId)
             ->where('series_number', $this->matche->series)
-            ->where('event_id', $this->team->event->id)
+            ->where('team_id', $this->team->id)
             ->exists();
 
         if ($existing) {
@@ -119,22 +125,24 @@ class PlacesOfSeries extends Component
             return; // Прерываем выполнение
         }
 
+        // Добавление игрока в серию
         if($numPlayer){
             DB::table('player_series_registrations')->insert([
                 'event_id' => $this->team->event->id,
+                'team_id' => $this->team->id,
                 'player_id' => $this->playerId,
                 'player_number' => $numPlayer,
                 'series_number' => $this->matche->series,
+                'round' => $this->matche ? $this->matche->round : null,
             ]);
         }
         $this->getPlayerSeriesRegistration();
-      
     }
 
     protected function getPlayerSeriesRegistration()
     {
         $this->regPlayers = PlayerSeriesRegistration::with('player')
-            ->where('event_id', $this->team->event->id)
+            ->where('team_id', $this->team->id)
             ->where('series_number', $this->matche->series)
             ->get();
     }

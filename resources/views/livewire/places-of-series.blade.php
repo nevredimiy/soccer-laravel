@@ -39,7 +39,7 @@
     @endif
     <div class="latest-series__items relative p-2">
         
-        <div class="@if($isPlayerReserve) block @else hidden @endif absolute inset-0 bg-gray-400 opacity-50 rounded"></div>
+        <div class="@if($isPlayerReserve) block @else hidden @endif absolute inset-0 bg-gray-400 opacity-50 rounded z-10"></div>
        
         @for ($i=0; $i<$maxPlayer; $i++)
             @php
@@ -98,11 +98,18 @@
         
 
     </div>
-    <div class="modal" wire:show="showModal">
-        <div class="modal__block">
+    @if($showModal)
+    <div class="modal" wire:click="closeModal" wire:show="showModal">
+        <div wire:click.stop class="modal__block">
+            <button wire:click="closeModal" type="button" class="modal__btn-close">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                </svg>
+            </button>
             <div>Вам потрібно поповнити не менж ніж на {{ $desiredBalance }} грн</div>
             <div class=""><p>Перейти на сторінку поповнення балансу</p></div>
             <div><a class="button button--blue button--small" href="{{ route('balance.form', ['amount' => round($desiredBalance)]) }}">Перейти</a></div>
         </div>
     </div>
+    @endif
 </section>

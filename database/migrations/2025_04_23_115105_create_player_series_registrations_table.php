@@ -14,9 +14,11 @@ return new class extends Migration
         Schema::create('player_series_registrations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('event_id')->constrained('events')->onDelete('cascade');
+            $table->foreignId('team_id')->constrained('teams')->onDelete('cascade');
             $table->foreignId('player_id')->constrained()->onDelete('cascade');
             $table->unsignedTinyInteger('player_number');
             $table->unsignedTinyInteger('series_number');
+            $table->unsignedTinyInteger('round')->nullable();
             $table->enum('status', ['open', 'closed'])->default('open');
             $table->timestamps();            
         });

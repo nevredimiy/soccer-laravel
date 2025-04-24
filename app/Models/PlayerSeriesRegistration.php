@@ -10,6 +10,7 @@ class PlayerSeriesRegistration extends Model
 {
     protected $fillable = [
         'event_id',
+        'team_id',
         'player_id',
         'player_number',
         'series_number',
@@ -19,6 +20,11 @@ class PlayerSeriesRegistration extends Model
     public function player(): BelongsTo
     {
         return $this->belongsTo(Player::class, 'player_id');
+    }
+
+    public function team(): BelongsTo
+    {
+        return $this->belongsTo(Team::class, 'team_id');
     }
 
     public function event(): BelongsTo

@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('series_metas', function (Blueprint $table) {
             $table->id();
             $table->foreignId('event_id')->constrained('events')->onDelete('cascade');
-            $table->unsignedTinyInteger('round');
             $table->dateTime('date');
             $table->unsignedTinyInteger('series');
+            $table->unsignedTinyInteger('round')->nullable();
             $table->decimal('price', 8, 2); // Общая цена за серию
             $table->timestamps();
         });
