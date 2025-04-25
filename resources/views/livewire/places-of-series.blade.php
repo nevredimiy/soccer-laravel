@@ -1,4 +1,6 @@
 <section class="team__latest-series latest-series">
+
+   
    
     <h2 class="latest-series__title section-title section-title--margin">
         ЗАЯВКА НА НАЙБЛИЖЧУ СЕРІЮ
@@ -30,18 +32,19 @@
             @endforeach
             
         </div>
-    </div>
+    </div>   
+
     <h2 class="@if($isPlayerReserve) block @else hidden @endif text-center text-red-400">Ви в резерві! Не можете приймати участь у цій серії.</h2>
     @if (session()->has('message'))
         <div class="text-center bg-yellow-100 text-yellow-800 p-2 rounded mb-2">
             {{ session('message') }}
         </div>
     @endif
-    <div class="latest-series__items relative p-2">
-        
+    <div class="latest-series__items relative p-2">        
         <div class="@if($isPlayerReserve) block @else hidden @endif absolute inset-0 bg-gray-400 opacity-50 rounded z-10"></div>
        
-        @for ($i=0; $i<$maxPlayer; $i++)
+        {{-- @for ($i=0; $i<$maxPlayer; $i++) --}}
+        @for ($i=0; $i<9; $i++)
             @php
                 $playerNumber = $i + 1;
                 $regPlayer = $regPlayers->firstWhere('player_number', $playerNumber);
@@ -95,8 +98,17 @@
             </div>   
            
         @endfor
-        
 
+    </div>
+    <div  class="">
+        <button 
+            type="button"
+            wire:click="closeRegistrations"
+            wire:confirm="Закрити заявки? \n\nПісля підтвердження у гравців спишуться кошти з балансу"
+            class="button button--red button--big"
+        >
+            Закрити заявки
+        </button>
     </div>
     @if($showModal)
     <div class="modal" wire:click="closeModal" wire:show="showModal">

@@ -92,15 +92,6 @@ class PlayerResource extends Resource
                         'sm' => 2,
                     ]),
                
-                Select::make('status')
-                    ->label('Статус')
-                    ->options([
-                        'main' => 'Основний',
-                        'reserve' => 'Резервний'
-                    ])
-                    ->searchable()
-                    ->default('reserve')                 
-                    ->required(),
                 Select::make('teams')
                     ->multiple()
                     ->label('Команда')

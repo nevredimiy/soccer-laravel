@@ -23,6 +23,7 @@ return new class extends Migration
             $table->foreignId('tournament_id')->constrained('tournaments')->onDelete('cascade');
             $table->foreignId('league_id')->nullable()->constrained('leagues')->onDelete('set null');
             $table->decimal('price', 8, 2)->default(0);
+            $table->string('access_code', 4)->nullable();
             $table->timestamps();
         });
     }

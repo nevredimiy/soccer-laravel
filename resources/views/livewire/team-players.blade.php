@@ -19,6 +19,7 @@
     @endif --}}
     <div class="players-tournament__items">
         @forelse ($players as $player)
+        
         <div wire:key="{{$player->id}}" class="players-tournament__item">
             <article class="item-player item-player--stats">
                 <a href="#" class="item-player__image-link">

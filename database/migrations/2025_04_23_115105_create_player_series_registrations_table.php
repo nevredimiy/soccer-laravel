@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('team_id')->constrained('teams')->onDelete('cascade');
             $table->foreignId('player_id')->constrained()->onDelete('cascade');
             $table->unsignedTinyInteger('player_number');
-            $table->unsignedTinyInteger('series_number');
+            $table->unsignedTinyInteger('series');
             $table->unsignedTinyInteger('round')->nullable();
             $table->enum('status', ['open', 'closed'])->default('open');
             $table->timestamps();            

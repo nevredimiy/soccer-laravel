@@ -16,6 +16,8 @@ class UserFactory extends Factory
      */
     protected static ?string $password;
 
+    protected static int $userIndex = 1; // глобальный счётчик
+
     /**
      * Define the model's default state.
      *
@@ -23,8 +25,10 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        $nickname = 'oneone' . self::$userIndex++;
         return [
-            'name' => fake()->name(),
+            // 'name' => fake()->name(),
+            'name' => $nickname,
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             // 'password' => static::$password ??= Hash::make('password'),

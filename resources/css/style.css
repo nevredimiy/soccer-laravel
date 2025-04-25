@@ -403,6 +403,11 @@ body::after {
   background-color: #59c65d;
   color: #fff
 }
+
+.button--red {
+  background-color: #ed1c24;
+  color: #fff
+}
 .button._active {
   background-color: #f7e10e;
   color: #0a2640
@@ -1026,7 +1031,14 @@ body::after {
   color: #fff;
   background-color: #0a2640;
   border: .125rem solid #0a2640;
-  border-radius: .25rem
+  border-radius: .25rem;
+  cursor: pointer;
+}
+
+.item-calendar__wrapper.item-calendar--active{
+  color: #0a2640;
+  background-color: #fff;
+  cursor: auto;
 }
 .item-calendar__label {
   font-size: .75rem;
@@ -1778,7 +1790,8 @@ body::after {
 .team__latest-series,
 .team__members {
   max-width: 48.0625rem;
-  margin: 0 auto
+  margin: 0 auto;
+  position:relative;
 }
 .hero-team__card {
   padding: 1rem .625rem;
@@ -4925,3 +4938,9 @@ body > div.wrapper > main > div > a:hover {
   padding: 5px;
   justify-content: center;
 }
+
+.button--big{
+  width: 100%;
+  justify-content: center;
+}
+

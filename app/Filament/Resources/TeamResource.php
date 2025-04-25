@@ -66,17 +66,20 @@ class TeamResource extends Resource
                 Forms\Components\Select::make('event_id')
                     ->label('Подія')
                     ->options(function () {
-                        return Event::with('stadium')
+                        return Event::with(['stadium', 'tournament'])
                             ->orderBy('id', 'desc')
                             ->get()
                             ->mapWithKeys(function ($event) {
+                                $id = $event->id;
+                                $type = $event->tournament->type;
+                                $subtype = $event->tournament->subtype;
                                 $date = \Carbon\Carbon::parse($event->date)->format('d.m.Y'); // Форматируем дату
                                 $startTime = \Carbon\Carbon::parse($event->start_time)->format('H:i'); // Форматируем время начала
                                 $endTime = \Carbon\Carbon::parse($event->end_time)->format('H:i'); // Форматируем время конца
                                 $location = $event->stadium->location ? $event->stadium->location->address : 'Без локації'; // Проверяем наличие локации
                                 $stadium = $event->stadium ? $event->stadium->name : 'Без Стадіону'; // Проверяем наличие локации
                 
-                                return [$event->id => "{$date} | {$startTime} - {$endTime} | {$location} | {$stadium}"];
+                                return [$event->id => "({$id}) - {$type}/{$subtype} {$date} | {$startTime} - {$endTime} | {$location} | {$stadium}"];
                             });
                     })
                     ->searchable()

@@ -10,6 +10,7 @@ use App\Models\Team;
 use App\Models\Tournament;
 use App\Models\Player;
 use App\Models\Matche;
+use App\Models\SeriesMeta;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -136,6 +137,15 @@ class TeamEventController extends Controller
             }
         }
 
+        $seriesPrices = SeriesMeta::query()->where('event_id', '=', $id)->first();
+
+        $playerPrice = [
+            6 => round($seriesPrices->price / 6),
+            9 => round($seriesPrices->price / 9),
+        ];
+
+        
+
            
         return view('teams.events.show', compact(
                                             'event', 
@@ -146,7 +156,8 @@ class TeamEventController extends Controller
                                             'matchesByRound',
                                             'matchesBySeries',
                                             'series',
-                                            'matchTeamColors'
+                                            'matchTeamColors',
+                                            'playerPrice'
                                         )
                     );
     }

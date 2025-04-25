@@ -83,8 +83,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/teams/{id}/update-name', [TeamController::class, 'updateName'])->middleware('auth');
     Route::post('/teams/{id}/update-logo', [TeamController::class, 'updateLogo'])->middleware('auth');
 
-    Route::get('/player-request', [PlayerRequestController::class, 'index'])->name('player.request');
-    Route::get('/player-request/details', [PlayerRequestController::class, 'create'])->name('player.request.create');
+    Route::get('/players/events', [PlayerRequestController::class, 'index'])->name('players.events');
+    Route::get('/players/events/{id}', [PlayerRequestController::class, 'show'])->name('players.events.show');
+    Route::post('/players/events/{id}/access', [PlayerRequestController::class, 'checkAccessCode'])->name('players.events.access');
+    
     
     Route::get('/teams/events', [TeamEventController::class, 'index'])->name('teams.events');
     Route::get('/teams/events/{id}', [TeamEventController::class, 'show'])->name('teams.events.show');

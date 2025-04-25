@@ -272,7 +272,8 @@
     
         </div>
     
-       @livewire('team-players', ['team_id' => $team->id])
+       {{-- @livewire('team-players', ['team_id' => $team->id]) --}}
+       <livewire:team-players :team_id="$team->id" />
 
         <div class="profile__prop prop-profile">
             <livewire:team-max-players :team="$team" />

@@ -122,8 +122,9 @@
                         </div>
                         <div class="hero-tournament__info">
                             <div class="hero-tournament__label">
-                                ₴ <span>{{(int) $event->price}} ГРН / ГРАВЕЦЬ</span>
+                               <span>&#8776; {{round(($playerPrice[6] + $playerPrice[9])/2)}} ГРН / ГРАВЕЦЬ</span>
                             </div>
+                            <span class="text-xs text-gray-500">Ціна залежить від кількості граавців у команді. Може коливатися від {{$playerPrice[9]}} до {{$playerPrice[6]}} грн</span>
                         </div>
                     </div>
                 </div>

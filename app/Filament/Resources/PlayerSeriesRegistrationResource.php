@@ -131,7 +131,7 @@ class PlayerSeriesRegistrationResource extends Resource
                         return $availableNumbers;
                     })
                     ->label('Номер гравця'),
-                Forms\Components\TextInput::make('series_number')
+                Forms\Components\TextInput::make('series')
                     ->required()
                     ->label('Номер серії')
                     ->numeric(),
@@ -187,7 +187,7 @@ class PlayerSeriesRegistrationResource extends Resource
                     ->numeric()
                     ->label('Номер гравця')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('series_number')
+                Tables\Columns\TextColumn::make('series')
                     ->numeric()
                     ->label('Номер серії')
                     ->sortable(),

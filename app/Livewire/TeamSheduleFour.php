@@ -9,6 +9,7 @@ class TeamSheduleFour extends Component
 {
     public $teams = null;
     public array $series1 = [];
+    public array $currentRound = [];
 
     protected array $colorClasses = [
         'Жовтий' => 'yellow-bg',
@@ -28,6 +29,12 @@ class TeamSheduleFour extends Component
         $eventId = session('current_event', 0);
         $this->teams = Team::where('event_id', $eventId)->with('color')->get();
         $teamIds = $this->teams->pluck('id')->toArray();
+
+        $this->currentRound = [
+            'round_number' => 1,
+            'event_id' => $eventId,
+            'series_number' => 1
+        ];
 
         // Шаблоны туров
         $this->series1 = [
@@ -54,10 +61,22 @@ class TeamSheduleFour extends Component
    
 
     public function getColorClassByTeamId($teamId)
-        {
-            $team = $this->teams->firstWhere('id', $teamId);
-            return $team ? $this->getBgClass($team->color->name ?? '') : 'default-bg';
-        }
+    {
+        $team = $this->teams->firstWhere('id', $teamId);
+        return $team ? $this->getBgClass($team->color->name ?? '') : 'default-bg';
+    }
+
+    public function selectedRound($roundNumber, $eventId, $seriesNumber)
+    {
+       
+        $this->currentRound = [
+            'round_number' => $roundNumber,
+            'event_id' => $eventId,
+            'series_number' => $seriesNumber
+        ];
+
+        $this->dispatch('currentRound', $this->currentRound);
+    }
 
 
     public function render()

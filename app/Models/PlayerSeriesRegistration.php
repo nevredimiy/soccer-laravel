@@ -13,7 +13,8 @@ class PlayerSeriesRegistration extends Model
         'team_id',
         'player_id',
         'player_number',
-        'series_number',
+        'series',
+        'round',
         'status'
     ];
 

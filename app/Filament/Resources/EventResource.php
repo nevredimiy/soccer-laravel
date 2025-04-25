@@ -86,6 +86,7 @@ class EventResource extends Resource
                     ->default(null),
                 Forms\Components\Select::make('format_scheme')
                     ->options([
+                        '3' => '3 команди', 
                         '4' => '4 команди', 
                         '6' => '6 команд',
                         '9' => '9 команд'
@@ -198,6 +199,7 @@ class EventResource extends Resource
     public static function getMatchFormSchema(Event $record): array
     {
         $seriesCount = match ($record->format_scheme) {
+            3 => 1,
             4 => 1,
             6 => 2,
             9 => 3,
@@ -229,6 +231,7 @@ class EventResource extends Resource
     public static function handleMatchGeneration(Event $event, array $data): void
     {
         $seriesCount = match ($event->format_scheme) {
+            3 => 1,
             4 => 1,
             6 => 2,
             9 => 3,
@@ -281,6 +284,50 @@ class EventResource extends Resource
 
         $subtype = $event->tournament->subtype;
     
+        // Генерация для однодневного или регулярного турнира с форматом 4
+        if ($event->format_scheme == 3) {
+         
+            // Шаблон троек команд (3 команды — 12 туров)
+            $seriesTemplate = [
+                [$teamIds[0], $teamIds[1], $teamIds[2]],
+                [$teamIds[0], $teamIds[1], $teamIds[2]],
+                [$teamIds[0], $teamIds[1], $teamIds[2]],
+                [$teamIds[0], $teamIds[1], $teamIds[2]],
+            ];
+            $tours = array_merge($seriesTemplate, $seriesTemplate, $seriesTemplate);
+    
+            foreach ($tours as $index => $teamSet) {
+                $round = $index + 1;
+                $seriesNumber = 1;
+    
+                $date = $subtype === 'one-day'
+                    ? $startDate
+                    : $startDate->copy()->addWeeks($index);    
+    
+                foreach ($matches as [$team1, $team2]) {
+                    \App\Models\Matche::create([
+                        'event_id' => $event->id,
+                        'team1_id' => $teamSet[$team1],
+                        'team2_id' => $teamSet[$team2],
+                        'start_time' => $date->format('Y-m-d H:i:s'),
+                        'series' => $seriesNumber,
+                        'round' => $round,
+                    ]);
+                }
+            }
+
+            Notification::make()
+                ->title('Матчі серії '. $seriesIndex .' згенеровані')
+                ->success()
+                ->send();
+     
+            // Notification::make()
+            //     ->title('НЕЗГЕНЕРОВАНО, матчі серії '. $seriesIndex)
+            //     ->body('Вони вже створені раніше.')
+            //     ->warning()
+            //     ->send();
+     
+        } 
 
         // Генерация для однодневного или регулярного турнира с форматом 4
         if ($event->format_scheme == 4) {

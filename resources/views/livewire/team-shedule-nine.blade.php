@@ -14,7 +14,11 @@
                     <div class="item-calendar__date">
                         30.03
                     </div>
-                    <div class="item-calendar__wrapper">
+                    <div    wire:click="selectedRound({{ $index + 1 }}, {{ session('current_event', 0) }}, 1)"  
+                            class="item-calendar__wrapper @if ($currentRound['round_number'] == $index + 1)
+                                item-calendar--active
+                            @endif"
+                    >
                         <div class="item-calendar__label">
                             {{$index + 1}} Тур
                         </div>
@@ -55,7 +59,11 @@
                     <div class="item-calendar__date">
                         30.03
                     </div>
-                    <div class="item-calendar__wrapper">
+                    <div    wire:click="selectedRound({{ $index + 1 }}, {{ session('current_event', 0) }}, 2)"  
+                            class="item-calendar__wrapper @if ($currentRound['round_number'] == $index + 1)
+                                item-calendar--active
+                            @endif"
+                    >
                         <div class="item-calendar__label">
                             {{$index + 1}} Тур
                         </div>
@@ -95,7 +103,11 @@
                     <div class="item-calendar__date">
                         30.03
                     </div>
-                    <div class="item-calendar__wrapper">
+                    <div    wire:click="selectedRound({{ $index + 1 }}, {{ session('current_event', 0) }}, 3)"  
+                            class="item-calendar__wrapper @if ($currentRound['round_number'] == $index + 1)
+                                item-calendar--active
+                            @endif"
+                    >
                         <div class="item-calendar__label">
                             {{$index + 1}} Тур
                         </div>

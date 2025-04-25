@@ -1,6 +1,3 @@
-           
-
-
 <div data-simplebar-media="799.98" class="bid__wrapper">
     @foreach ($events as $event)
     <div class="bid__items">
