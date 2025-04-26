@@ -41,7 +41,7 @@ class SheduleMatchesTournamentOneDay extends Component
         }
 
         foreach($event->teams as $team){
-            foreach($teams->players as $player){
+            foreach($team->players as $player){
                 $this->playerIds[] = $player->id;
             }
         }
@@ -50,8 +50,12 @@ class SheduleMatchesTournamentOneDay extends Component
     public function BookingPlace()
     {
         $user = auth()->user();
-        $player = Player::query()->whe
-        dump($user);
+        $player = Player::query()->where('user_id', '=', $user->id)->first();
+        if(in_array($player->id, $this->playerIds)){
+            session->flash('error', 'Вы уже записаны на эту серию!');
+            return;
+        }
+        
     }
 
     public function render()
