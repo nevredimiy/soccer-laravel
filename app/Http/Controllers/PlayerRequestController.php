@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Tournament;
 use App\Models\Event;
+use App\Models\Team;
+use App\Models\SeriesMeta;
+
 
 class PlayerRequestController extends Controller
 {
@@ -51,8 +54,13 @@ class PlayerRequestController extends Controller
 
     public function show($id)
     {
-        $event = Event::with('tournament')->findOrFail($id);
+        $event = Event::with(['tournament', 'teams.color', 'teams.players'])->findOrFail($id);
 
+        // $priceSeries = SeriesMeta::query()->where('event_id', '=', $event->id)->value('price');
+        $priceSeries = $event->price;
+        $amountForPlayer = round($priceSeries / 18);
+        
+        // Если турнир приватный
         if (
             $event->tournament->type === 'solo_private' &&
             !session()->has("access_granted_event_{$id}")
@@ -60,8 +68,10 @@ class PlayerRequestController extends Controller
             return view('players.events.access-form', compact('event'));
         }
 
-
-        return view('players.events.show', compact('event'));
+        return view('players.events.show', compact(
+            'event',
+            'amountForPlayer'        
+        ));
     }
 
     public function checkAccessCode(Request $request, $id)

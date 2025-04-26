@@ -72,7 +72,15 @@ class SeriesMetaResource extends Resource
                 Forms\Components\TextInput::make('price')
                     ->required()
                     ->numeric()
-                    ->prefix('$'),
+                    ->suffix('грн'),
+                Forms\Components\Select::make('status_registration')
+                    ->required()
+                    ->default('open')
+                    ->label('Статус')
+                    ->options([
+                        'open' => 'Відкритий',
+                        'closed' => 'Закритий'
+                    ]),
             ]);
     }
 
@@ -104,6 +112,13 @@ class SeriesMetaResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('price')
                     ->money('UAH')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('status_registration')                
+                    ->label('Статус')
+                    ->formatStateUsing(fn ($state) => [
+                        'open' => 'Відкритий',
+                        'closed' => 'Закритий'
+                    ][$state] ?? $state)
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()

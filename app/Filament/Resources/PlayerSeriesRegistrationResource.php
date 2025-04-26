@@ -138,14 +138,6 @@ class PlayerSeriesRegistrationResource extends Resource
                 Forms\Components\TextInput::make('round')
                     ->label('Номер туру')
                     ->numeric(),
-                Forms\Components\Select::make('status')
-                    ->required()
-                    ->default('open')
-                    ->label('Статус')
-                    ->options([
-                        'open' => 'Відкритий',
-                        'closed' => 'Закритий'
-                    ]),
             ]);
     }
 
@@ -190,13 +182,6 @@ class PlayerSeriesRegistrationResource extends Resource
                 Tables\Columns\TextColumn::make('series')
                     ->numeric()
                     ->label('Номер серії')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('status')                
-                    ->label('Статус')
-                    ->formatStateUsing(fn ($state) => [
-                        'open' => 'Відкритий',
-                        'closed' => 'Закритий'
-                    ][$state] ?? $state)
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()

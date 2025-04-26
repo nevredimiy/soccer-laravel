@@ -11,7 +11,8 @@ class SeriesMeta extends Model
         'date',
         'series',
         'price',
-        'round'
+        'round',
+        'status_registration'
 
     ];
 

@@ -17,7 +17,8 @@ return new class extends Migration
             $table->dateTime('date');
             $table->unsignedTinyInteger('series');
             $table->unsignedTinyInteger('round')->nullable();
-            $table->decimal('price', 8, 2); // Общая цена за серию
+            $table->decimal('price', 8, 2); 
+            $table->enum('status_registration', ['open', 'closed'])->default('open');
             $table->timestamps();
         });
     }

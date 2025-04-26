@@ -18,18 +18,20 @@ use App\Models\PlayerTeam;
 
 class PlacesOfSeries extends Component
 {
-    public $team = null;
+    public ?Matche $matche = null;
+    public ?Team $team = null;
+    public ?SeriesMeta $seriesMeta = null;
+    public $userId = null; 
+    public $playerId = null;
     public $seriesTeams = [];
     public $formatDate = '';
-    public ?Matche $matche = null;
     public $maxPlayer = 6;
     public $showModal = false;
-    public $userId; 
-    public $playerId = null;
     public $isPlayerReserve = false;
     public $regPlayers = null;
-    public $minBalance;
-    public $desiredBalance;
+    public $minBalance = 0;
+    public $desiredBalance = 0;
+    public $statusRegistration = 'open';
 
     public function mount($team)
     {
@@ -42,6 +44,10 @@ class PlacesOfSeries extends Component
             ->where('start_time', '>=', Carbon::today())
             ->where('team1_id', $this->team->id)
             ->whereOr('team2_id', $this->team->id)
+            ->first();
+        $this->seriesMeta = SeriesMeta::query()
+            ->where('event_id', '=', $this->matche->event_id)
+            ->where('series', '=', $this->matche->series)
             ->first();
         
         $this->formatDate = Carbon::parse($this->matche->start_time);
@@ -60,9 +66,11 @@ class PlacesOfSeries extends Component
 
         $this->checkStatusPlayer();
         $this->getPlayerSeriesRegistration();
+        $this->statusRegistration = $this->seriesMeta->status_registration;
 
-        dump($this->regPlayers);
 
+        
+        
     }
 
     public function dropRegPlayer($player_id)
@@ -105,15 +113,11 @@ class PlacesOfSeries extends Component
 
     public function takePlace($numPlayer = 0)
     {
-
-        dump($this->matche);
-        dump($this->matche->round);
-        
+        // проверка статуса Основной / Резервный
         $status = PlayerTeam::where('player_id', '=', $this->playerId)->value('status');
         if($status == 'reserve') {
             return redirect()->to('/profile');
-        }
-        
+        }       
         
         // Проверка баланса
         $user = User::find($this->userId);
@@ -121,15 +125,11 @@ class PlacesOfSeries extends Component
         $price = SeriesMeta::where('event_id',$this->team->event->id)
             ->where('series', $this->matche->series)
             ->value('price');
-        
-        
         if(!$price){
             $price = SeriesMeta::where('event_id',$this->team->event->id)->first()->value('price');
         }
-        
         $this->minBalance = ceil($price / 6);
-        $this->desiredBalance = $this->minBalance - $balance;
-            
+        $this->desiredBalance = $this->minBalance - $balance;            
         if($this->minBalance > $balance){
             $this->showModal = true;
             return;
@@ -140,7 +140,6 @@ class PlacesOfSeries extends Component
             ->where('series', $this->matche->series)
             ->where('team_id', $this->team->id)
             ->exists();
-
         if ($existing) {
             session()->flash('message', 'Ви вже зареєстровані в цій серії.');
             return; // Прерываем выполнение
@@ -158,6 +157,7 @@ class PlacesOfSeries extends Component
             ]);
         }
         $this->getPlayerSeriesRegistration();
+        
     }
 
     protected function getPlayerSeriesRegistration()
@@ -165,12 +165,51 @@ class PlacesOfSeries extends Component
         $this->regPlayers = PlayerSeriesRegistration::with('player')
             ->where('team_id', $this->team->id)
             ->where('series', $this->matche->series)
-            ->get();
+            ->get();  
+           
+        // Проверка на Закрывать заявку или нет
+        if($this->statusRegistration == 'open'){
+            $maxPlayers = $this->team->max_players;
+            
+            if($maxPlayers <= $this->regPlayers->count())
+            {
+                $this->closeRegistrations();
+            }
+        }
     }
 
     public function closeRegistrations()
     {
-        dump('123');
+        //
+        $this->seriesMeta->update(['status_registration' => 'closed']);
+        $this->statusRegistration = 'closed';
+        // списание баланса
+
+        $seriesPlayers = PlayerSeriesRegistration::query()
+            ->with('player')
+            ->where('team_id', '=', $this->team->id)
+            ->where('event_id', '=', $this->team->event->id)
+            ->where('series', '=', $this->matche->series)
+            ->where('round', '=', $this->matche->round)
+            ->get();
+        
+        $seriesPrice = SeriesMeta::query()
+            ->where('event_id', '=', $this->team->event->id)
+            ->where('series', '=',  $this->matche->series)
+            ->value('price');
+        
+        $writeOffAmount = round($seriesPrice / $seriesPlayers->count());
+        $balance = 0;
+
+        foreach($seriesPlayers as $player){
+            $balance = User::query()
+                ->where('id', $player->player->user_id)
+                ->value('balance');
+            User::query()
+                ->where('id', $player->player->user_id)
+                ->update(['balance' => $balance - $writeOffAmount]);
+        }
+        
     }
 
     #[On('updateMaxPlayer')]

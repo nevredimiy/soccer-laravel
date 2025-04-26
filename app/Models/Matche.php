@@ -43,5 +43,5 @@ class Matche extends Model
         return $this->belongsTo(Team::class, 'team2_id');
     }
 
-    
+   
 }

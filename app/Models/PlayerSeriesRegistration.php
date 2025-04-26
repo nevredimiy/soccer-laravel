@@ -15,7 +15,6 @@ class PlayerSeriesRegistration extends Model
         'player_number',
         'series',
         'round',
-        'status'
     ];
 
     public function player(): BelongsTo

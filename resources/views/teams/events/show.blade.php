@@ -80,7 +80,6 @@
                         </div>
                         <div class="hero-tournament__info">
                             <div class="hero-tournament__label">
-                                27 ЧЕРВНЯ - 3 СЕРПНЯ <br />
                                 {{ \Carbon\Carbon::parse($event->date)->locale('uk')->translatedFormat('j F') }} {{ \Carbon\Carbon::parse($event['start_time'])->format('H:i') }} - {{ \Carbon\Carbon::parse($event->end_time)->format('H:i') }} {{ \Carbon\Carbon::parse($event->date)->locale('uk')->translatedFormat('(D)') }}
                             </div>
                         </div>

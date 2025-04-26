@@ -96,6 +96,7 @@ class TeamResource extends Resource
                     ])
                     ->default('awaiting_payment')
                     ->required(),
+               
                 Forms\Components\FileUpload::make('logo')
                     ->image()
                     ->disk('public')
@@ -129,7 +130,8 @@ class TeamResource extends Resource
                 Tables\Columns\TextColumn::make('promo_code_id')
                     ->label('Промокод'), 
                 Tables\Columns\TextColumn::make('status')
-                    ->label('Статус'),                  
+                    ->label('Статус'),  
+                
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

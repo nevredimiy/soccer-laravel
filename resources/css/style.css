@@ -4944,3 +4944,8 @@ body > div.wrapper > main > div > a:hover {
   justify-content: center;
 }
 
+.button--red.disabled {
+  cursor: auto;
+  background-color: #f7e10e;
+  color: black;
+}

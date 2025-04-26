@@ -50,8 +50,6 @@
                 $regPlayer = $regPlayers->firstWhere('player_number', $playerNumber);
             @endphp
             <div class="latest-series__item">
-              
-
                 @if ($regPlayer)
                     <article class="item-player item-player--stats">
                         <a href="#" class="item-player__image-link">
@@ -78,25 +76,20 @@
                         </div>
                         <div data-rating="" data-rating-size="10" data-rating-value="{{$regPlayer->player->rating}}" class="item-player__rating rating"></div>
                     </article>
-                @else
+                @elseif ($statusRegistration !== 'closed')
                     <button wire:click="takePlace({{$i + 1}})" class="latest-series__empty">
                         ЗАЙНЯТИ МІСЦЕ
-                    </button>                    
+                    </button>
                 @endif
 
                 <div class="latest-series__number">{{$playerNumber}}</div>
 
                 @if ($regPlayer && $team->owner_id == $userId)
-                <button wire:click="dropRegPlayer({{$regPlayer->player_id}})" class="button button--yellow button--small">Відкликати</button>
+                    <button wire:click="dropRegPlayer({{$regPlayer->player_id}})" class="button button--yellow button--small">Відкликати</button>
                 @elseif($regPlayer && $regPlayer->player_id == $playerId)
-                <button wire:click="dropRegPlayer({{$regPlayer->player_id}})" class="button button--yellow button--small">Вийти</button>
+                    <button wire:click="dropRegPlayer({{$regPlayer->player_id}})" class="button button--yellow button--small">Вийти</button>
                 @endif
-
-                
-               
-                
-            </div>   
-           
+            </div>              
         @endfor
 
     </div>
@@ -105,9 +98,16 @@
             type="button"
             wire:click="closeRegistrations"
             wire:confirm="Закрити заявки? \n\nПісля підтвердження у гравців спишуться кошти з балансу"
-            class="button button--red button--big"
+            class="button button--red button--big @if ($statusRegistration == 'closed')
+                disabled
+            @endif"
+            
         >
-            Закрити заявки
+            @if ($statusRegistration == 'closed')
+                Заявка закрыта
+            @else
+                Закрити заявки
+            @endif
         </button>
     </div>
     @if($showModal)
