@@ -29,10 +29,13 @@ class SheduleMatchesTournamentOneDay extends Component
     ];
     public array $teamColorClass = [];
     public array $playerIds = [];
+    public $amountForPlayer = 0;
+    public $missingAmount = 0;
 
-    public function mount($event)
+    public function mount($event, $amountForPlayer = 0)
     {
         $this->event = $event;
+        $this->amountForPlayer = $amountForPlayer;
 
         $teams = $event->teams;
         $service = new SeriesTemplatesService();
@@ -45,16 +48,29 @@ class SheduleMatchesTournamentOneDay extends Component
                 $this->playerIds[] = $player->id;
             }
         }
+
     }
 
     public function BookingPlace()
     {
+        
+        // Проверяем, есть ли уже игрок в этой команде
         $user = auth()->user();
         $player = Player::query()->where('user_id', '=', $user->id)->first();
         if(in_array($player->id, $this->playerIds)){
-            session->flash('error', 'Вы уже записаны на эту серию!');
+            session()->flash('error', 'Ви вже в серії!');
             return;
         }
+
+        $balance = $user->balance;
+        $this->missingAmount = $this->amountForPlayer - $balance;
+        if($balance < $this->amountForPlayer){
+            session()->flash('error_balance', "Недостатньо коштів на балансі! Мінімальна сумма $this->amountForPlayer грн.");
+            return;
+        }
+
+        
+        
         
     }
 
