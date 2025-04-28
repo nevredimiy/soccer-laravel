@@ -49,7 +49,7 @@
                 $playerNumber = $i + 1;
                 $regPlayer = $regPlayers->firstWhere('player_number', $playerNumber);
             @endphp
-            <div class="latest-series__item">
+            <div wire:key="{{$i}}" class="latest-series__item">
                 @if ($regPlayer)
                     <article class="item-player item-player--stats">
                         <a href="#" class="item-player__image-link">

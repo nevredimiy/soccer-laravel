@@ -5,7 +5,7 @@ set -e
 echo "Starting deployment..."
 git pull origin main
 php artisan down
-php composer install --no-dev --optimize-autoloader
+composer install --no-dev --optimize-autoloader
 php artisan migrate --force
 php artisan config:cache
 php artisan route:cache

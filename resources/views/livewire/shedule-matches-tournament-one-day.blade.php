@@ -20,18 +20,17 @@
                     {{\Carbon\Carbon::parse($event->start_time)->translatedFormat('H:i')}}
                 </div>
             </div>
-            @foreach ($template as $key => $item)
-                
+            @foreach ($template as $key => $item)                
             
-            <div class="schedule-tournament__item">
-                <div class="schedule-tournament__label">
-                    МАТЧ {{$key + 1}}
+                <div wire:key="{{$key}}" class="schedule-tournament__item">
+                    <div class="schedule-tournament__label">
+                        МАТЧ {{$key + 1}}
+                    </div>
+                    <div class="schedule-tournament__colors">
+                        <span class="{{$teamColorClass[$item[0]]}}"></span>
+                        <span class="{{$teamColorClass[$item[1]]}}"></span>
+                    </div>
                 </div>
-                <div class="schedule-tournament__colors">
-                    <span class="{{$teamColorClass[$item[0]]}}"></span>
-                    <span class="{{$teamColorClass[$item[1]]}}"></span>
-                </div>
-            </div>
 
             @endforeach
         </div>

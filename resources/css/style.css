@@ -2195,7 +2195,8 @@ body::after {
   display: flex;
   flex-direction: column;
   gap: .25rem;
-  counter-increment: position-counter
+  counter-increment: position-counter;
+  min-height: 193px;
 }
 .players-tournament__text {
   color: rgba(10,38,64,.5);

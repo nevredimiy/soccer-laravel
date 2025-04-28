@@ -116,7 +116,7 @@
                 @if ($event->tournament->type == 'solo')
                     @livewire('player-request-one', ['event' => $event])
                 @elseif ($event->tournament->type == 'solo_private')
-                    @livewire('player-request-one-private')
+                    @livewire('player-request-one-private', ['event' => $event, 'amountForPlayer' => $amountForPlayer])
                 @endif    
                 
                 

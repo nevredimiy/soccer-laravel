@@ -10,7 +10,8 @@ class PlayerTeam extends Model
     protected $fillable = [
         'player_id',
         'team_id',
-        'status'
+        'status',
+        'player_number',
     ];
 
     public function players(): HasMany

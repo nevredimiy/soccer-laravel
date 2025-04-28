@@ -17,7 +17,7 @@ class Player extends Model
         'birth_date',
         'photo',
         'rating',
-        'number'
+
     ];
 
     // Добавляем связь с пользователем
@@ -28,7 +28,7 @@ class Player extends Model
 
     public function setPhotoAttribute($value)
     {
-        $this->attributes['photo'] = $value ?: '/img/avatars/default_avatar.jpg';
+        $this->attributes['photo'] = $plavalue ?: '/img/avatars/default_avatar.jpg';
     }
 
 
@@ -42,6 +42,7 @@ class Player extends Model
     {
         return $this->belongsToMany(\App\Models\Team::class, 'player_teams')
         ->withPivot('status')
+        ->withPivot('player_number')
             ->withTimestamps();
     }
 

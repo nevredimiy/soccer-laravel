@@ -21,7 +21,6 @@ return new class extends Migration
             $table->date('birth_date')->nullable();
             $table->string('photo')->nullable();
             $table->tinyInteger('rating')->nullable();
-            $table->unsignedTinyInteger('number')->nullable()->comment('Номер игрока от 0 до 99');
             $table->timestamps();
         });
     }

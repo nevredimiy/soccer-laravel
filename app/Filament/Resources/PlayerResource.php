@@ -106,13 +106,7 @@ class PlayerResource extends Resource
                     ->searchable()
                     ->preload()
                     ->required(),
-                Forms\Components\TextInput::make('number')
-                    ->label('Номер гравця')
-                    ->type('number')
-                    ->minValue(0)
-                    ->maxValue(99)
-                    ->numeric()
-                    ->nullable(),                
+                            
                 Forms\Components\TextInput::make('rating')
                         ->numeric()
                         ->minValue(1)
@@ -164,15 +158,7 @@ class PlayerResource extends Resource
                             ->implode(', ');
                     }),
                     
-                TextColumn::make('number')
-                    ->label('Номер')
-                    ->sortable()
-                    ->searchable(),
-                TextColumn::make('status')
-                    ->label('Статус') 
-                    ->sortable()
-                    ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+               
                 TextColumn::make('tg')
                     ->searchable()
                     ->label('Телеграм')

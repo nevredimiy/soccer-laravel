@@ -69,9 +69,8 @@ class SheduleMatchesTournamentOneDay extends Component
             return;
         }
 
-        
-        
-        
+
+
     }
 
     public function render()

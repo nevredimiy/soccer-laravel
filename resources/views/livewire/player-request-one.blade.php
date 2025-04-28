@@ -7,7 +7,7 @@
     <div class="players-tournament__items">
         @foreach ($event->teams as $team)
             @foreach ($team->players as $player)
-                <div data-player-id="{{$player->id}}" class="players-tournament__item">
+                <div wire:key="{{$team->id}}_{{$player->id}}" data-player-id="{{$player->id}}" class="players-tournament__item">
                     <article class="item-player item-player--stats">
                         <a href="#" class="item-player__image-link">
                             <img src="{{asset($player->photo)}}" alt="{{$player->last_name}} {{$player->first_name}}" class="ibg">

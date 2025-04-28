@@ -45,6 +45,7 @@ class PlacesOfSeries extends Component
             ->where('team1_id', $this->team->id)
             ->whereOr('team2_id', $this->team->id)
             ->first();
+            // dd($this->matche);
         $this->seriesMeta = SeriesMeta::query()
             ->where('event_id', '=', $this->matche->event_id)
             ->where('series', '=', $this->matche->series)
