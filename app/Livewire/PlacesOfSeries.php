@@ -68,10 +68,7 @@ class PlacesOfSeries extends Component
         $this->checkStatusPlayer();
         $this->getPlayerSeriesRegistration();
         $this->statusRegistration = $this->seriesMeta->status_registration;
-
-
-        
-        
+       
     }
 
     public function dropRegPlayer($player_id)

@@ -93,23 +93,25 @@
         @endfor
 
     </div>
-    <div  class="">
-        <button 
-            type="button"
-            wire:click="closeRegistrations"
-            wire:confirm="Закрити заявки? \n\nПісля підтвердження у гравців спишуться кошти з балансу"
-            class="button button--red button--big @if ($statusRegistration == 'closed')
-                disabled
-            @endif"
-            
-        >
-            @if ($statusRegistration == 'closed')
-                Заявка закрыта
-            @else
-                Закрити заявки
-            @endif
-        </button>
-    </div>
+    @if ($team->owner_id == $userId)
+        <div  class="">
+            <button 
+                type="button"
+                wire:click="closeRegistrations"
+                wire:confirm="Закрити заявки? \n\nПісля підтвердження у гравців спишуться кошти з балансу"
+                class="button button--red button--big @if ($statusRegistration == 'closed')
+                    disabled
+                @endif"
+                
+            >
+                @if ($statusRegistration == 'closed')
+                    Заявка закрыта
+                @else
+                    Закрити заявки
+                @endif
+            </button>
+        </div>        
+    @endif
     @if($showModal)
     <div class="modal" wire:click="closeModal" wire:show="showModal">
         <div wire:click.stop class="modal__block">
