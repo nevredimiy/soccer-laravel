@@ -46,4 +46,14 @@ class Event extends Model
     {
         return $this->hasMany(Matche::class, 'event_id');
     }
+
+    
+    public function seriesMeta(): HasMany
+    {
+        return $this->hasMany(SeriesMeta::class, 'event_id');
+    }
+    public function playerTeams(): HasMany
+    {
+        return $this->hasMany(PlayerTeam::class, 'event_id');
+    }
 }

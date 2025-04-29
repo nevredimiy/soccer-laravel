@@ -35,20 +35,5 @@
             @endforeach
         </div>
     </div>
-    @if(session()->has('error'))
-        <p class="text-red-500 text-center mb-2">{{ session('error') }}</p>
-    @endif
-
-    @if(session()->has('error_balance'))
-    <div class="flex flex-col items-center mb-2">
-        <p class="text-red-500 text-center mb-2">{{ session('error_balance') }}</p>
-        <a class="button button--red botton--small" href="{{route('balance.form', ['amount' => $missingAmount])}}">Поповнити баланс</a>
-    </div>
-    @endif
-
-    @if ($event->tournament->type != 'solo_private')
-    <button wire:click="BookingPlace" class="schedule-tournament__button button button--yellow">
-        <span>ЗАЯВИТИСЬ НА ТУРНІР</span>
-    </button>
-    @endif
+   
 </section>

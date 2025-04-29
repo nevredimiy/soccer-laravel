@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class SeriesMeta extends Model
 {
@@ -19,5 +20,9 @@ class SeriesMeta extends Model
     public function event()
     {
         return $this->belongsTo(Event::class);
+    }
+    public function player()
+    {
+        return $this->belongsTo(Player::class, 'player_id');
     }
 }

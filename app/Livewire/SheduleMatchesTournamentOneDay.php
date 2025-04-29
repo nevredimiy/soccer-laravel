@@ -28,27 +28,18 @@ class SheduleMatchesTournamentOneDay extends Component
         [1,2],            
     ];
     public array $teamColorClass = [];
-    public array $playerIds = [];
-    public $amountForPlayer = 0;
-    public $missingAmount = 0;
+   
 
-    public function mount($event, $amountForPlayer = 0)
+    public function mount($event)
     {
         $this->event = $event;
-        $this->amountForPlayer = $amountForPlayer;
+       
 
         $teams = $event->teams;
         $service = new SeriesTemplatesService();
         foreach($teams as $key => $team){
             $this->teamColorClass[$key] = $service->getColorClass($team->color->name);
         }
-
-        foreach($event->teams as $team){
-            foreach($team->players as $player){
-                $this->playerIds[] = $player->id;
-            }
-        }
-
     }
 
     public function BookingPlace()

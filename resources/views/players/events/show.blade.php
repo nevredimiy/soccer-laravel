@@ -111,14 +111,13 @@
                     </div>
                 </div>
                 
-                @livewire('shedule-matches-tournament-one-day', ['event' => $event, 'amountForPlayer' => $amountForPlayer])
+                @livewire('shedule-matches-tournament-one-day', ['event' => $event])
 
                 @if ($event->tournament->type == 'solo')
-                    @livewire('player-request-one', ['event' => $event])
+                    @livewire('player-request-one', ['event' => $event, 'amountForPlayer' => $amountForPlayer])
                 @elseif ($event->tournament->type == 'solo_private')
                     @livewire('player-request-one-private', ['event' => $event, 'amountForPlayer' => $amountForPlayer])
-                @endif    
-                
+                @endif                   
                 
             </div>
         </div>
