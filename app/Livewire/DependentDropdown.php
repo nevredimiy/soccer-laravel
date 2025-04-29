@@ -137,11 +137,9 @@ class DependentDropdown extends Component
         if($event){
             $city_id = $event->stadium->location->district->city->id;
             $district_id = $event->stadium->location->district->id;
-            // dump('district', $district_id);
             $location_id = $event->stadium->location->id;
-            // dump('location_id', $location_id);
             $typeTournament = $event->tournament->type;
-            $league_id = $event->league->id;
+            $league_id = $event->league->id ?? 0;
             
             $this->updatedSelectedCity($city_id);
             $this->updatedSelectedDistrict($district_id);

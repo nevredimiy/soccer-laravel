@@ -207,4 +207,21 @@ class SeriesTemplatesService
 
         return  $colorClasses[$colorName];
     }
+
+    public function getColorClasses()
+    {
+        $colorClasses = [
+            'Жовтий' => 'yellow-bg',
+            'Помаранчевий' => 'orange-bg',
+            'Зелений' => 'green-bg',
+            'Сірий' => 'gray-bg',
+            'Синій' => 'blue-bg',
+            'Червоний' => 'red-bg',
+            'Рожевий' => 'pink-bg',
+            'Голубий' => 'sky-bg',
+            'Лаймовий' => 'lime-bg'
+        ];
+
+        return  $colorClasses;
+    }
 }

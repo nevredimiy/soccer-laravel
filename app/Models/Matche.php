@@ -2,7 +2,11 @@
 
 namespace App\Models;
 
+
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Matche extends Model
 {
@@ -41,6 +45,25 @@ class Matche extends Model
     public function team2()
     {
         return $this->belongsTo(Team::class, 'team2_id');
+    }
+
+    public function matchEvents()
+    {
+        return $this->hasMany(MatcheEvent::class, 'match_id');
+    }
+
+    public function goalsTeam1()
+    {
+        return $this->hasMany(MatcheEvent::class, 'match_id')
+            ->where('type', 'goal')
+            ->whereColumn('team_id', 'team1_id');
+    }
+
+    public function goalsTeam2()
+    {
+        return $this->hasMany(MatcheEvent::class, 'match_id')
+            ->where('type', 'goal')
+            ->whereColumn('team_id', 'team2_id');
     }
 
    

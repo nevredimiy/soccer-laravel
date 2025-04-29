@@ -16,7 +16,7 @@
                     </div>
                     <div 
                         wire:click="selectedRound({{ $index + 1 }}, {{ session('current_event', 0) }}, 1)" 
-                        class="item-calendar__wrapper @if ($currentRound['round_number'] == $index + 1)
+                        class="item-calendar__wrapper @if ($currentRound['round_number'] == $index + 1 && $currentRound['series_number'] == 1)
                             item-calendar--active
                         @endif"
                     >
@@ -64,8 +64,8 @@
                         30.03
                     </div>
                     <div 
-                        wire:click="selectedRound({{ $index + 1 }}, {{ session('current_event', 0) }}, )" 
-                        class="item-calendar__wrapper @if ($currentRound['round_number'] == $index + 1)
+                        wire:click="selectedRound({{ $index + 1 }}, {{ session('current_event', 0) }}, 2)" 
+                        class="item-calendar__wrapper @if ($currentRound['round_number'] == $index + 1 && $currentRound['series_number'] == 2)
                             item-calendar--active
                         @endif"
                     >

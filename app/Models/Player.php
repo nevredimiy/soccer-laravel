@@ -34,13 +34,21 @@ class Player extends Model
 
     public function playerTeams()
     {
-        return $this->hasMany(\App\Models\PlayerTeam::class)->withTimestamps();;
+        return $this->hasMany(PlayerTeam::class);
     }
+
+    public function getPlayerNumber($teamId)
+    {
+        $playerTeam = $this->playerTeams()->where('team_id', $teamId)->first();
+        return $playerTeam ? $playerTeam->player_number : null;
+    }
+
+
 
 
     public function teams()
     {
-        return $this->belongsToMany(\App\Models\Team::class, 'player_teams')
+        return $this->belongsToMany(Team::class, 'player_teams')
         ->withPivot('status')
         ->withPivot('player_number')
             ->withTimestamps();

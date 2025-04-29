@@ -67,68 +67,37 @@
                                 <td>
                                     <span class="team fz-big">{{$team->name}}</span>
                                 </td>
-                                <td>
-                                    <span class="digit">1</span>
-                                </td>
-                                <td>
-                                    <span class="digit">2</span>
-                                </td>
-                                <td>
-                                    <span class="digit">1</span>
-                                </td>
-                                <td>
-                                    <span class="digit">3</span>
-                                </td>
-                                <td>
-                                    <span class="digit">1</span>
-                                </td>
-                                <td>
-                                    <span class="digit">2</span>
-                                </td>
-                                <td>
-                                    <span class="digit">2</span>
-                                </td>
-                                <td>
-                                    <span class="digit">1</span>
-                                </td>
+                                @foreach ($roman as $value)
                                 <td>
                                     <span class="digit"></span>
+                                </td>    
+                                @endforeach
+                                <td>
+                                    <span class="border">0</span>
                                 </td>
                                 <td>
-                                    <span class="digit"></span>
+                                    <span class="border">0</span>
                                 </td>
                                 <td>
-                                    <span class="digit"></span>
+                                    <span class="border">0</span>
                                 </td>
                                 <td>
-                                    <span class="digit"></span>
+                                    <span class="border">0</span>
                                 </td>
                                 <td>
-                                    <span class="digit"></span>
+                                    <span class="border">0</span>
                                 </td>
                                 <td>
-                                    <span class="border">210</span>
+                                    <span class="border">0</span>
                                 </td>
                                 <td>
-                                    <span class="border">127</span>
+                                    <span class="border">0</span>
                                 </td>
                                 <td>
-                                    <span class="border">83</span>
+                                    <span class="border">0</span>
                                 </td>
                                 <td>
-                                    <span class="border">210</span>
-                                </td>
-                                <td>
-                                    <span class="border">127</span>
-                                </td>
-                                <td>
-                                    <span class="border">83</span>
-                                </td>
-                                <td>
-                                    <span class="border">83</span>
-                                </td>
-                                <td>
-                                    <span class="gray-bg">27</span>
+                                    <span class="gray-bg">0</span>
                                 </td>
                             </tr>
                             @endforeach

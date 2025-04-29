@@ -8,7 +8,7 @@
             ({{$event->format_scheme}} команд)
             ({{$event->tournament->name}}) 
         </div>  
-        @if (count($events) > 1)
+        @if (count($events) > 0)
         <ul class="flex flex-wrap gap-2 bg-gray-400 rounded p-1 justify-center ">
             @foreach ($events as $key => $event)
                 <li wire:key="{{$key}}">
