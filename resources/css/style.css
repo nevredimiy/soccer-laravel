@@ -2173,7 +2173,9 @@ body::after {
   border-radius: 50%;
   aspect-ratio: 1/1;
   flex: 1 1 auto;
-  border: .0625rem solid #8593a0
+  border: .0625rem solid #8593a0;
+  max-width: 40px;
+  max-height: 40px;
 }
 .players-tournament__progress span._active {
   background-color: #8593a0
