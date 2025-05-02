@@ -9,32 +9,17 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Event extends Model
 {
     protected $fillable = [
-        'date',
-        'start_time',
-        'end_time',
-        'stadium_id',
         'tournament_id',
-        'league_id',
         'format',
-        'size_field',
         'price',
-        'format_scheme'
+        'access_code',
+
     ];
 
-
-    public function stadium(): BelongsTo
-    {
-        return $this->belongsTo(Stadium::class, 'stadium_id');
-    }
 
     public function tournament(): BelongsTo
     {
         return $this->belongsTo(Tournament::class, 'tournament_id');
-    }
-
-    public function league(): BelongsTo
-    {
-        return $this->belongsTo(League::class, 'league_id');
     }
 
     public function teams()
@@ -47,13 +32,16 @@ class Event extends Model
         return $this->hasMany(Matche::class, 'event_id');
     }
 
+    public function stadiums()
+    {
+        return $this->seriesMeta()->with('stadium')->first();
+    }
+
     
     public function seriesMeta(): HasMany
     {
         return $this->hasMany(SeriesMeta::class, 'event_id');
     }
-    public function playerTeams(): HasMany
-    {
-        return $this->hasMany(PlayerTeam::class, 'event_id');
-    }
+
+
 }

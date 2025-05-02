@@ -16,6 +16,11 @@ return new class extends Migration
             $table->string('name');
             $table->enum('type', ['team', 'solo'])->default('team');
             $table->enum('subtype', ['one-day', 'regular'])->default('regular');
+            $table->tinyInteger('count_teams')->default(3);  
+            $table->tinyInteger('count_rounds')->default(1);
+            $table->tinyInteger('count_series')->default(1);
+            $table->tinyInteger('count_matches')->default(15); 
+            $table->tinyInteger('sort_order')->default(0);
             $table->timestamps();
         });
     }

@@ -18,7 +18,8 @@
                 <div data-rating data-rating-size="10" data-rating-value="8" class="team-card__rating rating">
                 </div>
                 <div class="team-card__label">
-                    {{ $team->event->stadium->name }}
+                    {{-- {{ $team->event->stadium->name }} --}}
+                    {{-- {{ $team->event->seriesMeta->first()->stadium->name }} --}}
                 </div>
             </button>
             

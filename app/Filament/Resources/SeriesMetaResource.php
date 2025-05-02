@@ -7,8 +7,15 @@ use App\Filament\Resources\SeriesMetaResource\RelationManagers;
 use App\Models\SeriesMeta;
 use Filament\Forms;
 use App\Models\Event;
+use App\Models\City;
 use Filament\Forms\Form;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Section;
 use Filament\Resources\Resource;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Support\RawJs;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -32,56 +39,123 @@ class SeriesMetaResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('event_id')
-                    ->options(function () {
-                        return Event::orderBy('id', 'desc')
-                        ->get()
-                        ->mapWithKeys(function ($event) {
-                            $stadium = $event->stadium;
-                            $location = $stadium->location;
-                            $district = $location->district;
-                            $city = $district ? $district->city : null;
-                            $label = '(' . $event->id . ') ';
-                            $label .= $event->date;
-                            if($stadium) {
-                                $label .= ' - ' . $stadium->name;
-                            }
-                            if($location) {
-                                $label .= ' - ' . $location->address;
-                            }
-
-                            if($city) {
-                                $label .= ' - ' . $city->name;
-                            }
-
-                            return [$event->id => $label];
-
-                        });
-                    })
+                
+                Select::make('event_id')
                     ->preload()
+                    ->options(
+                        Event::with('tournament')
+                            ->orderBy('id', 'desc')
+                            ->get()
+                            ->mapWithKeys(function ($event) {
+                                return [
+                                    $event->id => $event->tournament->name . ' (' . $event->id . ')',
+                                ];
+                            })
+                            ->toArray()
+                    )
+                    ->searchable()
                     ->label('Подія')
-                    ->required(),
-                Forms\Components\DateTimePicker::make('date')
-                    ->required(),
-                Forms\Components\TextInput::make('series')
                     ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('round')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('price')
+                    ->columnSpan('full'),
+                    Section::make('Локація')
+                    ->description('Виберіть стадіон для серії')
+                    ->columns(3)
+                    ->schema([
+                        // Місто
+                        Select::make('city_id')
+                            ->label('Місто')
+                            ->options(City::pluck('name', 'id'))
+                            ->searchable()
+                            ->preload()
+                            ->required()
+                            ->reactive(),
+                
+                        // Район
+                        Select::make('district_id')
+                            ->label('Район')
+                            ->options(function (callable $get) {
+                                $cityId = $get('city_id');
+                                return $cityId
+                                    ? \App\Models\District::where('city_id', $cityId)->pluck('name', 'id')
+                                    : [];
+                            })
+                            ->searchable()
+                            ->preload()
+                            ->required()
+                            ->reactive()
+                            ->disabled(fn (callable $get) => !$get('city_id')),
+                
+                        // Локація
+                        Select::make('location_id')
+                            ->label('Локація')
+                            ->options(function (callable $get) {
+                                $districtId = $get('district_id');
+                                return $districtId
+                                    ? \App\Models\Location::where('district_id', $districtId)->pluck('address', 'id')
+                                    : [];
+                            })
+                            ->searchable()
+                            ->preload()
+                            ->required()
+                            ->reactive()
+                            ->disabled(fn (callable $get) => !$get('district_id')),
+                
+                        // Стадіон
+                        Select::make('stadium_id')
+                            ->label('Стадіон')
+                            ->options(function (callable $get) {
+                                $locationId = $get('location_id');
+                                return $locationId
+                                    ? \App\Models\Stadium::where('location_id', $locationId)->pluck('name', 'id')
+                                    : [];
+                            })
+                            ->searchable()
+                            ->preload()
+                            ->required()
+                            ->disabled(fn (callable $get) => !$get('location_id'))
+                            ->columnSpan('2'),
+                        Select::make('size_field')
+                            ->label('Розмір поля')
+                            ->options([
+                                '40x20' => '40x20',
+                                '60x40' => '60x40'
+                            ])
+                            ->default('40x20')
+                            ->required(),
+                    ]),
+               
+                TextInput::make('series')
                     ->required()
                     ->numeric()
-                    ->suffix('грн'),
-                Forms\Components\Select::make('status_registration')
+                    ->label('Серія')
+                    ->default(1),
+                TextInput::make('round')
                     ->required()
-                    ->default('open')
-                    ->label('Статус')
+                    ->numeric()
+                    ->label('Раунд')
+                    ->default(1),
+                Select::make('status_registration')
+                    ->label('Статус реєстрації')
                     ->options([
                         'open' => 'Відкритий',
                         'closed' => 'Закритий'
-                    ]),
-            ]);
+                    ])
+                    ->default('open')
+                    ->required(),
+                DateTimePicker::make('start_date')
+                    ->required()
+                    ->label('Дата початку'),
+                DateTimePicker::make('end_date')
+                    ->required()
+                    ->label('Дата закінчення'),
+                TextInput::make('price')
+                    ->label('Ціна')
+                    ->required()
+                    ->numeric()
+                    ->default(0),
+                    
+              
+            ])->columns(3);
     }
 
     public static function table(Table $table): Table
@@ -91,17 +165,25 @@ class SeriesMetaResource extends Resource
                 Tables\Columns\TextColumn::make('event_id')
                     ->numeric()
                     ->sortable(),
-                // Tables\Columns\TextColumn::make('event')
-                //     ->label('Подія')
-                //     ->formatStateUsing(function ($state, $record){
-                //         if (!$record->event) {
-                //             return '—';
-                //         }
-                
-                //         return "({$record->event->id}) - {$record->event->date}";
-                //     })                    
-                //     ->sortable(),
-                Tables\Columns\TextColumn::make('date')
+                Tables\Columns\TextColumn::make('stadium.name')
+                    ->label('Стадіон')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('stadium.location.district.city.name')
+                    ->label('Місто')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('stadium.location.district.name')
+                    ->label('Район')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('stadium.location.address')
+                    ->label('Адреса')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('size_field')
+                    ->label('Розмір поля')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('start_date')
+                    ->dateTime()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('end_date')
                     ->dateTime()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('series')

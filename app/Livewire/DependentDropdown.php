@@ -55,7 +55,7 @@ class DependentDropdown extends Component
 
         $this->leagues = League::all();
 
-        $this->displayMyEvents();
+        // $this->displayMyEvents();
     }
 
     public function updatedSelectedCity($city_id) 

@@ -9,7 +9,7 @@
         <div class="header__menu">
             <div class="header__block">
                 <!--Активному пукнту додати клас _active-->
-                <a href="{{ route('teams.events') }}" class="header__link button _icon-ch-right">
+                <a href="{{ route('teams.series') }}" class="header__link button _icon-ch-right">
                     <span>Заявити команду</span>
                 </a>
                 <a href="{{ route('players.events') }}" class="header__link button _icon-ch-right">

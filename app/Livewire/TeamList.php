@@ -28,7 +28,7 @@ class TeamList extends Component
             })
             ->pluck('team_id');
         
-        $this->teams = Team::with(['event.stadium', 'color'])
+        $this->teams = Team::with(['event.seriesMeta.stadium', 'color'])
             ->where('owner_id', $this->userId)
             ->orWhereIn('id', $playerTeamIds)
             ->orderByDesc('id')
@@ -44,6 +44,8 @@ class TeamList extends Component
             
     
         // $this->dispatch('team-selected', team_id: $this->activeTeamId);
+
+       
     }
     
 

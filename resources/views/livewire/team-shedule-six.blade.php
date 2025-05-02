@@ -5,14 +5,16 @@
     <div class="calendar-section__body">
     
         <div class="calendar-section__block">
-            <div class="calendar-section__series">
-                СЕРІЯ I ЧТ 20:00
+            <div class="calendar-section__series uppercase">
+                СЕРІЯ I
+                {{\Carbon\Carbon::parse($event->date)->locale('uk')->settings(['formatFunction' => 'translatedFormat'])->format('D')}}                
+                {{\Carbon\Carbon::parse($event->start_time)->format('H:i')}}
             </div>
             <div class="calendar-section__items">
                 @foreach($series1 as $index => $triplet)
                 <div class="calendar-section__item item-calendar item-calendar--gray-bg">
                     <div class="item-calendar__date">
-                        30.03
+                        {{\Carbon\Carbon::parse($event->date)->locale('uk')->settings(['formatFunction' => 'translatedFormat'])->format('d.m')}}   
                     </div>
                     <div 
                         wire:click="selectedRound({{ $index + 1 }}, {{ session('current_event', 0) }}, 1)" 
@@ -34,7 +36,7 @@
                
                 <div class="calendar-section__item item-calendar ">
                     <div class="item-calendar__date">
-                        30.03
+                        {{\Carbon\Carbon::parse($event->date)->locale('uk')->settings(['formatFunction' => 'translatedFormat'])->format('d.m')}}   
                     </div>
                     <div 
                         wire:click="selectedRound({{ $index + 1 }}, {{ session('current_event', 0) }}, 1)" 
@@ -54,14 +56,16 @@
             </div>
         </div>    
         <div class="calendar-section__block">
-            <div class="calendar-section__series">
-                СЕРІЯ II ЧТ 21:30
+            <div class="calendar-section__series uppercase">
+                СЕРІЯ II 
+                {{\Carbon\Carbon::parse($event->date)->locale('uk')->settings(['formatFunction' => 'translatedFormat'])->format('D')}}                
+                {{\Carbon\Carbon::parse($event->end_time)->format('H:i')}}
             </div>
             <div class="calendar-section__items">
                 @foreach($series2 as $index => $triplet)
                 <div class="calendar-section__item item-calendar item-calendar--gray-bg">
                     <div class="item-calendar__date">
-                        30.03
+                        {{\Carbon\Carbon::parse($event->date)->locale('uk')->settings(['formatFunction' => 'translatedFormat'])->format('d.m')}}                
                     </div>
                     <div 
                         wire:click="selectedRound({{ $index + 1 }}, {{ session('current_event', 0) }}, 2)" 
@@ -82,7 +86,7 @@
                 @endforeach
                 <div class="calendar-section__item item-calendar ">
                     <div class="item-calendar__date">
-                        30.03
+                        {{\Carbon\Carbon::parse($event->date)->locale('uk')->settings(['formatFunction' => 'translatedFormat'])->format('d.m')}}   
                     </div>
                     <div 
                         wire:click="selectedRound(0, {{ session('current_event', 0) }}, 2)" 

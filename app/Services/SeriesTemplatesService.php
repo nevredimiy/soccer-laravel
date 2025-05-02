@@ -7,6 +7,12 @@ class SeriesTemplatesService
     {
         $series = [];
 
+        if ($count === 3) {
+            $series['series1'] = [
+                [$teamIds[0], $teamIds[1], $teamIds[2]]
+            ];
+        }
+
         if ($count === 4) {
             $series['series1'] = [
                 [$teamIds[0], $teamIds[1], $teamIds[2]],
@@ -223,5 +229,27 @@ class SeriesTemplatesService
         ];
 
         return  $colorClasses;
+    }
+
+    public function getMatchTemplate()
+    {
+        return [
+            [0, 1],
+            [0, 2],
+            [1, 2],
+            [1, 0],
+            [2, 0],
+            [2, 1],
+            [0, 1],
+            [0, 2],
+            [1, 2],
+            [1, 0],
+            [2, 0],
+            [2, 1],
+            [0, 1],
+            [0, 2],
+            [1, 2],
+        ];
+
     }
 }

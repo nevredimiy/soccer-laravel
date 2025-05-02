@@ -107,39 +107,7 @@
             </div>
         </section>
 
-        <section class="home__best-players players-section">
-            <h2 class="players-section__title section-title section-title--margin">
-                НАЙКРАЩІ БОМБАРДИРИ ЛІГИ
-            </h2>
-            <div class="players-section__body">
-                <div class="players-section__items">
-                    @for ($i = 0; $i < 10; $i++)
-                        <article style="--color: {{$colors[rand(0, 4)]}}" class="players-section__item item-player">
-                            <div class="item-player__position">
-                                {{$i+1}} місце
-                            </div>
-                            <a href="#" class="item-player__image-link">
-                                <img src="img/player/player.webp" alt="Image" class="ibg">
-                            </a>
-                            <div class="item-player__details">
-                                <div class="item-player__info">
-                                    31
-                                    <img src="img/player/field.webp" alt="Image" class="ibg ibg--contain">
-                                </div>
-                                <div class="item-player__info">
-                                    28
-                                    <img src="img/player/ball.webp" alt="Image" class="ibg ibg--contain">
-                                </div>
-                            </div>
-                            <div class="item-player__name">
-                                <a href="#">МАКСИМ МАМЕДОВ</a>
-                            </div>
-                        </article>                        
-                    @endfor
-                </div>
-            </div>
-
-        </section>
+        @livewire('top-scorers-of-tournament', ['teams' => $teams, 'eventId' => $eventId])
     </div>
 
     <div class="home__block _block">
@@ -317,7 +285,7 @@
 
         @livewire('tournament-protocol', ['teams' => $teams])
        
-        <section class="home__best-players players-section">
+        {{-- <section class="home__best-players players-section">
             <h2 class="players-section__title section-title section-title--margin">
                 НАЙКРАЩІ БОМБАРДИРИ ЛІГИ
             </h2>
@@ -693,7 +661,7 @@
             </div>
 
 
-        </section>
+        </section> --}}
         <section class="home__teams teams-section">
             <h2 class="teams-section__title section-title section-title--margin">
                 Склади команд на гру

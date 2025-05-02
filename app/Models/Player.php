@@ -31,7 +31,6 @@ class Player extends Model
         $this->attributes['photo'] = $plavalue ?: '/img/avatars/default_avatar.jpg';
     }
 
-
     public function playerTeams()
     {
         return $this->hasMany(PlayerTeam::class);
@@ -42,10 +41,6 @@ class Player extends Model
         $playerTeam = $this->playerTeams()->where('team_id', $teamId)->first();
         return $playerTeam ? $playerTeam->player_number : null;
     }
-
-
-
-
     public function teams()
     {
         return $this->belongsToMany(Team::class, 'player_teams')
@@ -54,10 +49,14 @@ class Player extends Model
             ->withTimestamps();
     }
 
+    public function getFullNameAttribute()
+    {
+        return $this->last_name . ' ' . $this->first_name;
+    }
+
 
     protected $casts = [
         'birth_date' => 'date',
     ];
-
 
 }

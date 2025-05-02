@@ -35,13 +35,7 @@ class LeagueResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\Select::make('location_id')
-                    ->options(
-                        Location::all()->mapWithKeys(function ($location) {
-                            $loc = empty($location->address) ? '' : ' (' .$location->address. ')';
-                            return [$location->id => $location->name . $loc];
-                        })
-                    )
+               
             ]);
     }
 

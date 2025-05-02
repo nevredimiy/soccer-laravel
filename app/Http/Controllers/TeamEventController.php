@@ -21,14 +21,13 @@ class TeamEventController extends Controller
     public function index()
     {
         
-        $tournaments = Tournament::with('events.stadium.location.district.city')->whereIn('id', [1, 2])->get(); 
+        $tournaments = Tournament::with('events.stadium.location.district.city')->where('type', 'team')->get(); 
 
         return view('teams.events.index', compact('tournaments'));
     }
 
     public function show($id)
     {
-
 
         $user = Auth::id();
         $player = Player::where('user_id', Auth::id())->first();        
@@ -89,7 +88,9 @@ class TeamEventController extends Controller
         $matchesByRound = $matches->groupBy('round');
         $matchesBySeries = $matches->groupBy('series');
 
-        $series = [];
+        $series = [];        
+        $roundMatchesBySeries = [];
+        $matchTeamColors = [];
 
         $colorClasses = [
             'Жовтий' => 'yellow-bg',
@@ -102,9 +103,6 @@ class TeamEventController extends Controller
             'Голубий' => 'sky-bg',
             'Лаймовий' => 'lime-bg'
         ];
-
-        $roundMatchesBySeries = [];
-        $matchTeamColors = [];
         foreach($matchesByRound as $round => $roundMatches){
             $firstMatch = $roundMatches->first();
             $startRound = \Carbon\Carbon::parse($firstMatch->start_time)->locale('uk');
@@ -124,7 +122,6 @@ class TeamEventController extends Controller
             }
 
             $roundMatchesBySeries[] = $roundMatches->groupBy('series');
-            
 
             foreach ($roundMatchesBySeries as $key => $tur){
                 foreach ($tur as $ser){

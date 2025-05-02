@@ -32,17 +32,7 @@ class MatcheEvent extends Model
     {
         return $this->belongsTo(Player::class, 'assister_id');
     }
-    // public function getTypeAttribute($value)
-    // {
-    //     return match ($value) {
-    //         'goal' => 'Гол',
-    //         'assist' => 'Ассист',
-    //         'yellow_card' => 'Желтая карточка',
-    //         'red_card' => 'Красная карточка',
-    //         'own_goal' => 'Автогол',
-    //         default => $value,
-    //     };
-    // }
+    
     public function getMinuteAttribute($value)
     {
         return $value . ' мин';

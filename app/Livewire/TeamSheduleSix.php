@@ -4,10 +4,12 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\Team;
+use App\Models\Event;
 
 class TeamSheduleSix extends Component
 {
 
+    public ?Event $event = null;
     public $teams = null;
     public array $series1 = [];
     public array $series2 = [];
@@ -29,6 +31,7 @@ class TeamSheduleSix extends Component
     {
 
         $eventId = session('current_event', 0);
+        $this->event = Event::find($eventId);
         $this->teams = Team::where('event_id', $eventId)->with('color')->get();
         $teamIds = $this->teams->pluck('id')->toArray();
 
@@ -65,7 +68,6 @@ class TeamSheduleSix extends Component
             [$teamIds[2], $teamIds[5], $teamIds[3]],
             [$teamIds[1], $teamIds[3], $teamIds[2]],
         ];
-
 
     }
 

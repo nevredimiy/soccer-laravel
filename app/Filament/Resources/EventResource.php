@@ -8,6 +8,8 @@ use App\Models\Event;
 use App\Models\Tournament;
 use App\Models\League;
 use App\Models\Stadium;
+use App\Models\TeamColor;
+use App\Models\Team;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -21,8 +23,12 @@ use App\Models\SeriesMeta;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Carbon;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
 
 class EventResource extends Resource
 {
@@ -36,86 +42,178 @@ class EventResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\DatePicker::make('date')
-                    ->required(),
-                Forms\Components\TimePicker::make('start_time')
-                    ->required(),
-                Forms\Components\TimePicker::make('end_time')
-                ->required(),
-                Forms\Components\Select::make('stadium_id')
-                    ->required()
-                    ->options(function () {
-                        return Stadium::with(['location.district']) // Загружаем связанные данные
-                        ->get()
-                        ->mapWithKeys(function ($stadium) {
-                            $location = $stadium->location; 
-                            $district = $location->district;
-                            $city = $district ? $district->city : null; // Получаем модель City
-                            $label = $stadium->name;
-
-
-                            if ($location) {
-                                $label .= ' - ' . $location->address;
-                            }
-
-                            if ($district) {
-                                $label .= ' - ' . $district->name;
-                            }
-                            if ($city) {
-                                $label .= ' - ' . $city->name;
-                            }
-
-                            return [$stadium->id => $label];
-                        });
-                    })
-                    ->searchable(),
-                Forms\Components\Select::make('tournament_id')
-                    ->required()
+                Select::make('tournament_id')
                     ->options(
-                        Tournament::all()->mapWithKeys(function ($tournament) {
+                        Tournament::orderBy('sort_order')->get()->mapWithKeys(function ($tournament) {
                             $tournamentType = $tournament->type == 'team' ? 'командний' : 'індивідуальний';
                             return [
                                 $tournament->id => $tournament->name . ' (' . $tournamentType . ')',
                             ];
                         })->toArray()
                     )
-                    ->searchable(),
-                Forms\Components\Select::make('league_id')
-                    ->options(League::all()->pluck('name', 'id'))
                     ->searchable()
-                    ->default(null),
-                Forms\Components\Select::make('format_scheme')
-                    ->options([
-                        '3' => '3 команди', 
-                        '4' => '4 команди', 
-                        '6' => '6 команд',
-                        '9' => '9 команд'
+                    ->label('Турнір')
+                    ->required()
+                    ->columnSpan('full')
+                    ->reactive()
+                    ->afterStateUpdated(function (callable $set, $state) {
+                        $tournament = Tournament::find($state);
+                        if ($tournament) {                       
+                            
+                            // Установка количества команд в зависимости от турнира
+                            $countTeams = $tournament->count_teams ?? 0;
+
+                            $teamColors = TeamColor::all()->pluck('name')->values()->all(); // переиндексация
+
+                            if ($tournament->team_creator == 'admin') {
+                                $teams = [];
+                                $teamNames = [
+                                    "Синій"=>"Синіх",
+                                    "Червоний"=>"Червоних",
+                                    "Зелений"=>"Зелених",
+                                    "Жовтий"=>"Жовтих",
+                                    "Помаранчевий"=>"Помаранчевих",
+                                    "Рожевий"=>"Рожевих",
+                                    "Сірий"=>"Сірих",
+                                    "Лаймовий"=>"Лаймових",
+                                    "Голубий"=>"Блакитних",
+                                ];
+
+                                for ($i = 0; $i < $countTeams; $i++) {
+                                    $colorName = $teamColors[$i] ?? null;
+
+                                    if (!isset($teamNames[$colorName])) {
+                                        continue; // пропустить, если название цвета не найдено
+                                    }
+
+                                    $teams[] = [
+                                        'name' => 'Команда ' . $teamNames[$colorName],
+                                        'color_id' => $i + 1,
+                                    ];
+                                }
+
+                                $set('teams', $teams);
+                            } else {
+                                $set('teams', []);
+                            }
+
+
+                            $set('tournament_team_creator', $tournament->team_creator);
+                            $set('is_private', $tournament->type == 'solo_private');
+                        }
+                    }),
+    
+                Section::make('Інформація Серії')
+                    ->schema([
+
+                        DateTimePicker::make('series_start_all')
+                            ->label('Дата початку для всіх Серій')
+                            ->reactive()
+                            ->afterStateUpdated(function (callable $set, callable $get, $state) {
+                                $seriesData = $get('series_data') ?? [];
+                        
+                                foreach ($seriesData as $index => $_) {
+                                    $seriesNumber = $index + 1;
+                                    $set("series_{$seriesNumber}_start_date", $state);
+                                }
+                            }),
+                        
+                        DateTimePicker::make('series_end_all')
+                            ->label('Дата кінця для всіх Серій')
+                            ->reactive()
+                            ->afterStateUpdated(function (callable $set, callable $get, $state) {
+                                $seriesData = $get('series_data') ?? [];
+                        
+                                foreach ($seriesData as $index => $_) {
+                                    $seriesNumber = $index + 1;
+                                    $set("series_{$seriesNumber}_end_date", $state);
+                                }
+                            }),
+
+                        // Цена для всех серий
+                        TextInput::make('series_price_all')
+                            ->label('Ціна для всіх Серій')
+                            ->numeric()
+                            ->reactive()
+                            ->debounce(500)
+                            ->afterStateUpdated(function (callable $set, callable $get, $state) {
+                                $seriesData = $get('series_data') ?? [];
+                        
+                                foreach ($seriesData as $index => $_) {
+                                    $seriesNumber = $index + 1;
+                                    $set("series_{$seriesNumber}_price", $state);
+                                }
+                            }),
+                        Select::make('stadium_id')
+                            ->label('Стадіон для всіх Серій')
+                            ->options(function () {
+                                return Stadium::with(['location.district.city'])->get()->mapWithKeys(function ($stadium) {
+                                    $location = $stadium->location;
+                                    $district = $location?->district;
+                                    $city = $district?->city;
+                                    $label = $stadium->name;
+                                    if ($location) $label .= ' - ' . $location->address;
+                                    if ($district) $label .= ' - ' . $district->name;
+                                    if ($city) $label .= ' - ' . $city->name;
+                                    return [$stadium->id => $label];
+                                });
+                            })
+                            ->searchable()
+                            ->default(1),
+                        Select::make('league_id')
+                            ->label('Ліга для всіх Серій')
+                            ->options(League::all()->pluck('name', 'id'))
+                            ->searchable(),
+    
+                        Select::make('format')
+                            ->options(['5x5x5' => '5x5x5', '4x4x4' => '4x4x4', '9x9x9' => '9x9x9'])
+                            ->default('5x5x5')
+                            ->dehydrated()
+                            ->label('Формат'),    
+                        Select::make('size_field')
+                            ->options(['40x20' => '40x20', '60x40' => '60x40'])
+                            ->default('40x20')
+                            ->dehydrated()
+                            ->label('Розмір стадіона'),    
+                        TextInput::make('price')
+                            ->numeric()
+                            ->inputMode('decimal')
+                            ->label('Ціна Першого Внесення при створенні команди гравцем')
+                            ->visible(fn (callable $get) => $get('tournament_team_creator') === 'player'),
+                        TextInput::make('access_code')
+                            ->label('Код доступу для створення команди')
+                            ->numeric()
+                            ->inputMode('numeric') // важно для мобильных устройств
+                            ->maxLength(4)
+                            ->rules(['nullable', 'digits:4'])
+                            ->visible(fn (callable $get) => $get('is_private')),
+                        
+                            
+                    ])->columns(3),
+                // Секция для команд. Количество команд зависит от турнира
+                Forms\Components\Repeater::make('teams')
+                    ->label('Команды')
+                    ->hidden(fn ($get) => empty($get('teams')))
+                    ->schema([
+                        TextInput::make('name')
+                            ->label('Название команды')
+                            ->required(),
+                        Select::make('color_id')
+                            ->label('Цвет команды')
+                            ->options(TeamColor::all()->pluck('name', 'id'))
+                            ->required(),
                     ])
-                    ->default('6')
-                    ->dehydrated()
-                    ->label('Схема турніру'),
-                Forms\Components\Select::make('format')
-                    ->options([
-                        '5x5x5' => '5x5x5', 
-                        '4x4x4' => '4x4x4', 
-                        '9x9x9' => '9x9x9'
-                    ])
-                    ->default('5x5x5')
-                    ->dehydrated()
-                    ->label('Формат'),
-                Forms\Components\Select::make('size_field')
-                    ->options([
-                        '40x20' => '40x20', 
-                        '60x40' => '60x40'
-                    ])
-                    ->default('40x20')
-                    ->dehydrated()
-                    ->label('Розмір стадіона'),
-                Forms\Components\TextInput::make('price')
-                    ->numeric()
-                    ->inputMode('decimal'),
-            ])->columns(3);
+                    ->disableItemDeletion()
+                    ->disableItemCreation()
+                    ->disableItemMovement()
+                    ->default([])
+                    ->columns(2),
+                    
+               
+            ])
+            ->columns('full');
     }
+    
 
     public static function table(Table $table): Table
     {
@@ -124,28 +222,26 @@ class EventResource extends Resource
                 Tables\Columns\TextColumn::make('id')
                     ->numeric()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('tournament.name')                    
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('date')
                     ->date()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('start_time'),
                 Tables\Columns\TextColumn::make('end_time')
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('format_scheme')
-                ->label('Схема турниру')
-                ->sortable(),
                 Tables\Columns\TextColumn::make('format')
-                ->label('Формат')
-                ->sortable()
-                ->toggleable(isToggledHiddenByDefault: true),
+                    ->label('Формат')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('size_field')
-                ->label('Розмір поля')
-                ->sortable()
-                ->toggleable(isToggledHiddenByDefault: true),
+                    ->label('Розмір поля')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('stadium.name')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('tournament.name')                    
-                    ->sortable(),
+                
                 Tables\Columns\TextColumn::make('league.name')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('price')

@@ -42,7 +42,7 @@ class TournamentInfo extends Component
         'Рожевий' => 'orange-bg',
     ];
 
-    public $shedule;
+    public $shedule = [];
 
     public function mount()
     {

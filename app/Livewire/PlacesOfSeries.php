@@ -36,30 +36,44 @@ class PlacesOfSeries extends Component
     public function mount($team)
     {
         $this->team = $team;
+
         $this->userId = Auth::id();
         $player = Player::where('user_id', $this->userId)->first();
         $this->playerId = $player ? $player->id : null;
         $today = Carbon::today()->format('Y-m-d H:i:s'); 
         $this->matche = $this->team->event->matches()
-            ->where('start_time', '>=', Carbon::today())
+            // ->where('start_time', '>=', Carbon::today())
             ->where('team1_id', $this->team->id)
             ->whereOr('team2_id', $this->team->id)
             ->first();
-            // dd($this->matche);
-        $this->seriesMeta = SeriesMeta::query()
-            ->where('event_id', '=', $this->matche->event_id)
-            ->where('series', '=', $this->matche->series)
-            ->first();
-        
-        $this->formatDate = Carbon::parse($this->matche->start_time);
-        $service = new SeriesTemplatesService();
-        $idxTeamIds = $service->getTeamIds($this->team->event->format_scheme, $this->matche->series, $this->matche->round - 1);
-        $teams = Team::with('color')->where('event_id', $this->team->event->id)->get()->toArray();
 
-        foreach($idxTeamIds as $key => $id){
-            $this->seriesTeams[$key]['name'] = $teams[$id]['name'];
-            $this->seriesTeams[$key]['classColor'] = $service->getColorClass($teams[$id]['color']['name']);
+        $service = new SeriesTemplatesService();
+            
+        // dd($this->team);
+        if ($this->matche) {
+            // $this->matche = Matche::query()
+            //     ->where('event_id', $this->team->event->id)
+            //     ->where('start_time', '>=', $today)
+            //     ->where('team1_id', $this->team->id)
+            //     ->orWhere('team2_id', $this->team->id)
+            //     ->first();
+
+            $this->seriesMeta = SeriesMeta::query()
+                ->where('event_id', '=', $this->matche->event_id)
+                ->where('series', '=', $this->matche->series)
+                ->first();
+
+            $this->formatDate = Carbon::parse($this->matche->start_time);
+            $idxTeamIds = $service->getTeamIds($this->team->event->tournament->count_teams, $this->matche->series, $this->matche->round - 1);
+
+            $teams = Team::with('color')->where('event_id', $this->team->event->id)->get()->toArray();
+    
+            foreach($idxTeamIds as $key => $id){
+                $this->seriesTeams[$key]['name'] = $teams[$id]['name'];
+                $this->seriesTeams[$key]['classColor'] = $service->getColorClass($teams[$id]['color']['name']);
+            }
         }
+        
                 
         if ($this->team) {
             $this->maxPlayer = $this->team->max_players;

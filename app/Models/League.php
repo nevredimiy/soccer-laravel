@@ -7,10 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class League extends Model
 {
-    protected $fillable = [
-        'name',
-        'location_id'
-    ];
+    protected $fillable = ['name'];
 
     public function location()
     {

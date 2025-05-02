@@ -41,8 +41,13 @@ class TournamentProtocol extends Component
         $this->getMatches();
     }
 
-    public function getMatches()
+    #[On('eventSelected')]
+    public function getMatches($eventId = 0)
     {
+        if ($eventId) {
+            $this->eventId = $eventId;
+        }
+        
         $this->matches = Matche::query()
             ->with(['team1.color', 'team2.color', 'matchEvents'])
             ->withCount([

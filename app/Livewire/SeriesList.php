@@ -6,61 +6,62 @@ use Livewire\Component;
 use Livewire\Attributes\On; 
 use App\Models\Event;
 use App\Models\Team;
+use App\Models\Tournament;
+use App\Models\SeriesMeta;
 
-class EventList extends Component
+class SeriesList extends Component
 {
     public $selectedCity = null;
     public $selectedDistrict = null;
     public $selectedLocation = null;
     public $selectedLeague = null;
     public $events;
-    public $tournament;    
-
-    public function mount($tournament)
+    public $tournament;  
+    
+    public $series = [];
+    public $teams = [];
+    
+    public function mount($tournamentId)
     {
-
-        $this->tournament = $tournament;
+        $this->tournament = Tournament::with('events.teams')->findOrFail($tournamentId);
+    
         $this->selectedCity = session('current_city', 2);
-
-        $events = $tournament->events;
-        $this->events = $this->calculateStats($events);
-
-    }
-
-    protected function calculateStats($events)
-    {
-        // Загружаем все команды с игроками по событиям
-        $teams = Team::with('players')
-            ->whereIn('event_id', $events->pluck('id'))
+        $events = $this->tournament->events;
+    
+        $eventIds = $events->pluck('id');
+    
+        $this->series = SeriesMeta::whereIn('event_id', $eventIds)
+            ->with(['stadium.location.district', 'teams.players'])
             ->get();
 
-        $teamsByEvent = $teams->groupBy('event_id');
 
-        foreach ($events as $event) {
-            $eventTeams = $teamsByEvent[$event->id] ?? collect();
+            $this->series = $this->calculateStats($this->series);
+    
+    }
 
-            // Количество команд
-            $event->teams_count = $eventTeams->count();
+    protected function calculateStats($seriesCollection)
+    {
+        foreach ($seriesCollection as $series) {
+            $series->teams_count = $series->teams->count();
 
-            // Средний рейтинг игроков
             $totalRating = 0;
             $totalPlayers = 0;
 
-            foreach ($eventTeams as $team) {
+            foreach ($series->teams as $team) {
                 $players = $team->players;
                 $totalRating += $players->sum('rating');
                 $totalPlayers += $players->count();
             }
 
-            $event->average_player_rating = $totalPlayers > 0
+            $series->average_player_rating = $totalPlayers > 0
                 ? round($totalRating / $totalPlayers)
                 : 0;
         }
 
-        return $events;
+        return $seriesCollection;
     }
 
-
+    
 
     #[On('city-selected')]
     public function updateCityId($city_id)
@@ -70,7 +71,7 @@ class EventList extends Component
         $this->selectedLocation = null;
         $this->selectedLeague = null;
        
-        $this->updateEvents();
+        $this->updateSeries();
     }
     
     
@@ -80,7 +81,7 @@ class EventList extends Component
         $this->selectedDistrict = $district_id;
         $this->selectedLocation = null;
         $this->selectedLeague = null;
-        $this->updateEvents();
+        $this->updateSeries();
     }
         
     #[On('location-selected')]
@@ -88,49 +89,53 @@ class EventList extends Component
     {
         $this->selectedLocation = $location_id;
         $this->selectedLeague = null;
-        $this->updateEvents();
+        $this->updateSeries();
     }
         
     #[On('league-selected')]
     public function updateLeagueId($league_id)
     {
         $this->selectedLeague = $league_id;
-        $this->updateEvents();
+        $this->updateSeries();
     }
 
 
-    public function updateEvents()
+    public function updateSeries()
     {
-        $query = $this->tournament->events()->with('stadium.location.district');
-
+        $query = SeriesMeta::with('stadium.location.district.city', 'event')
+            ->whereHas('event', function ($q) {
+                $q->where('tournament_id', $this->tournament->id);
+            });
+    
         if ($this->selectedCity) {
             $query->whereHas('stadium.location.district.city', function ($q) {
                 $q->where('id', $this->selectedCity);
             });
         }
-
+    
         if ($this->selectedDistrict) {
             $query->whereHas('stadium.location.district', function ($q) {
                 $q->where('id', $this->selectedDistrict);
             });
         }
-
+    
         if ($this->selectedLocation) {
             $query->whereHas('stadium.location', function ($q) {
                 $q->where('id', $this->selectedLocation);
             });
         }
-
+    
         if ($this->selectedLeague) {
             $query->where('league_id', $this->selectedLeague);
         }
-     
-        // $this->events = $query->get();
-        $this->events = $this->calculateStats($query->get());
+
+        // Получение данных и расчёт статистики (если нужно)
+        $this->series = $this->calculateStats($query->get());
     }
+    
 
     public function render()
     {
-        return view('livewire.event-list');
+        return view('livewire.series-list');
     }
 }
