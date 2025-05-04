@@ -8,20 +8,20 @@
     <div class="latest-series__match-info match-info">
         <div class="match-info__details">
             <div class="match-info__label">
-                {{$formatDate->translatedFormat('d F')}}
+                {{isset($matche) ? $formatDate->translatedFormat('d F') : ''}}
             </div>
             <div class="match-info__label">
-                {{$formatDate->translatedFormat('D')}}
+                {{isset($matche) ? $formatDate->translatedFormat('D') : ''}}
             </div>
             <div class="match-info__label">
-                {{$formatDate->translatedFormat('H:i')}}
+                {{isset($matche) ? $formatDate->translatedFormat('H:i') : ''}}
             </div>
             <div class="match-info__label">
-                {{$matche->round}} ТУР
+                {{$matche->round ?? ''}} ТУР
 
             </div>
             <div class="match-info__label">
-                СЕРІЯ {{$matche->series}}
+                СЕРІЯ {{$matche->series?? ''}}
             </div>
         </div>
         <div class="match-info__teams">

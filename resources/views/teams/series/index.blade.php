@@ -29,8 +29,7 @@
                             {{ $tournament->name }}
                         </h2>
                         
-                        @if ($tournament->events->count())                       
-
+                        @if ($tournament->events->count())
                         
                         @livewire('series-list', ['tournamentId' => $tournament->id], key($tournament->id))
 

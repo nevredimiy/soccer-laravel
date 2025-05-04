@@ -26,8 +26,13 @@
             </div>
             <div class="item-bid__fill">
                 <div class="item-bid__label">
+                    @if ($s->event->tournament->type == 'team')
                     Команд зареєстровано
+                    @else
+                    Гравців зареєстровано
+                    @endif
                 </div>
+                @if ($s->event->tournament->type == 'team')
                 <div data-count-teams="{{count($teams)}}" class="item-bid__progress item-bid__progress--rect progress-bloc">
                     @for ( $i = 1; $i <= $tournament->count_teams; $i++)
                         <span 
@@ -38,7 +43,18 @@
                         </span>
                     @endfor
                 </div>
-
+                @else
+                <div data-count-players="{{$s->players_count}}" class="item-bid__progress">
+                    @for ($i=0; $i<18; $i++)
+                        <span 
+                            @if ($i<($s->players_count))
+                                class="_active"
+                            @endif
+                        ></span>
+                    @endfor
+                </div>
+                @endif
+                
             </div>
             <div class="item-bid__fill">
                 <div class="item-bid__label">
@@ -63,7 +79,17 @@
                     </div>
                 </div>                                            
             </div>
-            <a href="{{ route( 'teams.series.show', ['id' => $s['id']] ) }}" class="item-bid__link button _icon-info"><span>Детальніше</span></a>
+            <a 
+                href="@if ($s->event->tournament->type == 'team')
+                        {{ route( 'teams.series.show', ['id' => $s->id] ) }}
+                    @else
+                        {{ route( 'players.series.show', ['id' => $s->id] ) }}
+                    @endif
+                " 
+                class="item-bid__link button _icon-info"
+            >
+                <span>Детальніше</span>
+            </a>
         </div>                                    
     </div>
     @endforeach                          

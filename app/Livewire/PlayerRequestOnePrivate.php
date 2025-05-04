@@ -13,14 +13,14 @@ class PlayerRequestOnePrivate extends Component
     public ?Event $event = null;
     public $regPlayers = [];
     public array $playerIds = [];
-    public $amountForPlayer = 0;
+    public $playerPrice = 0;
     public $missingAmount = 0;
 
-    public function mount($event, $amountForPlayer = 0)
+    public function mount($event, $playerPrice = 0)
     {
 
         $this->event = $event;
-        $this->amountForPlayer = $amountForPlayer;
+        $this->playerPrice = $playerPrice;
 
         $this->loadPlayers();
 
@@ -38,9 +38,9 @@ class PlayerRequestOnePrivate extends Component
         }
 
         $balance = $user->balance;
-        $this->missingAmount = $this->amountForPlayer - $balance;
-        if($balance < $this->amountForPlayer){
-            session()->flash('error_balance', "Недостатньо коштів на балансі! Мінімальна сумма $this->amountForPlayer грн.");
+        $this->missingAmount = $this->playerPrice - $balance;
+        if($balance < $this->playerPrice){
+            session()->flash('error_balance', "Недостатньо коштів на балансі! Мінімальна сумма $this->playerPrice грн.");
             return;
         }
 

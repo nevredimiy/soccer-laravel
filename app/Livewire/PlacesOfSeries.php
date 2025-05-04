@@ -42,12 +42,15 @@ class PlacesOfSeries extends Component
         $this->playerId = $player ? $player->id : null;
         $today = Carbon::today()->format('Y-m-d H:i:s'); 
         $this->matche = $this->team->event->matches()
-            // ->where('start_time', '>=', Carbon::today())
+            ->where('start_time', '>=', Carbon::today())
             ->where('team1_id', $this->team->id)
             ->whereOr('team2_id', $this->team->id)
             ->first();
 
+
         $service = new SeriesTemplatesService();
+
+        // dd($this->matche);
             
         // dd($this->team);
         if ($this->matche) {
@@ -64,7 +67,8 @@ class PlacesOfSeries extends Component
                 ->first();
 
             $this->formatDate = Carbon::parse($this->matche->start_time);
-            $idxTeamIds = $service->getTeamIds($this->team->event->tournament->count_teams, $this->matche->series, $this->matche->round - 1);
+            $idxTeamIds = $service->getTeamIds($this->team->event->tournament->count_teams, $this->matche->series, $this->matche->round-1);
+
 
             $teams = Team::with('color')->where('event_id', $this->team->event->id)->get()->toArray();
     
@@ -79,9 +83,11 @@ class PlacesOfSeries extends Component
             $this->maxPlayer = $this->team->max_players;
         }
 
-        $this->checkStatusPlayer();
+        if($this->playerId){
+            $this->checkStatusPlayer();         
+        }
         $this->getPlayerSeriesRegistration();
-        $this->statusRegistration = $this->seriesMeta->status_registration;
+        $this->statusRegistration = $this->seriesMeta?->status_registration;
        
     }
 
@@ -110,7 +116,7 @@ class PlacesOfSeries extends Component
 
     protected function checkStatusPlayer()
     {
-        $statusPlayer = PlayerTeam::where('player_id', $this->playerId)->where('team_id', $this->team->id)->first()->status;
+        $statusPlayer = PlayerTeam::where('player_id', $this->playerId)->where('team_id', $this->team->id)->first()?->status;
 
         if ($statusPlayer == 'reserve') {
             $this->isPlayerReserve = true;
@@ -126,7 +132,8 @@ class PlacesOfSeries extends Component
     public function takePlace($numPlayer = 0)
     {
         // проверка статуса Основной / Резервный
-        $status = PlayerTeam::where('player_id', '=', $this->playerId)->value('status');
+        $status = PlayerTeam::where('player_id', '=', $this->playerId)->where('team_id', '=', $this->team->id)->value('status');
+        dump($status, $this->playerId);
         if($status == 'reserve') {
             return redirect()->to('/profile');
         }       
@@ -142,6 +149,7 @@ class PlacesOfSeries extends Component
         }
         $this->minBalance = ceil($price / 6);
         $this->desiredBalance = $this->minBalance - $balance;            
+        dump($this->minBalance . ' - ' . $balance);
         if($this->minBalance > $balance){
             $this->showModal = true;
             return;
@@ -176,7 +184,7 @@ class PlacesOfSeries extends Component
     {
         $this->regPlayers = PlayerSeriesRegistration::with('player')
             ->where('team_id', $this->team->id)
-            ->where('series', $this->matche->series)
+            ->where('series', $this->matche?->series)
             ->get();  
            
         // Проверка на Закрывать заявку или нет

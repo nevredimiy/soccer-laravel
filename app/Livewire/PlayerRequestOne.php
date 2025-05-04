@@ -15,14 +15,14 @@ class PlayerRequestOne extends Component
     public $players = null;
     public $isSeriesClosed = false;
 
-    public $amountForPlayer = 0;
+    public $playerPrice = 0;
     public $missingAmount = 0;
     
 
-    public function mount($event, $amountForPlayer = 0)
+    public function mount($event, $playerPrice = 0)
     {
         $this->event = $event;
-        $this->amountForPlayer = $amountForPlayer;
+        $this->playerPrice = $playerPrice;
 
         $this->isSeriesClosed = SeriesMeta::query()
             ->where('event_id', $this->event->id)
@@ -61,9 +61,9 @@ class PlayerRequestOne extends Component
         }
 
         $balance = $user->balance;
-        $this->missingAmount = $this->amountForPlayer - $balance;
-        if($balance < $this->amountForPlayer){
-            session()->flash('error_balance', "Недостатньо коштів на балансі! Мінімальна сумма $this->amountForPlayer грн.");
+        $this->missingAmount = $this->playerPrice - $balance;
+        if($balance < $this->playerPrice){
+            session()->flash('error_balance', "Недостатньо коштів на балансі! Мінімальна сумма $this->playerPrice грн.");
             return;
         }
 

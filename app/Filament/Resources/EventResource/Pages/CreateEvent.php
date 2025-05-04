@@ -21,12 +21,11 @@ class CreateEvent extends CreateRecord
     protected function afterCreate(): void
     {
         $data = $this->form->getState();
-
         $event = $this->record;
         $tournament = Tournament::find($data['tournament_id']);
-
         if (!$tournament) {
-            return; // или логгируй ошибку
+            logger()->error('Tournament not found', ['tournament_id' => $data['tournament_id']]);
+            return;
         }
 
         $this->createSeriesMeta(
@@ -36,82 +35,125 @@ class CreateEvent extends CreateRecord
         );
 
         $this->createTeams($data['teams'] ?? [], $event->id);
-        // $this->createMatches($event->id, $data['series'] ?? [], $data['rounds'] ?? []);
 
+        if ($tournament->team_creator === 'admin') {
+            $teams = Team::where('event_id', $event->id)->get()->toArray();
+    
+            if (!empty($teams)) {
+                $startTime = Carbon::parse($data['series_start_all'] ?? now());
+                $countRounds = $tournament->count_rounds ?? 1;
+    
+                $this->createMatches($event->id, $teams, $startTime, $countRounds);
+            }
+        }
+        
         $this->redirect(EventResource::getUrl());
     }
 
-    // Создание метаданных для серий
     protected function createSeriesMeta(Tournament $tournament, int $eventId, array $data): void
     {
-        $series = collect();
-    
-        for ($round = 1; $round <= $tournament->count_rounds; $round++) {
-            for ($seriesIndex = 1; $seriesIndex <= $tournament->count_series; $seriesIndex++) {
-                $series->push([
-                    'round' => $round,
-                    'series' => $seriesIndex,
-                ]);
-            }
-        }
-    
-        // Преобразуем даты в объекты Carbon
+        $seriesMeta = [];
+
         $startDate = Carbon::parse($data['series_start_all']);
         $endDate = Carbon::parse($data['series_end_all']);
-    
-        $series->each(function ($item, $index) use (
-            $eventId, $data, $tournament, &$startDate, &$endDate
-        ) {
-            SeriesMeta::create([
-                'event_id' => $eventId,
-                'stadium_id' => $data['stadium_id'],
-                'league_id' => $data['league_id'],
-                'size_field' => $data['size_field'],
-                'start_date' => $startDate->copy(),
-                'end_date' => $endDate->copy(),
-                'round' => $item['round'],
-                'series' => $item['series'],
-                'price' => $data['series_price_all'],
-            ]);
-    
-            // Увеличиваем дату на 7 дней только если подтип регулярный
-            if ($tournament->subtype === 'regular') {
-                $startDate->addDays(7);
-                $endDate->addDays(7);
+
+        for ($round = 1; $round <= $tournament->count_rounds; $round++) {
+            for ($seriesIndex = 1; $seriesIndex <= $tournament->count_series; $seriesIndex++) {
+                $seriesMeta[] = [
+                    'event_id' => $eventId,
+                    'stadium_id' => $data['stadium_id'],
+                    'league_id' => $data['league_id'],
+                    'size_field' => $data['size_field'],
+                    'start_date' => $startDate->copy(),
+                    'end_date' => $endDate->copy(),
+                    'round' => $round,
+                    'series' => $seriesIndex,
+                    'price' => $data['series_price_all'],
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+
+                if ($tournament->subtype === 'regular') {
+                    $startDate->addDays(7);
+                    $endDate->addDays(7);
+                }
             }
-        });
+        }
+
+        SeriesMeta::insert($seriesMeta);
     }
+
 
     // Создание команд
     protected function createTeams(array $teams, int $eventId): void
     {
-        foreach ($teams as $teamData) {
-            Team::create([
-                'event_id' => $eventId,
-                'owner_id' => auth()->id(),
-                'name' => $teamData['name'],
-                'color_id' => $teamData['color_id'],
-                'status' => 'paid',
-            ]);
+        $userId = auth()->id();
+        $now = now();
+
+        $preparedTeams = [];
+
+        foreach ($teams as $team) {
+            if (!empty($team['name'])) {
+                $preparedTeams[] = [
+                    'event_id' => $eventId,
+                    'owner_id' => $userId,
+                    'name' => $team['name'],
+                    'color_id' => $team['color_id'] ?? null,
+                    'status' => 'paid',
+                    'player_request_status' => 'needed',
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ];
+            }
+        }
+
+        if (!empty($preparedTeams)) {
+            Team::insert($preparedTeams);
         }
     }
 
+
     // Создания матчей
-    // protected function createMatches( int $eventId, int $series, int $round): void
-    // {
-    //     $seriesTemplatesService = new SeriesTemplatesService();
-    //     $teamIds = Team::where('event_id', $eventId)->pluck('id')->toArray();
-    //     $matches = $seriesTemplatesService->getSeries($series, $teamIds);
-        
-    //     // foreach ($matches as $matchData) {
-    //     //     Matche::create([
-    //     //         'event_id' => $eventId,
-    //     //         'team1_id' => $matchData['team1_id'],
-    //     //         'team2_id' => $matchData['team2_id'],
-    //     //         'date' => Carbon::parse($matchData['date']),
-    //     //         'stadium_id' => $matchData['stadium_id'],
-    //     //     ]);
-    //     // }
-    // }
+    protected function createMatches(int $eventId, array $teams, $startTime, int $countRounds): void
+    {
+        $service = new SeriesTemplatesService();
+        $templateMatches = $service->getMatchTemplate();
+
+        // Убедимся, что $startTime — это экземпляр Carbon
+        $startTime = $startTime instanceof \Carbon\Carbon
+            ? $startTime->copy()
+            : \Carbon\Carbon::parse($startTime);
+
+        $matches = [];
+
+        for ($round = 1; $round <= $countRounds; $round++) {
+            foreach ($templateMatches as [$i, $j]) {
+                if (!isset($teams[$i], $teams[$j])) {
+                    // Защита от выхода за пределы массива
+                    continue;
+                }
+
+                $matches[] = [
+                    'event_id'   => $eventId,
+                    'team1_id'   => $teams[$i]['id'],
+                    'team2_id'   => $teams[$j]['id'],
+                    'start_time' => $startTime->copy(),
+                    'series'     => 1,
+                    'round'      => $round,
+                    'status'     => 'scheduled',
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+                
+                // Увеличиваем время на 6 минут для следующего матча
+                $startTime->addMinutes(6);
+            }
+        }
+
+        if (!empty($matches)) {
+            Matche::insert($matches);
+        }
+
+    }
 }
 

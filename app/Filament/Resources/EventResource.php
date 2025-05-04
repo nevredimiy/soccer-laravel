@@ -224,29 +224,16 @@ class EventResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('tournament.name')                    
                     ->sortable(),
-                Tables\Columns\TextColumn::make('date')
-                    ->date()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('start_time'),
-                Tables\Columns\TextColumn::make('end_time')
-                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('format')
                     ->label('Формат')
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('size_field')
-                    ->label('Розмір поля')
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('stadium.name')
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                
-                Tables\Columns\TextColumn::make('league.name')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('price')
                     ->numeric(decimalPlaces: 0)
                     ->sortable(),
+                Tables\Columns\TextColumn::make('access_code')
+                    ->label('Код доступу')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -263,11 +250,11 @@ class EventResource extends Resource
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
 
-                Action::make('createMatches')
-                    ->label('Генерувати матчі')
-                    ->icon('heroicon-m-calendar-days')
-                    ->action(fn (Event $record, array $data) => static::handleMatchGeneration($record, $data))
-                    ->form(fn (Event $record) => static::getMatchFormSchema($record)),
+                // Action::make('createMatches')
+                //     ->label('Генерувати матчі')
+                //     ->icon('heroicon-m-calendar-days')
+                    // ->action(fn (Event $record, array $data) => static::handleMatchGeneration($record, $data))
+                    // ->form(fn (Event $record) => static::getMatchFormSchema($record)),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -614,4 +601,6 @@ class EventResource extends Resource
                 //     ->send();
         }
     } 
+
+    
 }

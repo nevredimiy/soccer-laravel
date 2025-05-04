@@ -21,7 +21,17 @@ class TeamPlayers extends Component
     {
         $this->team_id = $team_id;
         $this->team = Team::find($team_id);
-        $this->players = $this->getPlayersForTeam($team_id);
+        $players = $this->getPlayersForTeam($team_id);
+
+        $this->players = $players->map(function($player) use ($team_id) {
+            return [
+                'id' => $player->id,
+                'full_name' => $player->full_name,
+                'photo' => $player->photo,
+                'rating' => $player->rating,
+                'status' => $player->teams()->where('team_id', $team_id)->first()->pivot->status,
+            ];
+        })->toArray();
     }
 
     #[On('team-selected')]
@@ -69,15 +79,21 @@ class TeamPlayers extends Component
             return;
         }
     
-        $playerTeam->status = $playerTeam->status === 'main' ? 'reserve' : 'main';
+        $newStatus = $playerTeam->status === 'main' ? 'reserve' : 'main';
+        $playerTeam->status = $newStatus;
         $playerTeam->save();
     
-        // session()->flash('success', 'Статус гравця оновлено.');
-        $this->dispatch('togglePlayerStatus', $playerTeam->status);
+        // Обновляем статус в массиве players
+        foreach($this->players as &$player){
+            if($player['id'] == $player_id){
+                $player['status'] = $newStatus;
+                break;
+            }
+        }
     
-        // Обновляем список игроков
-        $this->players = $this->getPlayersForTeam($team_id);
+        $this->dispatch('togglePlayerStatus', $newStatus);
     }
+    
     
     
 

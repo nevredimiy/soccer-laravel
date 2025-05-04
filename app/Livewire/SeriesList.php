@@ -30,19 +30,20 @@ class SeriesList extends Component
     
         $eventIds = $events->pluck('id');
     
-        $this->series = SeriesMeta::whereIn('event_id', $eventIds)
-            ->with(['stadium.location.district', 'teams.players'])
+        $this->series = SeriesMeta::query()
+            ->whereIn('event_id', $eventIds)
+            ->with(['stadium.location.district', 'teams.players', 'event.tournament'])
             ->get();
 
+        $this->series = $this->calculateStats($this->series);
 
-            $this->series = $this->calculateStats($this->series);
-    
     }
 
     protected function calculateStats($seriesCollection)
     {
         foreach ($seriesCollection as $series) {
             $series->teams_count = $series->teams->count();
+
 
             $totalRating = 0;
             $totalPlayers = 0;
@@ -51,11 +52,13 @@ class SeriesList extends Component
                 $players = $team->players;
                 $totalRating += $players->sum('rating');
                 $totalPlayers += $players->count();
+                $series->players_count += $team->players->count();
             }
 
             $series->average_player_rating = $totalPlayers > 0
                 ? round($totalRating / $totalPlayers)
                 : 0;
+
         }
 
         return $seriesCollection;

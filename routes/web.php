@@ -19,6 +19,7 @@ use App\Http\Controllers\CityController;
 use App\Http\Controllers\TableController;
 use App\Http\Controllers\StadiumController;
 use App\Http\Controllers\PlayerRequestController;
+use App\Http\Controllers\PlayerSeriesController;
 use App\Http\Controllers\TeamEventController;
 use App\Http\Controllers\TeamSeriesController;
 use App\Http\Controllers\TeamRequestController;
@@ -89,11 +90,15 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/players/events/{id}/access', [PlayerRequestController::class, 'checkAccessCode'])->name('players.events.access');
     
     
-    Route::get('/teams/events', [TeamEventController::class, 'index'])->name('teams.events');
-    Route::get('/teams/events/{id}', [TeamEventController::class, 'show'])->name('teams.events.show');
+    // Route::get('/teams/events', [TeamEventController::class, 'index'])->name('teams.events');
+    // Route::get('/teams/events/{id}', [TeamEventController::class, 'show'])->name('teams.events.show');
 
     Route::get('/teams/series', [TeamSeriesController::class, 'index'])->name('teams.series');
     Route::get('/teams/series/{id}', [TeamSeriesController::class, 'show'])->name('teams.series.show');
+    
+    Route::get('/players/series', [PlayerSeriesController::class, 'index'])->name('players.series');
+    Route::get('/players/series/{id}', [PlayerSeriesController::class, 'show'])->name('players.series.show');
+    Route::post('/players/series/{id}/access', [PlayerSeriesController::class, 'checkAccessCode'])->name('players.series.access');
 
     Route::get('/teams/request/create', [TeamRequestController::class, 'create'])->name('teams.request.create');
     Route::post('/teams/request/store', [TeamRequestController::class, 'store'])->name('teams.request.store');

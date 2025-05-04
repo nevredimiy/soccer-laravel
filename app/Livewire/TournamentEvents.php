@@ -9,6 +9,7 @@ use App\Models\Stadium;
 use App\Models\Tournament;
 use App\Models\League;
 use App\Models\Event;
+use App\Models\SeriesMeta;
 use Livewire\Attributes\On;
 
 class TournamentEvents extends Component
@@ -100,8 +101,9 @@ class TournamentEvents extends Component
             $district_ids = District::where('city_id', $this->selectedCity)->pluck('id');
             $location_ids = Location::whereIn('district_id', $district_ids)->pluck('id');
             $stadiums = Stadium::whereIn('location_id', $location_ids)->pluck('id');
+            $seriesMetaIds = SeriesMeta::whereIn('stadium_id', $stadiums)->pluck('event_id');
             
-            $this->events = Event::whereIn('stadium_id', $stadiums)->orderByDesc('id')->get();
+            $this->events = Event::whereIn('id', $seriesMetaIds)->orderByDesc('id')->get();
             if ($this->activeEvent && count($this->events) > 0) {
                 $this->selectEvent($this->activeEvent);
             } elseif(count($this->events) > 0) {
@@ -115,7 +117,9 @@ class TournamentEvents extends Component
             $location_ids = Location::where('district_id', $this->selectedDistrict)->pluck('id');
             $stadiums = Stadium::whereIn('location_id', $location_ids)->pluck('id');
             
-            $this->events = Event::whereIn('stadium_id', $stadiums)->orderByDesc('id')->get();
+            $seriesMetaIds = SeriesMeta::whereIn('stadium_id', $stadiums)->pluck('event_id');
+            
+            $this->events = Event::whereIn('id', $seriesMetaIds)->orderByDesc('id')->get();;
             
             $found = false;
             foreach ($this->events as $event) {
@@ -140,7 +144,9 @@ class TournamentEvents extends Component
                 session()->forget('current_event');
                 return;
             }
-            $this->events = Event::where('stadium_id', $stadium->id)->with('tournament')->orderByDesc('id')->get();
+
+            $seriesMetaIds = SeriesMeta::whereIn('stadium_id', $stadiums)->pluck('event_id');
+            $this->events = Event::whereIn('id', $seriesMetaIds)->orderByDesc('id')->get();
             
             
             if ($this->activeEvent && count($this->events) > 0) {

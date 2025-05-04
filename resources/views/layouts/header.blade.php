@@ -12,7 +12,7 @@
                 <a href="{{ route('teams.series') }}" class="header__link button _icon-ch-right">
                     <span>Заявити команду</span>
                 </a>
-                <a href="{{ route('players.events') }}" class="header__link button _icon-ch-right">
+                <a href="{{ route('players.series') }}" class="header__link button _icon-ch-right">
                     <span>Заявка гравця</span>
                 </a>
             </div>

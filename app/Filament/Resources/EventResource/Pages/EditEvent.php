@@ -29,4 +29,57 @@ use Illuminate\Support\Facades\Log;
             // Перенаправление на список событий
             return $this->getResource()::getUrl('index');
         }
+
+        protected function mutateFormDataBeforeFill(array $data): array
+        {
+
+            // Пример: добавить массив команд из таблицы teams
+            $data['teams'] = \App\Models\Team::where('event_id', $this->record->id)
+                ->get(['name', 'color_id'])
+                ->toArray();
+
+            // Пример: достать мета-инфу по series
+            $meta = \App\Models\SeriesMeta::where('event_id', $this->record->id)->first();
+            if ($meta) {
+                $data['series_start_all'] = $meta->start_date;
+                $data['series_end_all'] = $meta->end_date;
+                $data['series_price_all'] = $meta->price;
+                $data['stadium_id'] = $meta->stadium_id;
+                $data['league_id'] = $meta->league_id;
+                $data['size_field'] = $meta->size_field;
+            }
+
+            return $data;
+        }
+
+        protected function afterSave(): void
+        {
+            // Сохраняем мета-данные серии
+            \App\Models\SeriesMeta::updateOrCreate(
+                ['event_id' => $this->record->id],
+                [
+                    'start_date' => $this->data['series_start_all'] ?? null,
+                    'end_date' => $this->data['series_end_all'] ?? null,
+                    'price' => $this->data['series_price_all'] ?? null,
+                    'stadium_id' => $this->data['stadium_id'] ?? null,
+                    'league_id' => $this->data['league_id'] ?? null,
+                    'size_field' => $this->data['size_field'] ?? null,
+                ]
+            );
+
+            $teams = \App\Models\Team::where('event_id', $this->record->id)->get();
+
+            foreach ($teams as $index => $team) {
+                if (!empty($this->data['teams'][$index]['name'])) {
+                    $team->update([
+                        'name' => $this->data['teams'][$index]['name'],
+                        'color_id' => $this->data['teams'][$index]['color_id'] ?? null,
+                    ]);
+                }
+            }
+        }
+
+
+        
+
     }

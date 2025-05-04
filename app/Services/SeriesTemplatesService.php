@@ -102,12 +102,12 @@ class SeriesTemplatesService
     public function getTeamIds(int $count, int $seriesNum, int $roundNum)
     {
 
-        // if ($count === 3) {
-        //     $series[1] = [
-        //         [0, 1, 2],
-        //     ];
-        //     return $series[$seriesNum][$roundNum];
-        // }
+        if ($count === 3) {
+            $series[1] = [
+                [0, 1, 2],
+            ];
+            return $series[$seriesNum][$roundNum];
+        }
 
 
         if ($count === 4) {

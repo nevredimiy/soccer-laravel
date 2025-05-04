@@ -4,6 +4,8 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\Team;
+use App\Models\Event;
+
 use Livewire\Attributes\On;
 
 
@@ -13,7 +15,8 @@ class TournamentInfo extends Component
     public $romeNum = ['I', 'II', 'III'];
     public $teams = [];
     public $eventId = null;
-    public array $roman = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
+    public $event = null;
+
     public $colors = [
         '#ff0000', 
         '#00b050',
@@ -47,6 +50,7 @@ class TournamentInfo extends Component
     public function mount()
     {
         $eventId = session('current_event', 0);
+        $this->event = Event::with('tournament')->find($eventId);
         $this->teams = $this->getTeams($eventId);
         $this->shedule = $this->getScheduleProperty($this->teams);
 
@@ -73,7 +77,6 @@ class TournamentInfo extends Component
         }
 
         return $teams;
-
     }
 
     public function getBgClass($colorName): string
@@ -120,15 +123,12 @@ class TournamentInfo extends Component
         if($eventId){
             $this->eventId = $eventId;
             $this->teams = $this->getTeams($eventId);
+            $this->event = Event::with('tournament')->find($eventId);
         } else {
             $this->teams = [];
         }
     }
 
-    // protected function updateTournament()
-    // {
-    //     $this->teams = Team::where('event_id', $this->eventId)->get();
-    // }
 
 
     public function render()

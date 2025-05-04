@@ -8,6 +8,7 @@ use App\Models\Team;
 use App\Models\TeamPlayerApplication;
 use Carbon\Carbon;  
 use Illuminate\Support\Facades\DB;
+use App\Services\SeriesTemplatesService;
 
 
 class ProfileController extends Controller

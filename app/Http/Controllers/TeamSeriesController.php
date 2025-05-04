@@ -31,7 +31,7 @@ class TeamSeriesController extends Controller
            ->where('id', $id)
            ->firstOrFail();
        $eventId = SeriesMeta::where('id', $id)->value('event_id');
-       $event = Event::find($eventId);
+       $event = Event::with('tournament')->find($eventId);
        
        
        $teams = Team::where('event_id', $eventId)->with(['players', 'color'])->get()->map(function ($team) {
@@ -120,7 +120,7 @@ class TeamSeriesController extends Controller
 
         $service = new \App\Services\SeriesTemplatesService();
         $teamIds = Team::where('event_id', $eventId)->pluck('id')->toArray();
-        \dump($teamIds);
+
         $matches = $service->getSeries($seriesMeta->series, $teamIds);
         $matches = collect($matches)->map(function ($match) use ($teamIds) {
             return [
