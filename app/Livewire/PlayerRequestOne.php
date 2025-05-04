@@ -7,6 +7,7 @@ use App\Models\SeriesMeta;
 use App\Models\Event;
 use App\Models\Player;
 use App\Models\PlayerTeam;
+use App\Models\Team;
 
 class PlayerRequestOne extends Component
 {
@@ -17,12 +18,16 @@ class PlayerRequestOne extends Component
 
     public $playerPrice = 0;
     public $missingAmount = 0;
+    public $user = null;
+    public $currentPlayer = null;
     
 
     public function mount($event, $playerPrice = 0)
     {
         $this->event = $event;
         $this->playerPrice = $playerPrice;
+        $this->user = auth()->user();
+        $this->currentPlayer = Player::query()->where('user_id', $this->user->id)->first();
 
         $this->isSeriesClosed = SeriesMeta::query()
             ->where('event_id', $this->event->id)
@@ -30,6 +35,7 @@ class PlayerRequestOne extends Component
             ->exists();
 
        
+
         $this->loadPlayers();
 
     }
@@ -52,15 +58,12 @@ class PlayerRequestOne extends Component
     public function BookingPlace()
     {
         
-        // Проверяем, есть ли уже игрок в этой команде
-        $user = auth()->user();
-        $player = Player::query()->where('user_id', '=', $user->id)->first();
-        if(in_array($player->id, array_column($this->players, 'id'))){
+        if(in_array($this->currentPlayer->id, array_column($this->players, 'id'))){
             session()->flash('error', 'Ви вже в серії!');
             return;
         }
 
-        $balance = $user->balance;
+        $balance = $this->user->balance;
         $this->missingAmount = $this->playerPrice - $balance;
         if($balance < $this->playerPrice){
             session()->flash('error_balance', "Недостатньо коштів на балансі! Мінімальна сумма $this->playerPrice грн.");
@@ -68,7 +71,7 @@ class PlayerRequestOne extends Component
         }
 
         // записываем игрока в команду
-        $this->addPlayer($player->id);
+        $this->addPlayer($this->currentPlayer->id);
 
         // обновляем компонент
         $this->loadPlayers();
@@ -106,6 +109,20 @@ class PlayerRequestOne extends Component
             'player_number' => $playerNumber,
         ]);
     }
+
+    public function deletePlayer()
+    {
+        $teamIds = Team::where('event_id', $this->event->id)->pluck('id');
+
+        PlayerTeam::where('player_id', $this->currentPlayer->id)
+            ->whereIn('team_id', $teamIds)
+            ->first()?->delete(); // безопасный вызов
+        session()->flash('success', 'Гравця успішно видалено зі складу.');
+        // обновляем компонент
+        $this->loadPlayers();
+    }
+
+
 
     public function closeSeries()
     {

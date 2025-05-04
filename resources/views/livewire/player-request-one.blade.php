@@ -14,7 +14,11 @@
         @if ($isSeriesClosed)
             <p class="text-red-500 text-center mb-2">Реєстрація закрита</p>
         @else
-            <button wire:click="BookingPlace" class="schedule-tournament__button button button--yellow">
+            <button 
+                wire:click="BookingPlace" 
+                wire:confirm="Ви дійстно хочете потрапити до турніру?"
+                class="schedule-tournament__button button button--yellow"
+            >
                 <span>ЗАЯВИТИСЬ НА ТУРНІР</span>
             </button>
         @endif
@@ -32,27 +36,11 @@
 
    
     <div class="players-tournament__items">
-        {{-- @foreach ($event->teams as $team)
-            @foreach ($team->players as $player)
-                <div wire:key="{{$team->id}}_{{$player->id}}" data-player-id="{{$player->id}}" class="players-tournament__item">
-                    <article class="item-player item-player--stats">
-                        <a href="#" class="item-player__image-link">
-                            <img src="{{asset($player->photo)}}" alt="{{$player->last_name}} {{$player->first_name}}" class="ibg">
-                        </a>
-                        <div class="item-player__name">
-                            <a href="#">{{$player->last_name}} {{$player->first_name}}</a>
-                        </div>
-                        <div data-rating data-rating-size="10" data-rating-value="{{$player->rating}}" class="item-player__rating rating">
-                        </div>
-                    </article>
-                </div>                
-            @endforeach            
-        @endforeach --}}
         @foreach ($players as $player)
             <div wire:key="{{$player['id']}}" data-player-id="{{$player['id']}}" class="players-tournament__item">
                 <article class="item-player item-player--stats">
                     <a href="#" class="item-player__image-link">
-                        <img src="{{asset($player['photo'])}}" alt="{{$player['last_name']}} {{$player['first_name']}}" class="ibg">
+                        <img src="{{asset('storage/' . $player['photo'])}}" alt="{{$player['last_name']}} {{$player['first_name']}}" class="ibg">
                     </a>
                     <div class="item-player__name">
                         <a href="#">{{$player['last_name']}} {{$player['first_name']}}</a>
@@ -60,6 +48,17 @@
                     <div data-rating data-rating-size="10" data-rating-value="{{$player['rating']}}" class="item-player__rating rating">
                     </div>
                 </article>
+                @if ($currentPlayer->id == $player['id'])
+                <div class="flex justify-center">
+                    <button 
+                        wire:click="deletePlayer"
+                        wire:confirm="Ви дійсно хочите вийти із турніра?"
+                        class="button button--yellow button--small"
+                    >
+                        Вийти
+                    </button>
+                </div>                    
+                @endif
             </div>
             
         @endforeach

@@ -20,7 +20,10 @@
                 </button>
                 </li>
             @endforeach
-        </ul>             
+        </ul>  
+        <div wire:loading> 
+            Завантаження данних...
+        </div>          
         @endif         
     
     
