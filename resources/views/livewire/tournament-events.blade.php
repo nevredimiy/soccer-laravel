@@ -2,7 +2,7 @@
     @if ($events)
 
         <div class="text-center mb-2">
-            <h2>{{ \Carbon\Carbon::parse($event->date)->translatedFormat('d F') }} </h2>
+            <h2>{{ \Carbon\Carbon::parse($event->seriesMeta->first()->start_date)->translatedFormat('d F') }} </h2>
             <h2>{{$event->tournament->name}}</h2>
             ({{$event->id}})
             ({{$event->format_scheme}} команд)
