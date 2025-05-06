@@ -21,66 +21,8 @@
                     :teams="$teams"
                 />
                 
+                <x-team-registration-cost  :event="$event" />
 
-                <section class="tournament__price price-tournament">
-                    <h2 class="price-tournament__title section-title section-title section-title--margin">
-                        ВАРТІСТЬ РЕЄСТРАЦІЇ КОМАНДИ
-                    </h2>
-                    <div class="price-tournament__body">
-                        <div class="price-tournament__block">
-                            <div class="price-tournament__item">
-                                <span>
-                                    КОМАНДА 1
-                                </span>
-                                <span>
-                                    400 ГРН
-                                </span>
-                            </div>
-                            <div class="price-tournament__item">
-                                <span>
-                                    КОМАНДА 2
-                                </span>
-                                <span>
-                                    450 ГРН
-                                </span>
-                            </div>
-                            <div class="price-tournament__item">
-                                <span>
-                                    КОМАНДА 3
-                                </span>
-                                <span>
-                                    500 ГРН
-                                </span>
-                            </div>
-                        </div>
-                        <div class="price-tournament__block">
-                            <div class="price-tournament__item">
-                                <span>
-                                    КОМАНДА 5
-                                </span>
-                                <span>
-                                    500 ГРН
-                                </span>
-                            </div>
-                            <div class="price-tournament__item">
-                                <span>
-                                    КОМАНДА 6
-                                </span>
-                                <span>
-                                    550 ГРН
-                                </span>
-                            </div>
-                            <div class="price-tournament__item">
-                                <span>
-                                    КОМАНДА 7
-                                </span>
-                                <span>
-                                    600 ГРН
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </section>
                 <section class="tournament__reg reg-tournament">
                    
                     <h2 class="reg-tournament__title section-title section-title--margin">

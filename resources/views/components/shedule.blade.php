@@ -3,77 +3,60 @@
         РОЗКЛАД
     </h2>
     <div class="schedule-tournament__body">
-        @foreach ($seriesGroupedByRound as $round => $item)
+        @foreach ($series as $round => $item)
             <div class="schedule-tournament__block">                                
                 <div class="schedule-tournament__item schedule-tournament__item--info schedule-tournament__item--center">
                     <div class="schedule-tournament__label uppercase">
-                        {{ \Carbon\Carbon::parse($item->first()->start_date)->locale('uk')->settings(['formatFunction' => 'translatedFormat'])->format('d F') }}
-
+                        {{ isset($seriesGroupedByRound[$round+1]) ? $seriesGroupedByRound[$round+1]->first()['start_date'] : '00' }}
                     </div>
                     <div class="schedule-tournament__label">
-                        {{ \Carbon\Carbon::parse($item->first()->start_date)->locale('uk')->settings(['formatFunction' => 'translatedFormat'])->format('l') }}
+                        {{ isset($seriesGroupedByRound[$round+1]) ? $seriesGroupedByRound[$round+1]->first()['start_day'] : '00' }}
                     </div>
                 </div>
                 <div class="schedule-tournament__item schedule-tournament__item--info">
                     <div class="schedule-tournament__label">
                         ЧАС
                     </div>
-                        @foreach ($item as $v)
+                    @if(isset($seriesGroupedByRound[$round+1]))
+                        @foreach ($seriesGroupedByRound[$round+1] as $v)
                             <div class="schedule-tournament__label">
-                                {{ $v ? \Carbon\Carbon::parse($v->start_time)->format('H:i') : '' }}
+                                {{ $seriesGroupedByRound[$round+1]->first()['start_time'] ?? '00' }}
                             </div>                            
                         @endforeach
-                                                         
-                    
+                    @endif
                 </div>
                 <div class="schedule-tournament__item schedule-tournament__item--info">
                     <div class="schedule-tournament__label">
-                        {{$round}} ТУР
+                        @if ($loop->last)
+                            ФІНАЛ
+                        @else
+                            {{ $round + 1 }} ТУР
+                        @endif
                     </div>
-                    @foreach ($item as $v)
-                    <div class="schedule-tournament__label">
-                        СЕРІЯ {{$v->series}}
-                    </div>                                        
-                    @endforeach                                   
+                    @if(isset($seriesGroupedByRound[$round+1]))
+                        @foreach ($seriesGroupedByRound[$round+1] as $v)
+                            <div class="schedule-tournament__label">
+                                СЕРІЯ {{$v['series']}}
+                            </div>                                        
+                        @endforeach
+                    @endif                                 
                 </div>
-                {{-- @foreach ($matchTeamColors[$round] as $k => $mat) --}}
-                <div class="schedule-tournament__item">
-                    <div class="schedule-tournament__label">
-                        {{-- МАТЧ {{$k}} --}}
-                    </div>
-                    <div class="schedule-tournament__colors">
-                        {{-- @foreach ($mat as $v) --}}
-                            {{-- <span class="{{$v}}"></span>                                                 --}}
-                        {{-- @endforeach                                             --}}
-                    </div>         
-                </div>     
-                {{-- @endforeach --}}
 
-                @foreach ($item as $seriesMeta)
-                @php
-                    $seriesNumber = $seriesMeta->series;
-                    $triples = $templateSeries[$seriesNumber] ?? [];
-                @endphp
-
-                    @foreach ($templateMatches as $matchIndex => $matchTeams)
-                    <div class="schedule-tournament__item">
-                        <div class="schedule-tournament__label">
-                            МАТЧ {{$matchIndex+1}}
-                        </div>
-                        <div class="schedule-tournament__colors">
-                            {{-- @foreach ($mat as $v) --}}
-                                {{-- <span class="{{$v}}"></span>                                                 --}}
-                            {{-- @endforeach                                             --}}
-                        </div>         
-                    </div>     
-                    @endforeach
-                @endforeach
-
-
+                 @foreach ($templateMatches as $idxMatch => $matchTeams)
+             
+                 <div class="schedule-tournament__item">
+                     <div class="schedule-tournament__label">
+                         МАТЧ {{$idxMatch + 1}}
+                     </div>
+                     <div class="schedule-tournament__colors">
+                            @foreach ($item as $value)
+                                <span class="{{ $colorClasses[ $colorNames[ $value[ $matchTeams [ 0 ] ] ] ] }}"></span>
+                                <span class="{{ $colorClasses[ $colorNames[ $value[ $matchTeams [ 1 ] ] ] ] }}"></span>
+                            @endforeach                     
+                     </div>         
+                 </div>     
+             @endforeach
             </div>  
-            
-           
-
         @endforeach
     </div>
 </section>
