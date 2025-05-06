@@ -408,6 +408,10 @@ body::after {
   background-color: #ed1c24;
   color: #fff
 }
+.button--black {
+  background-color: #000000;
+  color: #fff
+}
 .button._active {
   background-color: #f7e10e;
   color: #0a2640
@@ -4951,4 +4955,9 @@ body > div.wrapper > main > div > a:hover {
   cursor: auto;
   background-color: #f7e10e;
   color: black;
+}
+
+.ball {
+  width: 30px;
+  height: 30px;
 }
