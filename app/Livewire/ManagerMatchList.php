@@ -16,9 +16,12 @@ use Illuminate\Database\Eloquent\Collection;
 class ManagerMatchList extends Component
 {
 
-    public ?Collection $matches = null;
-    public ?Collection $stadiums = null;
-    public ?Collection $events = null;
+    public $matches = null;
+    public $stadiums = null;
+    public $events = null;
+    
+    public $seriesMetas = null;
+    public $seriesMetasGroup = null;
 
 
     public $selectedCity = null;
@@ -28,37 +31,22 @@ class ManagerMatchList extends Component
     public $selectedLeague = null;
     public $selectedEvent = null;
 
+    
+
     public function mount()
     {
         $this->selectedCity = session('current_city', 2);
         $this->selectedEvent = session('current_event', 0);
-
-        $eventIds = SeriesMeta::query()
-        ->whereIn('stadium_id', function ($query) {
-            $query->select('id')
-                ->from('stadiums')
-                ->whereIn('location_id', function ($query) {
-                    $query->select('id')
-                        ->from('locations')
-                        ->whereIn('district_id', function ($query) {
-                            $query->select('id')
-                                ->from('districts')
-                                ->where('city_id', $this->selectedCity);
-                        });
-                });
-        })
-        ->pluck('event_id');
-
-        $this->matches = Matche::query()
-            ->where('status', '!=', 'finished')
-            ->whereIn('event_id', $eventIds)
-            ->get();
-        $this->events = Event::query()
-            ->whereIn('id', $eventIds)
-            ->get();
-       
+    
         $this->updateMatches();
+        $this->updateSeriesMetas();
+    
+        $this->events = Event::query()
+            ->whereIn('id', SeriesMeta::pluck('event_id')->unique())
+            ->get();
     }
+    
+    
 
     #[On('city-selected')]
     public function updateCityId($city_id)
@@ -70,6 +58,7 @@ class ManagerMatchList extends Component
         $this->selectedLeague = null;
        
         $this->updateMatches();
+        $this->updateSeriesMetas();
     }
 
     #[On('district-selected')]
@@ -81,6 +70,7 @@ class ManagerMatchList extends Component
         $this->selectedLeague = null;
 
         $this->updateMatches();
+        $this->updateSeriesMetas();
     }
 
     #[On('location-selected')]
@@ -91,6 +81,7 @@ class ManagerMatchList extends Component
         $this->selectedLeague = null;
 
         $this->updateMatches();
+        $this->updateSeriesMetas();
     }
 
     #[On('typeTournamentSelected')]
@@ -99,6 +90,7 @@ class ManagerMatchList extends Component
 
         $this->selectedTournament = $typeTournament;
         $this->updateMatches();
+        $this->updateSeriesMetas();
     }
 
     #[On('league-selected')]
@@ -106,59 +98,80 @@ class ManagerMatchList extends Component
     {
         $this->selectedLeague = $league_id;
         $this->updateMatches();
+        $this->updateSeriesMetas();
     }
 
     public function updatedSelectedEvent($event_id)
     {
         session(['current_event' => $event_id]); 
         $this->updateMatches();
+        $this->updateSeriesMetas();
     }
 
     protected function updateMatches()
     {
-        $seriesQuery = SeriesMeta::query()->with('stadium.location.district');
-
-        if ($this->selectedLocation) {
-            $seriesQuery->whereHas('stadium.location', function ($q) {
-                $q->where('id', $this->selectedLocation);
-            });
-        } elseif ($this->selectedDistrict) {
-            $seriesQuery->whereHas('stadium.location', function ($q) {
-                $q->where('district_id', $this->selectedDistrict);
-            });
-        } elseif ($this->selectedCity) {
-            $seriesQuery->whereHas('stadium.location.district', function ($q) {
-                $q->where('city_id', $this->selectedCity);
-            });
-        }
-
-        if ($this->selectedLeague) {
-            $seriesQuery->where('league_id', $this->selectedLeague);
-        }
-
-        $eventIds = $seriesQuery->pluck('event_id');
-
-        // Если выбран конкретный event — ограничиваем только им
-        if ($this->selectedEvent) {
-            $eventIds = collect([$this->selectedEvent]);
-        }
-
+        $eventIds = $this->selectedEvent
+            ? collect([$this->selectedEvent])
+            : $this->buildSeriesMetaQuery()->pluck('event_id');
+    
         $matchQuery = Matche::query()
             ->where('status', '!=', 'finished')
             ->whereIn('event_id', $eventIds);
-
+    
         if ($this->selectedTournament) {
             $matchQuery->whereHas('event.tournament', function ($q) {
                 $q->where('type', $this->selectedTournament);
             });
         }
-
+    
         $this->matches = $matchQuery->get();
     }
+    
+
+    protected function updateSeriesMetas()
+    {
+        $eventIds = $this->selectedEvent
+            ? collect([$this->selectedEvent])
+            : $this->buildSeriesMetaQuery()->pluck('event_id');
+    
+        $this->seriesMetas = SeriesMeta::query()
+            ->whereIn('event_id', $eventIds)
+            ->get();
+    
+        $this->seriesMetasGroup = collect($this->seriesMetas)->groupBy('round');
+    }
+    
+
+    private function buildSeriesMetaQuery()
+    {
+        $query = SeriesMeta::query()->with('stadium.location.district');
+
+        if ($this->selectedLocation) {
+            $query->whereHas('stadium.location', function ($q) {
+                $q->where('id', $this->selectedLocation);
+            });
+        } elseif ($this->selectedDistrict) {
+            $query->whereHas('stadium.location', function ($q) {
+                $q->where('district_id', $this->selectedDistrict);
+            });
+        } elseif ($this->selectedCity) {
+            $query->whereHas('stadium.location.district', function ($q) {
+                $q->where('city_id', $this->selectedCity);
+            });
+        }
+
+        if ($this->selectedLeague) {
+            $query->where('league_id', $this->selectedLeague);
+        }
+
+        return $query;
+    }
+
 
    
     public function render()
     {
+        
         return view('livewire.manager-match-list');
     }
 }

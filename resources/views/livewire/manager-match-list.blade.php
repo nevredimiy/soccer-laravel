@@ -1,6 +1,6 @@
 <div class="">
     <hr />
-    <div class="flex justify-center mt-4">
+    <div class="flex justify-center mt-4 gap-2">
         <select class="bg-[#00539f] text-white py-1.5 px-2 min-w-44 rounded mb-2" wire:model.live="selectedEvent" name="events">
             <option value="0">Вибери подію</option>
             @foreach ($events as $key => $event)            
@@ -11,9 +11,53 @@
                 </option>
             @endforeach   
         </select>
+       
     </div>
+
+    <ul class="grid grid-cols-1 justify-items-center md:grid-cols-2 lg:grid-cols-3 mb-4">
+        @forelse ($seriesMetasGroup ?? [] as $round => $seriaMeta)
+            <li wire:key="{{$round}}">
+                <a 
+                    class="border rounded p-2 mb-2 hover:bg-yellow-300" 
+                    href="{{route('manager.matches.show', ['id' => $round])}}"
+                >
+                <p>Тур {{$round}}</p>
+                @foreach ( $seriaMeta as $item )
+                <div wire:key="{{$item->id}}" class="">
+                    Серія {{$item->series}}-Початок {{\Carbon\Carbon::parse($item->start_time)->format('d.m.Y H:i')}}                    
+                </div>
+                @endforeach
+
+                </a>
+            </li>                    
+        @empty
+            <li>Немає серій</li>
+        @endforelse      
+    </ul>
+
+
+    <hr />
+    <ul class="grid grid-cols-1 justify-items-center md:grid-cols-2 lg:grid-cols-3 mb-4">
+        @forelse ($seriesMetas ?? [] as $seriaMeta)
+            <li wire:key="{{$seriaMeta->id}}">
+                <a 
+                    class="border rounded p-2 mb-2 hover:bg-yellow-300" 
+                    href="{{route('manager.matches.show', ['id' => $seriaMeta->id])}}"
+                >
+                    Серія {{$loop->iteration}} - {{$seriaMeta->event_id}}-Тур {{$seriaMeta->round}}-Серія {{$seriaMeta->series}}-Початок {{\Carbon\Carbon::parse($seriaMeta->start_time)->format('d.m.Y H:i')}}
+
+                </a>
+            </li>                    
+        @empty
+            <li>Немає серій</li>
+        @endforelse      
+    </ul>
+
+
+    <hr />
+
     <ul class="grid grid-cols-1 justify-items-center md:grid-cols-2 lg:grid-cols-3">
-        @foreach ($matches as $match)
+        @forelse ($matches ?? [] as $match)
             <li wire:key="{{$match->id}}">
                 <a 
                     class="border rounded p-2 mb-2 hover:bg-yellow-300 
@@ -26,7 +70,12 @@
 
                 </a>
             </li>                    
-        @endforeach
+        @empty
+            <li>Немає матчів</li>
+        @endforelse
         
     </ul>
+    
+ 
+    
 </div>
