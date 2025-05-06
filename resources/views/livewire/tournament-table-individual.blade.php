@@ -5,7 +5,7 @@
     <div class="table-section__subtitle">
         Меридіан - Суперліга
     </div>
-    <div data-simplebar class="table-section__body">
+    <div class="table-section__body">
         <div class="table-section__table-wrapper">
             <table class="table-section__table">
                 <thead>
@@ -53,11 +53,11 @@
                     @foreach ($players as $key => $player)
                         <tr wire:key="{{$key}}">
                             <td>
-                                <span class="place gold">1</span>
+                                <span class="place">{{ $loop->iteration }}</span>
                             </td>
                             <td>
                                 <div class="photo">
-                                    <img src="{{asset('storage' . $player['photo'])}}" alt="Image" class="ibg">
+                                    <img src="{{asset('storage/' . $player['photo'])}}" alt="Image" class="ibg">
                                 </div>
                             </td>
                             <td>
@@ -65,35 +65,35 @@
                             </td>
                             @for ($round = 1; $round <= 12; $round++)
                             
-                                <td>
-                                    <span class="digit">1</span>
+                                <td wire:key="$round">
+                                    <span class="digit">-</span>
                                 </td>
                                 
                             @endfor
                         
                             <td>
-                                <span class="border">210</span>
+                                <span class="border">0</span>
                             </td>
                             <td>
-                                <span class="border">127</span>
+                                <span class="border">0</span>
                             </td>
                             <td>
-                                <span class="border">83</span>
+                                <span class="border">0</span>
                             </td>
                             <td>
-                                <span class="border">210</span>
+                                <span class="border">0</span>
                             </td>
                             <td>
-                                <span class="border">127</span>
+                                <span class="border">0</span>
                             </td>
                             <td>
-                                <span class="border">83</span>
+                                <span class="border">0</span>
                             </td>
                             <td>
-                                <span class="border">83</span>
+                                <span class="border">0</span>
                             </td>
                             <td>
-                                <span class="gray-bg">27</span>
+                                <span class="gray-bg">0</span>
                             </td>
                         </tr>
                    @endforeach

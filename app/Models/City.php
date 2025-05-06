@@ -10,4 +10,9 @@ class City extends Model
         'name',
         'logo'
     ];
+
+    public function districts()
+    {
+        return $this->hasMany(District::class);
+    }
 }

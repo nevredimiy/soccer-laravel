@@ -3,10 +3,9 @@
 
         <div class="text-center mb-2">
             <h2>{{ \Carbon\Carbon::parse($event->seriesMeta->first()->start_date)->translatedFormat('d F') }} </h2>
-            <h2>{{$event->tournament->name}}</h2>
-            ({{$event->id}})
-            ({{$event->format_scheme}} команд)
-            ({{$event->tournament->name}}) 
+            <h2>{{$event->tournament->name}} ({{$event->id}}) ({{$event->tournament->type}})</h2>
+            
+
         </div>  
         @if (count($events) > 0)
         <ul class="flex flex-wrap gap-2 bg-gray-400 rounded p-1 justify-center ">

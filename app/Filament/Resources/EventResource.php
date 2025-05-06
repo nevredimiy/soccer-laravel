@@ -29,6 +29,7 @@ use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
+use Filament\Tables\Columns\TextColumn;
 
 class EventResource extends Resource
 {
@@ -105,7 +106,6 @@ class EventResource extends Resource
     
                 Section::make('Інформація Серії')
                     ->schema([
-
                         DateTimePicker::make('series_start_all')
                             ->label('Дата початку для всіх Серій')
                             ->reactive()
@@ -116,8 +116,7 @@ class EventResource extends Resource
                                     $seriesNumber = $index + 1;
                                     $set("series_{$seriesNumber}_start_date", $state);
                                 }
-                            }),
-                        
+                            }),                        
                         DateTimePicker::make('series_end_all')
                             ->label('Дата кінця для всіх Серій')
                             ->reactive()
@@ -129,7 +128,6 @@ class EventResource extends Resource
                                     $set("series_{$seriesNumber}_end_date", $state);
                                 }
                             }),
-
                         // Цена для всех серий
                         TextInput::make('series_price_all')
                             ->label('Ціна для всіх Серій')
@@ -165,11 +163,7 @@ class EventResource extends Resource
                             ->options(League::all()->pluck('name', 'id'))
                             ->searchable(),
     
-                        Select::make('format')
-                            ->options(['5x5x5' => '5x5x5', '4x4x4' => '4x4x4', '9x9x9' => '9x9x9'])
-                            ->default('5x5x5')
-                            ->dehydrated()
-                            ->label('Формат'),    
+                         
                         Select::make('size_field')
                             ->options(['40x20' => '40x20', '60x40' => '60x40'])
                             ->default('40x20')
@@ -180,6 +174,19 @@ class EventResource extends Resource
                             ->inputMode('decimal')
                             ->label('Ціна Першого Внесення при створенні команди гравцем')
                             ->visible(fn (callable $get) => $get('tournament_team_creator') === 'player'),
+                       
+                            
+                    ])->columns(3),
+                Section::make('Інформація події')    
+                    ->schema([
+                        TextInput::make('name')
+                            ->label('Назва події')
+                            ->maxLength(255),                            
+                        Select::make('format')
+                            ->options(['5x5x5' => '5x5x5', '4x4x4' => '4x4x4', '9x9x9' => '9x9x9'])
+                            ->default('5x5x5')
+                            ->dehydrated()
+                            ->label('Формат'), 
                         TextInput::make('access_code')
                             ->label('Код доступу для створення команди')
                             ->numeric()
@@ -187,8 +194,15 @@ class EventResource extends Resource
                             ->maxLength(4)
                             ->rules(['nullable', 'digits:4'])
                             ->visible(fn (callable $get) => $get('is_private')),
-                        
-                            
+                        Select::make('status')
+                            ->label('Статус')
+                            ->options([
+                                'upcoming' => 'Заплановано',
+                                'active' => 'Активний', 
+                                'finished' => 'Завершено'
+                            ])
+                            ->default('upcoming'),
+                     
                     ])->columns(3),
                 // Секция для команд. Количество команд зависит от турнира
                 Forms\Components\Repeater::make('teams')
@@ -219,26 +233,36 @@ class EventResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')
+                TextColumn::make('id')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('tournament.name')                    
+                TextColumn::make('name')
+                    ->label('Назва події')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('format')
+                TextColumn::make('tournament.name')                    
+                    ->sortable(),
+                TextColumn::make('format')
                     ->label('Формат')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('price')
+                TextColumn::make('price')
                     ->numeric(decimalPlaces: 0)
                     ->sortable(),
-                Tables\Columns\TextColumn::make('access_code')
+                TextColumn::make('access_code')
                     ->label('Код доступу')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('status')
+                    ->label('Статус')
+                    ->formatStateUsing(fn ($state) => [
+                        'upcoming' => 'Заплановано',
+                        'active' => 'Активний', 
+                        'finished' => 'Завершено'
+                    ][$state] ?? $state),
+                TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
+                TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

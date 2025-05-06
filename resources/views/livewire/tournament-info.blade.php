@@ -27,6 +27,7 @@
 
         @endif
 
+        @if ($event->status == 'finished')
         <section class="home__series-result table-section">
             <h2 class="table-section__title section-title section-title--margin">
                 Результати серії
@@ -182,7 +183,9 @@
                     </table>
                 </div>
             </div>
-        </section>
+        </section>            
+        @endif
+
 
         @livewire('tournament-protocol', ['teams' => $teams])
        

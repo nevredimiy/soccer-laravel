@@ -66,5 +66,6 @@ class Matche extends Model
             ->whereColumn('team_id', 'team2_id');
     }
 
+    
    
 }

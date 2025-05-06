@@ -24,6 +24,7 @@ use App\Http\Controllers\TeamEventController;
 use App\Http\Controllers\TeamSeriesController;
 use App\Http\Controllers\TeamRequestController;
 use App\Http\Controllers\TournamentController;
+use App\Http\Controllers\ManagerMatchesController;
 
 use App\Models\Article;
 
@@ -109,8 +110,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/teams/request/success/{team_id}', [TeamRequestController::class, 'success'])->name('teams.request.success');
     Route::get('/teams/request/check/{team_id}', [TeamRequestController::class, 'checkPaymentStatus'])->name('teams.request.check');
 
-
-
 });
 
 Route::get('/contacts', function () {
@@ -131,6 +130,10 @@ Route::get('/no-access', function () {
     return view('no-access');
 })->name('no-access');
 
+Route::middleware(['auth', 'role:manager,admin'])->group(function () {
+    Route::get('/manager/matches', [ManagerMatchesController::class, 'index'])->name('manager.matches');
+    Route::get('/manager/matches/{id}', [ManagerMatchesController::class, 'show'])->name('manager.matches.show');
+});
 
 
 

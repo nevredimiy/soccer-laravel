@@ -101,4 +101,13 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasMany(Player::class, 'user_id');
     }
 
+    public function hasRole($roles)
+    {
+        if (is_array($roles)) {
+            return in_array($this->role, $roles);
+        }
+
+        return $this->role === $roles;
+    }
+
 }

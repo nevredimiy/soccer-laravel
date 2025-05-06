@@ -15,57 +15,13 @@
                                             
                                         ], key($seriesMeta->id))
 
-                <section class="tournament__schedule schedule-tournament schedule-tournament--super">
-                    <h2 class="schedule-tournament__title section-title section-title--margin">
-                        РОЗКЛАД
-                    </h2>
-                    <div class="schedule-tournament__body">
-                        @foreach ($matchesByRound as $round => $roundMatches)                           
-                            <div class="schedule-tournament__block">                                
-                                <div class="schedule-tournament__item schedule-tournament__item--info schedule-tournament__item--center">
-                                    <div class="schedule-tournament__label">                                        
-                                        {{ Str::upper($roundMatches->dayMonth) }}
-                                    </div>
-                                    <div class="schedule-tournament__label">
-                                        {{ Str::upper($roundMatches->weekday) }}
-                                    </div>
-                                </div>
-                                <div class="schedule-tournament__item schedule-tournament__item--info">
-                                    <div class="schedule-tournament__label">
-                                        ЧАС
-                                    </div>
-                                    @foreach ($series as $v)
-                                        <div class="schedule-tournament__label">
-                                            {{ $v ? \Carbon\Carbon::parse($v->start_time)->format('H:i') : '' }}
-                                        </div>                                        
-                                    @endforeach
-                                </div>
-                                <div class="schedule-tournament__item schedule-tournament__item--info">
-                                    <div class="schedule-tournament__label">
-                                        {{$round}} ТУР
-                                    </div>
-                                    @foreach ($series as $k => $v)
-                                    <div class="schedule-tournament__label">
-                                        СЕРІЯ {{$k}}
-                                    </div>                                        
-                                    @endforeach                                   
-                                </div>
-                                @foreach ($matchTeamColors[$round] as $k => $mat)
-                                <div class="schedule-tournament__item">
-                                    <div class="schedule-tournament__label">
-                                        МАТЧ {{$k}}
-                                    </div>
-                                    <div class="schedule-tournament__colors">
-                                        @foreach ($mat as $v)
-                                            <span class="{{$v}}"></span>                                                
-                                        @endforeach                                            
-                                    </div>         
-                                </div>     
-                                @endforeach
-                            </div>                            
-                        @endforeach                       
-                    </div>
-                </section>
+               
+                <x-shedule
+                    :event="$event"
+                    :teams="$teams"
+                />
+                
+
                 <section class="tournament__price price-tournament">
                     <h2 class="price-tournament__title section-title section-title section-title--margin">
                         ВАРТІСТЬ РЕЄСТРАЦІЇ КОМАНДИ

@@ -69,6 +69,7 @@ class EventList extends Component
         $this->selectedDistrict = null;
         $this->selectedLocation = null;
         $this->selectedLeague = null;
+        $this->selectedTournament = null;
        
         $this->updateEvents();
     }

@@ -9,11 +9,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Event extends Model
 {
     protected $fillable = [
+        'name',
         'tournament_id',
         'format',
         'price',
         'access_code',
-
+        'status'
     ];
 
 
