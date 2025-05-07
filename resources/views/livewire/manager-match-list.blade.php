@@ -24,7 +24,7 @@
                 <p>Тур {{$round}}</p>
                 @foreach ( $seriaMeta as $item )
                 <div wire:key="{{$item->id}}" class="">
-                    Серія {{$item->series}}-Початок {{\Carbon\Carbon::parse($item->start_time)->format('d.m.Y H:i')}}                    
+                    Серія {{$item->series}}-Початок {{\Carbon\Carbon::parse($item->start_date)->format('H:i - d.m.Y')}}                    
                 </div>
                 @endforeach
 
@@ -35,23 +35,6 @@
         @endforelse      
     </ul>
 
-
-    <hr />
-    <ul class="grid grid-cols-1 justify-items-center md:grid-cols-2 lg:grid-cols-3 mb-4">
-        @forelse ($seriesMetas ?? [] as $seriaMeta)
-            <li wire:key="{{$seriaMeta->id}}">
-                <a 
-                    class="border rounded p-2 mb-2 hover:bg-yellow-300" 
-                    href="{{route('manager.matches.show', ['id' => $seriaMeta->id])}}"
-                >
-                    Серія {{$loop->iteration}} - {{$seriaMeta->event_id}}-Тур {{$seriaMeta->round}}-Серія {{$seriaMeta->series}}-Початок {{\Carbon\Carbon::parse($seriaMeta->start_time)->format('d.m.Y H:i')}}
-
-                </a>
-            </li>                    
-        @empty
-            <li>Немає серій</li>
-        @endforelse      
-    </ul>
 
 
     <hr />

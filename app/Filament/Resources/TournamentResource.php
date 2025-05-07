@@ -40,8 +40,8 @@ class TournamentResource extends Resource
                     ->label('Тип турніра')
                     ->options([
                         'team' => 'Командний',
-                        'solo' => 'Індивідуальний',
-                        'solo_private' => 'Індивідуальний (приватний)',
+                        'solo' => 'Одиночний',
+                        'solo_private' => 'Одиночний (приватний)',
                     ])
                     ->default('team')
                     ->required(),
@@ -160,9 +160,9 @@ class TournamentResource extends Resource
                             case 'team' : 
                                 return 'Командний';
                             case 'solo': 
-                                return 'Індивідуальний';
+                                return 'Одиночний';
                             default:
-                            return 'Індивідуальний (приватний)';
+                            return 'Одиночний (приватний)';
                     }
                     })
                     ->sortable()

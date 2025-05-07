@@ -7,7 +7,8 @@
 
 @section('content')
 
-<livewire:dependent-dropdown />
+    <livewire:dependent-dropdown />
+    
     <div class="page__container">
         <div class="page__wrapper">
             <livewire:manager-match-list />

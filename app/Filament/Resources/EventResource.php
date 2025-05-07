@@ -46,7 +46,7 @@ class EventResource extends Resource
                 Select::make('tournament_id')
                     ->options(
                         Tournament::orderBy('sort_order')->get()->mapWithKeys(function ($tournament) {
-                            $tournamentType = $tournament->type == 'team' ? 'командний' : 'індивідуальний';
+                            $tournamentType = $tournament->type == 'team' ? 'командний' : 'одиночний';
                             return [
                                 $tournament->id => $tournament->name . ' (' . $tournamentType . ')',
                             ];

@@ -49,7 +49,8 @@ class TeamDetails extends Component
         
         $this->team = $this->teams->first();
                
-        $this->teamsWithApplications = $this->teams->load('applications.user.player');       
+        $this->teamsWithApplications = $this->teams->load('applications.user.player');    
+         
     }
 
     #[On('team-selected')]

@@ -7,6 +7,7 @@ use App\Models\Team;
 use App\Models\Player;
 use App\Models\User;
 use App\Models\Matche;
+use App\Models\Event;
 use App\Models\SeriesMeta;
 use App\Models\PlayerSeriesRegistration;
 use App\Services\SeriesTemplatesService;
@@ -129,56 +130,123 @@ class PlacesOfSeries extends Component
         $this->showModal = false;
     }
 
+    // public function takePlace($numPlayer = 0)
+    // {
+    //     // проверка статуса Основной / Резервный
+    //     $status = PlayerTeam::where('player_id', '=', $this->playerId)->where('team_id', '=', $this->team->id)->value('status');
+        
+    //     if($status == 'reserve') {
+    //         return redirect()->to('/profile');
+    //     }       
+        
+    //     // Проверка баланса
+    //     $user = User::find($this->userId);
+    //     $balance = $user->balance;
+
+    //     $price = SeriesMeta::where('event_id',$this->team->event->id)
+    //         ->where('series', $this->matche->series)
+    //         ->value('price');
+    //     if(!$price){
+    //         $price = SeriesMeta::where('event_id',$this->team->event->id)->first()->value('price');
+    //     }
+    //     $this->minBalance = ceil($price / 6);
+    //     $this->desiredBalance = $this->minBalance - $balance;            
+        
+    //     if($this->minBalance > $balance){
+    //         $this->showModal = true;
+    //         return;
+    //     }
+
+    //     // Проверка повторной регистрации
+    //     $existing = PlayerSeriesRegistration::where('player_id', $this->playerId)
+    //         ->where('series', $this->matche->series)
+    //         ->where('team_id', $this->team->id)
+    //         ->exists();
+    //     if ($existing) {
+    //         session()->flash('message', 'Ви вже зареєстровані в цій серії.');
+    //         return; // Прерываем выполнение
+    //     }
+
+    //     // Добавление игрока в серию
+    //     if($numPlayer){
+    //         PlayerSeriesRegistration::create([
+    //             'event_id' => $this->team->event->id,
+    //             'team_id' => $this->team->id,
+    //             'player_id' => $this->playerId,
+    //             'player_number' => $numPlayer,
+    //             'series' => $this->matche->series,
+    //             'round' => $this->matche ? $this->matche->round : null,
+    //         ]);
+    //     }
+    //     $this->getPlayerSeriesRegistration();
+        
+    // }
+
     public function takePlace($numPlayer = 0)
     {
-        // проверка статуса Основной / Резервный
-        $status = PlayerTeam::where('player_id', '=', $this->playerId)->where('team_id', '=', $this->team->id)->value('status');
-        dump($status, $this->playerId);
-        if($status == 'reserve') {
+        $eventId = $this->team->event->id;
+        $teamId = $this->team->id;
+        $playerId = $this->playerId;
+        $series = $this->matche->series ?? null;
+        $round = $this->matche->round ?? null;
+        $event = Event::with('tournament')->find($eventId);
+
+        // 1. Проверка: резервный игрок
+        $status = PlayerTeam::where('player_id', $playerId)
+            ->where('team_id', $teamId)
+            ->value('status');
+
+        if ($status === 'reserve') {
             return redirect()->to('/profile');
-        }       
-        
-        // Проверка баланса
-        $user = User::find($this->userId);
-        $balance = $user->balance;
-        $price = SeriesMeta::where('event_id',$this->team->event->id)
-            ->where('series', $this->matche->series)
-            ->value('price');
-        if(!$price){
-            $price = SeriesMeta::where('event_id',$this->team->event->id)->first()->value('price');
         }
-        $this->minBalance = ceil($price / 6);
-        $this->desiredBalance = $this->minBalance - $balance;            
-        dump($this->minBalance . ' - ' . $balance);
-        if($this->minBalance > $balance){
+
+        // 2. Проверка: баланс
+        $balance = User::find($this->userId)?->balance ?? 0;
+
+        $price = SeriesMeta::where('event_id', $eventId)
+            ->where('series', $series)
+            ->value('price') 
+            ?? SeriesMeta::where('event_id', $eventId)->value('price');
+
+        if($event->tournament->team_creator == 'admin'){
+            $this->minBalance = ceil($price / 18); // 18 это количество игроков в турнире. По 6 в команде.
+        }else {
+            $this->minBalance = ceil($price / 6); // минимальное количество в команде.
+        }
+        $this->desiredBalance = $this->minBalance - $balance;
+
+        if ($balance < $this->minBalance) {
             $this->showModal = true;
             return;
         }
 
-        // Проверка повторной регистрации
-        $existing = PlayerSeriesRegistration::where('player_id', $this->playerId)
-            ->where('series', $this->matche->series)
-            ->where('team_id', $this->team->id)
-            ->exists();
-        if ($existing) {
+        // 3. Проверка: не зарегистрирован ли уже
+        $alreadyRegistered = PlayerSeriesRegistration::where([
+            ['player_id', '=', $playerId],
+            ['series', '=', $series],
+            ['team_id', '=', $teamId],
+        ])->exists();
+
+        if ($alreadyRegistered) {
             session()->flash('message', 'Ви вже зареєстровані в цій серії.');
-            return; // Прерываем выполнение
+            return;
         }
 
-        // Добавление игрока в серию
-        if($numPlayer){
+        // 4. Регистрация
+        if ($numPlayer) {
             PlayerSeriesRegistration::create([
-                'event_id' => $this->team->event->id,
-                'team_id' => $this->team->id,
-                'player_id' => $this->playerId,
+                'event_id'      => $eventId,
+                'team_id'       => $teamId,
+                'player_id'     => $playerId,
                 'player_number' => $numPlayer,
-                'series' => $this->matche->series,
-                'round' => $this->matche ? $this->matche->round : null,
+                'series'        => $series,
+                'round'         => $round,
             ]);
         }
+
         $this->getPlayerSeriesRegistration();
-        
     }
+
 
     protected function getPlayerSeriesRegistration()
     {

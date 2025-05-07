@@ -20,8 +20,11 @@
                     :event="$event"
                     :teams="$teams"
                 />
+
+                @if ($event->tournament->team_creator == 'player')
+                    <x-team-registration-cost  :event="$event" />
+                @endif
                 
-                <x-team-registration-cost  :event="$event" />
 
                 <section class="tournament__reg reg-tournament">
                    

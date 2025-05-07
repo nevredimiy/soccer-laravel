@@ -84,15 +84,23 @@
                 {{ $seriesMeta->size_field  }}м
             </div>
         </div>
-        @if ($event->tournament->type == 'team')
+        @if ($event->tournament->type == 'team' && $event->tournament->team_creator == 'player')
         <div class="hero-tournament__info">
             <div class="hero-tournament__label hero-tournament__label--small">
                 <span>ЗАЯВКА КОМАНДИ:</span> 6-20 ГРАВЦІВ
             </div>
             <div class="hero-tournament__label hero-tournament__label--small">
-                <span>ЗАЯВКА СЕРІЮ:</span> 5-6 ГРАВЦІВ
+                <span>ЗАЯВКА НА СЕРІЮ:</span> 5-6 ГРАВЦІВ
             </div>
-        </div>            
+        </div>  
+        @else
+        <div class="hero-tournament__info">
+            <div class="hero-tournament__label hero-tournament__label--small">
+                <span>ЗАЯВКА НА СЕРІЮ:</span> 18 ГРАВЦІВ
+            </div>
+            <p class="text-xs text-gray-400">по 6 гравців на команду</p>
+        </div>  
+
         @endif
         <div class="hero-tournament__info">
             <div class="hero-tournament__label">

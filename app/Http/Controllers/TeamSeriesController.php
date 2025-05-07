@@ -65,10 +65,15 @@ class TeamSeriesController extends Controller
            return $team;
         });
 
-        $playerPrice = [
-            6 => round($seriesMeta->price / 6),
-            9 => round($seriesMeta->price / 9),
-        ];
+        if($event->tournament->team_creator == 'admin'){
+            $playerPrice = round($seriesMeta->price / 18);
+
+        }else {
+            $playerPrice = [
+                6 => round($seriesMeta->price / 6),
+                9 => round($seriesMeta->price / 9),
+            ];
+        }
 
 
        

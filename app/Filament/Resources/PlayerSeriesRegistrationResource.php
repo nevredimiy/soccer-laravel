@@ -39,31 +39,9 @@ class PlayerSeriesRegistrationResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Select::make('event_id')
-                    ->options(function () {
-                        return Event::orderBy('id', 'desc')
-                        ->get()
-                        ->mapWithKeys(function ($event) {
-                            $stadium = $event->stadium;
-                            $location = $stadium->location;
-                            $district = $location->district;
-                            $city = $district ? $district->city : null;
-                            $label = '(' . $event->id . ') ';
-                            $label .= $event->date;
-                            if($stadium) {
-                                $label .= ' - ' . $stadium->name;
-                            }
-                            if($location) {
-                                $label .= ' - ' . $location->address;
-                            }
-
-                            if($city) {
-                                $label .= ' - ' . $city->name;
-                            }
-
-                            return [$event->id => $label];
-
-                        });
-                    })
+                    ->options(Event::orderBy('id', 'desc')
+                        ->pluck('name', 'id')
+                    )
                     ->preload()
                     ->live()                    
                     ->label('Подія')

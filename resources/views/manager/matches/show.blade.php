@@ -2,6 +2,10 @@
 
 @section('title', 'Дані матча')
 
+<div class="flex justify-center mt-2">
+   <a href="{{route('manager.matches')}}" class="button button--blue mb-4 text-center">Повернутися до списку серій</a>
+</div>
+
 <div class="flex justify-center gap-2 mt-4">
    
       @foreach(['football' => 'Гол', 'boots-icon' => 'Асист', 'red-football' => 'Автогол', 'yellow-card-icon' => 'ЖК', 'red-card-icon' => 'ЧК'] as $key => $label)
@@ -40,7 +44,7 @@
 <div class="flex justify-center gap-2 mt-4">
    <section class="home__protocol protocol">
       <h2 class="protocol__title section-title section-title--margin">Протокол серії</h2>
-      <div data-simplebar="init" class="protocol__body"><div class="simplebar-wrapper" style="margin: 0px 0px -50px;"><div class="simplebar-height-auto-observer-wrapper"><div class="simplebar-height-auto-observer"></div></div><div class="simplebar-mask"><div class="simplebar-offset" style="right: 0px; bottom: 0px;"><div class="simplebar-content-wrapper" tabindex="0" role="region" aria-label="scrollable content" style="height: auto; overflow: hidden;"><div class="simplebar-content" style="padding: 0px 0px 50px;">
+      <div  class="protocol__body">
          <div class="protocol__block">
             <div class="protocol__match match-protocol">
                <div class="match-protocol__label">
@@ -198,7 +202,7 @@
          <div class="protocol__block">
             <div class="protocol__match match-protocol">
                <div class="match-protocol__label">
-                  МАТЧ 1
+                  МАТЧ 4
                </div>
                <span class="blue-bg">2</span>
                <span class="yellow-bg">1</span>
@@ -264,7 +268,7 @@
          <div class="protocol__block">
             <div class="protocol__match match-protocol">
                <div class="match-protocol__label">
-                  МАТЧ 2
+                  МАТЧ 5
                </div>
                <span class="blue-bg">0</span>
                <span class="green-bg">1</span>
@@ -297,7 +301,7 @@
          <div class="protocol__block">
             <div class="protocol__match match-protocol">
                <div class="match-protocol__label">
-                  МАТЧ 3
+                  МАТЧ 6
                </div>
                <span class="green-bg">1</span>
                <span class="yellow-bg">1</span>
@@ -346,7 +350,7 @@
          <div class="protocol__block">
             <div class="protocol__match match-protocol">
                <div class="match-protocol__label">
-                  МАТЧ 1
+                  МАТЧ 7
                </div>
                <span class="blue-bg">2</span>
                <span class="yellow-bg">1</span>
@@ -412,7 +416,7 @@
          <div class="protocol__block">
             <div class="protocol__match match-protocol">
                <div class="match-protocol__label">
-                  МАТЧ 2
+                  МАТЧ 8
                </div>
                <span class="blue-bg">0</span>
                <span class="green-bg">1</span>
@@ -445,7 +449,7 @@
          <div class="protocol__block">
             <div class="protocol__match match-protocol">
                <div class="match-protocol__label">
-                  МАТЧ 3
+                  МАТЧ 9
                </div>
                <span class="green-bg">1</span>
                <span class="yellow-bg">1</span>
@@ -491,7 +495,303 @@
                </div>
             </div>
          </div>
-      </div></div></div></div><div class="simplebar-placeholder" style="width: 691px; height: 912px;"></div></div><div class="simplebar-track simplebar-horizontal" style="visibility: hidden;"><div class="simplebar-scrollbar" style="width: 0px; display: none;"></div></div><div class="simplebar-track simplebar-vertical" style="visibility: hidden;"><div class="simplebar-scrollbar" style="height: 0px; display: none;"></div></div></div>
+         <div class="protocol__block">
+            <div class="protocol__match match-protocol">
+               <div class="match-protocol__label">
+                  МАТЧ 10
+               </div>
+               <span class="blue-bg">2</span>
+               <span class="yellow-bg">1</span>
+            </div>
+            <div class="protocol__content">
+               <div class="protocol__item blue-bg">
+                  <span class="protocol__yellow up">
+                     5
+                  </span>
+               </div>
+               <div class="protocol__item yellow-bg">
+                  <span class="protocol__ball">
+                     2
+                     <img src="/img/player/ball.webp" alt="Image" class="ibg ibg--contain">
+                  </span>
+               </div>
+               <div class="protocol__item blue-bg">
+                  <span class="protocol__ball up">
+                     4
+                     <img src="/img/player/ball.webp" alt="Image" class="ibg ibg--contain">
+                  </span>
+               </div>
+               <div class="protocol__item yellow-bg">
+                  <span class="protocol__red">
+                     3
+                  </span>
+               </div>
+               <div class="protocol__item yellow-bg">
+                  <span class="protocol__yellow">
+                     1
+                  </span>
+               </div>
+               <div class="protocol__item blue-bg">
+                  <span class="protocol__ball up">
+                     2
+                     <img src="/img/player/ball.webp" alt="Image" class="ibg ibg--contain">
+                  </span>
+               </div>
+               <div class="protocol__item blue-bg">
+                  <span class="protocol__yellow up">
+                     6
+                  </span>
+               </div>
+               <div class="protocol__item blue-bg">
+                  <span class="protocol__ball">
+                     2
+                     <img src="/img/player/ball.webp" alt="Image" class="ibg ibg--contain">
+                  </span>
+               </div>
+               <div class="protocol__item blue-bg">
+                  <span class="protocol__red up">
+                     4
+                  </span>
+               </div>
+               <div class="protocol__item yellow-bg">
+                  <span class="protocol__ball">
+                     2
+                     <img src="/img/player/ball.webp" alt="Image" class="ibg ibg--contain">
+                  </span>
+               </div>
+            </div>
+         </div>
+         <div class="protocol__block">
+            <div class="protocol__match match-protocol">
+               <div class="match-protocol__label">
+                  МАТЧ 11
+               </div>
+               <span class="blue-bg">0</span>
+               <span class="green-bg">1</span>
+            </div>
+            <div class="protocol__content">
+               <div class="protocol__item blue-bg">
+                  <span class="protocol__yellow up">
+                     5
+                  </span>
+               </div>
+               <div class="protocol__item green-bg">
+                  <span class="protocol__ball">
+                     2
+                     <img src="/img/player/ball.webp" alt="Image" class="ibg ibg--contain">
+                  </span>
+               </div>
+               <div class="protocol__item blue-bg">
+                  <span class="protocol__ball up">
+                     4
+                     <img src="/img/player/ball.webp" alt="Image" class="ibg ibg--contain">
+                  </span>
+               </div>
+               <div class="protocol__item green-bg">
+                  <span class="protocol__red">
+                     3
+                  </span>
+               </div>
+            </div>
+         </div>
+         <div class="protocol__block">
+            <div class="protocol__match match-protocol">
+               <div class="match-protocol__label">
+                  МАТЧ 12
+               </div>
+               <span class="green-bg">1</span>
+               <span class="yellow-bg">1</span>
+            </div>
+            <div class="protocol__content">
+               <div class="protocol__item green-bg">
+                  <span class="protocol__yellow up">
+                     5
+                  </span>
+               </div>
+               <div class="protocol__item yellow-bg">
+                  <span class="protocol__ball">
+                     2
+                     <img src="/img/player/ball.webp" alt="Image" class="ibg ibg--contain">
+                  </span>
+               </div>
+               <div class="protocol__item green-bg">
+                  <span class="protocol__ball up">
+                     4
+                     <img src="/img/player/ball.webp" alt="Image" class="ibg ibg--contain">
+                  </span>
+               </div>
+               <div class="protocol__item yellow-bg">
+                  <span class="protocol__red">
+                     3
+                  </span>
+               </div>
+               <div class="protocol__item yellow-bg">
+                  <span class="protocol__yellow">
+                     1
+                  </span>
+               </div>
+               <div class="protocol__item green-bg">
+                  <span class="protocol__ball up">
+                     2
+                     <img src="/img/player/ball.webp" alt="Image" class="ibg ibg--contain">
+                  </span>
+               </div>
+               <div class="protocol__item green-bg">
+                  <span class="protocol__yellow up">
+                     6
+                  </span>
+               </div>
+            </div>
+         </div>
+         <div class="protocol__block">
+            <div class="protocol__match match-protocol">
+               <div class="match-protocol__label">
+                  МАТЧ 13
+               </div>
+               <span class="blue-bg">2</span>
+               <span class="yellow-bg">1</span>
+            </div>
+            <div class="protocol__content">
+               <div class="protocol__item blue-bg">
+                  <span class="protocol__yellow up">
+                     5
+                  </span>
+               </div>
+               <div class="protocol__item yellow-bg">
+                  <span class="protocol__ball">
+                     2
+                     <img src="/img/player/ball.webp" alt="Image" class="ibg ibg--contain">
+                  </span>
+               </div>
+               <div class="protocol__item blue-bg">
+                  <span class="protocol__ball up">
+                     4
+                     <img src="/img/player/ball.webp" alt="Image" class="ibg ibg--contain">
+                  </span>
+               </div>
+               <div class="protocol__item yellow-bg">
+                  <span class="protocol__red">
+                     3
+                  </span>
+               </div>
+               <div class="protocol__item yellow-bg">
+                  <span class="protocol__yellow">
+                     1
+                  </span>
+               </div>
+               <div class="protocol__item blue-bg">
+                  <span class="protocol__ball up">
+                     2
+                     <img src="/img/player/ball.webp" alt="Image" class="ibg ibg--contain">
+                  </span>
+               </div>
+               <div class="protocol__item blue-bg">
+                  <span class="protocol__yellow up">
+                     6
+                  </span>
+               </div>
+               <div class="protocol__item blue-bg">
+                  <span class="protocol__ball">
+                     2
+                     <img src="/img/player/ball.webp" alt="Image" class="ibg ibg--contain">
+                  </span>
+               </div>
+               <div class="protocol__item blue-bg">
+                  <span class="protocol__red up">
+                     4
+                  </span>
+               </div>
+               <div class="protocol__item yellow-bg">
+                  <span class="protocol__ball">
+                     2
+                     <img src="/img/player/ball.webp" alt="Image" class="ibg ibg--contain">
+                  </span>
+               </div>
+            </div>
+         </div>
+         <div class="protocol__block">
+            <div class="protocol__match match-protocol">
+               <div class="match-protocol__label">
+                  МАТЧ 14
+               </div>
+               <span class="blue-bg">0</span>
+               <span class="green-bg">1</span>
+            </div>
+            <div class="protocol__content">
+               <div class="protocol__item blue-bg">
+                  <span class="protocol__yellow up">
+                     5
+                  </span>
+               </div>
+               <div class="protocol__item green-bg">
+                  <span class="protocol__ball">
+                     2
+                     <img src="/img/player/ball.webp" alt="Image" class="ibg ibg--contain">
+                  </span>
+               </div>
+               <div class="protocol__item blue-bg">
+                  <span class="protocol__ball up">
+                     4
+                     <img src="/img/player/ball.webp" alt="Image" class="ibg ibg--contain">
+                  </span>
+               </div>
+               <div class="protocol__item green-bg">
+                  <span class="protocol__red">
+                     3
+                  </span>
+               </div>
+            </div>
+         </div>
+         <div class="protocol__block">
+            <div class="protocol__match match-protocol">
+               <div class="match-protocol__label">
+                  МАТЧ 15
+               </div>
+               <span class="green-bg">1</span>
+               <span class="yellow-bg">1</span>
+            </div>
+            <div class="protocol__content">
+               <div class="protocol__item green-bg">
+                  <span class="protocol__yellow up">
+                     5
+                  </span>
+               </div>
+               <div class="protocol__item yellow-bg">
+                  <span class="protocol__ball">
+                     2
+                     <img src="/img/player/ball.webp" alt="Image" class="ibg ibg--contain">
+                  </span>
+               </div>
+               <div class="protocol__item green-bg">
+                  <span class="protocol__ball up">
+                     4
+                     <img src="/img/player/ball.webp" alt="Image" class="ibg ibg--contain">
+                  </span>
+               </div>
+               <div class="protocol__item yellow-bg">
+                  <span class="protocol__red">
+                     3
+                  </span>
+               </div>
+               <div class="protocol__item yellow-bg">
+                  <span class="protocol__yellow">
+                     1
+                  </span>
+               </div>
+               <div class="protocol__item green-bg">
+                  <span class="protocol__ball up">
+                     2
+                     <img src="/img/player/ball.webp" alt="Image" class="ibg ibg--contain">
+                  </span>
+               </div>
+               <div class="protocol__item green-bg">
+                  <span class="protocol__yellow up">
+                     6
+                  </span>
+               </div>
+            </div>
+         </div>
+      </div>
    </section>
 </div>
 
