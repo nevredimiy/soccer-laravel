@@ -17,6 +17,10 @@
         </div>
         @endif
 
+        @if(session()->has('success'))
+            <p class="text-green-500 text-center mb-2">{{ session('success') }}</p>
+        @endif
+
         @foreach ($event->teams as $team)
         <div wire:key="{{$team->id}}" style="--color: {{$team->color->color_picker}}" class="players-tournament__team">
             @for ($i=0; $i < 6; $i++)
@@ -35,9 +39,24 @@
                         </div>
                         <div data-rating data-rating-size="10" data-rating-value="{{ $regPlayer['rating'] }}" class="item-player__rating rating"></div>
                     </article>
+                    @if ($currentPlayer->id == $regPlayer['id'])
+                    <div class="flex justify-center">
+                        <button 
+                            wire:click="deletePlayer"
+                            wire:confirm="Ви дійсно хочите вийти із команди?"
+                            class="button button--yellow button--small"
+                        >
+                            Вийти
+                        </button>
+                    </div>                    
+                    @endif
                 @else
                     
-                    <button wire:click="BookingPlace({{$team->id}}, {{$playerNumber}})" class="players-tournament__empty">
+                    <button 
+                        wire:click="BookingPlace({{$team->id}}, {{$playerNumber}})" 
+                        wire:confirm="Ви впевнені що хочете вступити в цю команду?"
+                        class="players-tournament__empty"
+                    >
                         <span>
                             ЗАЙНЯТИ МІСЦЕ
                         </span>

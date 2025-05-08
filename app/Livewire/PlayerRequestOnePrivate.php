@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\Event;
 use App\Models\Player;
 use App\Models\PlayerTeam;
+use App\Models\Team;
 
 class PlayerRequestOnePrivate extends Component
 {
@@ -15,12 +16,16 @@ class PlayerRequestOnePrivate extends Component
     public array $playerIds = [];
     public $playerPrice = 0;
     public $missingAmount = 0;
+    public $user = null;
+    public $currentPlayer = null;
 
     public function mount($event, $playerPrice = 0)
     {
 
         $this->event = $event;
         $this->playerPrice = $playerPrice;
+        $this->user = auth()->user();
+        $this->currentPlayer = Player::query()->where('user_id', $this->user->id)->first();
 
         $this->loadPlayers();
 
@@ -28,16 +33,13 @@ class PlayerRequestOnePrivate extends Component
 
     public function BookingPlace($teamId, $playerNumber)
     {
-        // Проверяем, есть ли уже игрок в этой команде
-        $user = auth()->user();
-        $player = Player::query()->where('user_id', '=', $user->id)->first();
-
-        if(in_array($player->id, $this->playerIds)){
+       
+        if(in_array($this->currentPlayer->id, $this->playerIds)){
             session()->flash('error', 'Ви вже в серії!');
             return;
         }
 
-        $balance = $user->balance;
+        $balance = $this->user->balance;
         $this->missingAmount = $this->playerPrice - $balance;
         if($balance < $this->playerPrice){
             session()->flash('error_balance', "Недостатньо коштів на балансі! Мінімальна сумма $this->playerPrice грн.");
@@ -46,12 +48,24 @@ class PlayerRequestOnePrivate extends Component
 
         // записываем игрока в команду
         PlayerTeam::query()->create([
-            'player_id' => $player->id,
+            'player_id' => $this->currentPlayer->id,
             'team_id' => $teamId,
             'status' => 'main',
             'player_number' => $playerNumber,
         ]);
 
+        $this->loadPlayers();
+    }
+
+    public function deletePlayer()
+    {
+        $teamIds = Team::where('event_id', $this->event->id)->pluck('id');
+
+        PlayerTeam::where('player_id', $this->currentPlayer->id)
+            ->whereIn('team_id', $teamIds)
+            ->first()?->delete(); // безопасный вызов
+        session()->flash('success', 'Гравця успішно видалено зі складу команды.');
+        // обновляем компонент
         $this->loadPlayers();
     }
 

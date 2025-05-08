@@ -65,7 +65,7 @@ class TeamSeriesController extends Controller
            return $team;
         });
 
-        if($event->tournament->team_creator == 'admin'){
+        if($event->tournament->count_teams == 3){
             $playerPrice = round($seriesMeta->price / 18);
 
         }else {

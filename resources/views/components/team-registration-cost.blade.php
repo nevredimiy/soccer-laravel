@@ -14,7 +14,7 @@
                             КОМАНДА {{ $i + 1 }}
                         </span>
                         <span>
-                            {{ $prices[$i] }} ГРН
+                            {{ $prices[$i]['price'] }} ГРН
                         </span>
                     </div>
                 @endfor

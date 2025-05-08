@@ -44,5 +44,6 @@ class Event extends Model
         return $this->hasMany(SeriesMeta::class, 'event_id');
     }
 
+    
 
 }

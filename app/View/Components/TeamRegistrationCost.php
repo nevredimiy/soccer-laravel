@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 use Illuminate\Support\Collection;
+use App\Models\EventTeamPrice;
 
 class TeamRegistrationCost extends Component
 {
@@ -16,27 +17,29 @@ class TeamRegistrationCost extends Component
     {
         $this->countTeams = $event->tournament->count_teams;
         $minPrice = $event->price * 0.7;
-        $this->prices = $this->calculateTeamPrices($this->countTeams, $minPrice, $event->price);
+        $this->prices = EventTeamPrice::where('event_id', $event->id)->get()->toArray();
+        // dump($prices);
+        // $this->prices = $this->calculateTeamPrices($this->countTeams, $minPrice, $event->price);
        
     }
 
-    function calculateTeamPrices(int $teamsCount, int $minPrice = 400, int $maxPrice = 600): array
-    {
-        $prices = [];
+    // function calculateTeamPrices(int $teamsCount, int $minPrice = 400, int $maxPrice = 600): array
+    // {
+    //     $prices = [];
         
-        if ($teamsCount === 1) {
-            return [$maxPrice];
-        }
+    //     if ($teamsCount === 1) {
+    //         return [$maxPrice];
+    //     }
 
-        $step = ($maxPrice - $minPrice) / ($teamsCount - 1);
+    //     $step = ($maxPrice - $minPrice) / ($teamsCount - 1);
 
-        for ($i = 0; $i < $teamsCount; $i++) {
-            $price = $minPrice + $i * $step;
-            $prices[] = round($price);
-        }
+    //     for ($i = 0; $i < $teamsCount; $i++) {
+    //         $price = $minPrice + $i * $step;
+    //         $prices[] = round($price);
+    //     }
 
-        return $prices;
-    }
+    //     return $prices;
+    // }
 
 
 

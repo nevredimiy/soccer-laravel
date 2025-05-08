@@ -15,7 +15,9 @@ class PlayerSeriesController extends Controller
 {
     public function index()
     {
-        $tournaments = Tournament::with('events.seriesMeta')->where('type', 'solo')->whereOr('type', 'solo_private')->get(); 
+        $tournaments = Tournament::with('events.seriesMeta')
+        ->whereIn('type', ['solo', 'solo_private'])
+        ->get(); 
 
         return view('players.series.index', compact('tournaments'));
     }

@@ -74,7 +74,7 @@
                     @endif
                    
                    
-                    @if (count($teams) < $event->format_scheme)
+                    @if (count($teams) < $event->tournament->count_teams)
                     <div class="reg-tournament__actions">
                         <a href="{{ route('teams.request.create', ['id' => $event->id]) }}" class="reg-tournament__link button button--yellow"><span>ЗАЯВИТИ КОМАНДУ</span></a>
                     </div>                        

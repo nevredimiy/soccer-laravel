@@ -10,6 +10,8 @@ use App\Models\League;
 use App\Models\Stadium;
 use App\Models\TeamColor;
 use App\Models\Team;
+use App\Models\Matche;
+use App\Models\SeriesMeta;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -18,8 +20,6 @@ use Filament\Tables\Table;
 use Filament\Tables\Actions\Action;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Models\Matche;
-use App\Models\SeriesMeta;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Carbon;
 use Filament\Forms\Components\DateTimePicker;
@@ -98,9 +98,18 @@ class EventResource extends Resource
                                 $set('teams', []);
                             }
 
+                            $prices = [];
+                            for ($i = 0; $i < $countTeams; $i++) {
+                                $prices[] = ['price' => 300]; // или установить значение по умолчанию
+                            }
+                            $set('team_prices', $prices);
+
 
                             $set('tournament_team_creator', $tournament->team_creator);
                             $set('is_private', $tournament->type == 'solo_private');
+                            $set('tournament_type', $tournament->type);
+                            $set('count_series', $tournament->count_series);
+                            $set('count_teams', $tournament->count_teams);
                         }
                     }),
     
@@ -108,42 +117,21 @@ class EventResource extends Resource
                     ->schema([
                         DateTimePicker::make('series_start_all')
                             ->label('Дата початку для всіх Серій')
-                            ->reactive()
-                            ->afterStateUpdated(function (callable $set, callable $get, $state) {
-                                $seriesData = $get('series_data') ?? [];
-                        
-                                foreach ($seriesData as $index => $_) {
-                                    $seriesNumber = $index + 1;
-                                    $set("series_{$seriesNumber}_start_date", $state);
-                                }
-                            })
                             ->seconds(false),                        
                         DateTimePicker::make('series_end_all')
                             ->label('Дата кінця для всіх Серій')
-                            ->reactive()
-                            ->afterStateUpdated(function (callable $set, callable $get, $state) {
-                                $seriesData = $get('series_data') ?? [];
-                        
-                                foreach ($seriesData as $index => $_) {
-                                    $seriesNumber = $index + 1;
-                                    $set("series_{$seriesNumber}_end_date", $state);
-                                }
-                            })
                             ->seconds(false),
-                        // Цена для всех серий
                         TextInput::make('series_price_all')
-                            ->label('Ціна для всіх Серій')
+                            ->label(function (callable $get) {
+                                $coutn_series = $get('count_series') ?? 0;
+                                return $coutn_series === 1 ? 'Ціна для Серії' : 'Ціна для всіх Серій';
+                            })
                             ->numeric()
-                            ->reactive()
-                            ->debounce(500)
-                            ->afterStateUpdated(function (callable $set, callable $get, $state) {
-                                $seriesData = $get('series_data') ?? [];
-                        
-                                foreach ($seriesData as $index => $_) {
-                                    $seriesNumber = $index + 1;
-                                    $set("series_{$seriesNumber}_price", $state);
-                                }
-                            }),
+                            ->visible(fn (callable $get) => $get('tournament_type') === 'team'),
+                        TextInput::make('player_price')
+                            ->label('Ціна гравця')
+                            ->numeric()
+                            ->visible(fn (callable $get) => $get('tournament_type') !== 'team'),
                         Select::make('stadium_id')
                             ->label('Стадіон для всіх Серій')
                             ->options(function () {
@@ -163,22 +151,20 @@ class EventResource extends Resource
                         Select::make('league_id')
                             ->label('Ліга для всіх Серій')
                             ->options(League::all()->pluck('name', 'id'))
-                            ->searchable(),
-    
-                         
+                            ->searchable(),                         
                         Select::make('size_field')
                             ->options(['40x20' => '40x20', '60x40' => '60x40'])
                             ->default('40x20')
                             ->dehydrated()
                             ->label('Розмір стадіона'),    
-                        TextInput::make('price')
-                            ->numeric()
-                            ->inputMode('decimal')
-                            ->label('Ціна Першого Внесення при створенні команди гравцем')
-                            ->visible(fn (callable $get) => $get('tournament_team_creator') === 'player'),
-                       
+                        // TextInput::make('price')
+                        //     ->numeric()
+                        //     ->inputMode('decimal')
+                        //     ->label('Ціна Першого Внесення при створенні команди гравцем')
+                        //     ->visible(fn (callable $get) => $get('tournament_team_creator') === 'player'),                       
                             
                     ])->columns(3),
+
                 Section::make('Інформація події')    
                     ->schema([
                         TextInput::make('name')
@@ -207,6 +193,38 @@ class EventResource extends Resource
                      
                     ])->columns(3),
                 // Секция для команд. Количество команд зависит от турнира
+                Section::make('Ціни першого внеску для команд')
+                    ->schema([
+                        Forms\Components\Repeater::make('team_prices')
+                            ->label('Ціни команд по порядку')
+                            ->hidden(fn ($get) => empty($get('team_prices')))
+                            ->schema([
+                                TextInput::make('price')
+                                    ->label(fn ($get) => 'Ціна команди ')
+                                    ->numeric(),
+                                ])
+                            ->columns(1)
+                            ->disableItemDeletion()
+                            ->disableItemCreation()
+                            ->disableItemMovement()
+                            ->default(fn (callable $get) => array_fill(0, $get('count_teams') ?? 0, ['price' => null]))
+                    ])
+                    ->columns('full')
+                    ->visible(fn (callable $get) => $get('tournament_type') === 'team'),
+                Forms\Components\Repeater::make('team_prices')
+                    ->label('Ціни команд')
+                    ->schema([
+                        TextInput::make('price')
+                            ->label(fn ($get) => 'Ціна команди ')
+                            ->numeric()
+                            ->required(),
+                    ])
+                    ->default([]) // обязательно!
+                    ->columns(1)
+                    ->hiddenOn('create') // Показываем только при редактировании
+                    ->disableItemDeletion()
+                    ->disableItemCreation()
+                    ->disableItemMovement(),
                 Forms\Components\Repeater::make('teams')
                     ->label('Команды')
                     ->hidden(fn ($get) => empty($get('teams')))
@@ -275,12 +293,6 @@ class EventResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
-
-                // Action::make('createMatches')
-                //     ->label('Генерувати матчі')
-                //     ->icon('heroicon-m-calendar-days')
-                    // ->action(fn (Event $record, array $data) => static::handleMatchGeneration($record, $data))
-                    // ->form(fn (Event $record) => static::getMatchFormSchema($record)),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -335,298 +347,4 @@ class EventResource extends Resource
         return $form;
     }
 
-
-
-    public static function handleMatchGeneration(Event $event, array $data): void
-    {
-        $seriesCount = match ($event->format_scheme) {
-            3 => 1,
-            4 => 1,
-            6 => 2,
-            9 => 3,
-            default => 1,
-        };
-
-        $teamIds = $event->teams()->pluck('id')->toArray();
-
-        // Генерация матчей
-        for ($i = 1; $i <= $seriesCount; $i++) {
-            $startDate = $data["series_date_$i"];
-            $price = $data["series_price_$i"];
-
-            // Сохраняем серию в таблицу series_metas
-            $seriesMeta = SeriesMeta::create([
-                'event_id' => $event->id,
-                'date' => $startDate,
-                'series' => $i,
-                'price' => $price,
-            ]);
-
-            self::generateSeriesMatches($event, $startDate, $i, $teamIds);
-        }
-
-    }
-
-    public static function generateSeriesMatches($event, $startDate, $seriesIndex, $teamIds)
-    {
-        // Шаблон матчей в туре на 15 игр.
-        $matches = [
-            [0, 1],
-            [0, 2],
-            [1, 2],
-            [1, 0],
-            [2, 0],
-            [2, 1],
-            [0, 1],
-            [0, 2],
-            [1, 2],
-            [1, 0],
-            [2, 0],
-            [2, 1],
-            [0, 1],
-            [0, 2],
-            [1, 2],
-        ];
-        
-
-        $startDate = Carbon::parse($startDate);
-
-        $subtype = $event->tournament->subtype;
-    
-        // Генерация для однодневного или регулярного турнира с форматом 4
-        if ($event->format_scheme == 3) {
-         
-            // Шаблон троек команд (3 команды — 12 туров)
-            $seriesTemplate = [
-                [$teamIds[0], $teamIds[1], $teamIds[2]],
-                [$teamIds[0], $teamIds[1], $teamIds[2]],
-                [$teamIds[0], $teamIds[1], $teamIds[2]],
-                [$teamIds[0], $teamIds[1], $teamIds[2]],
-            ];
-            $tours = array_merge($seriesTemplate, $seriesTemplate, $seriesTemplate);
-    
-            foreach ($tours as $index => $teamSet) {
-                $round = $index + 1;
-                $seriesNumber = 1;
-    
-                $date = $subtype === 'one-day'
-                    ? $startDate
-                    : $startDate->copy()->addWeeks($index);    
-    
-                foreach ($matches as [$team1, $team2]) {
-                    \App\Models\Matche::create([
-                        'event_id' => $event->id,
-                        'team1_id' => $teamSet[$team1],
-                        'team2_id' => $teamSet[$team2],
-                        'start_time' => $date->format('Y-m-d H:i:s'),
-                        'series' => $seriesNumber,
-                        'round' => $round,
-                    ]);
-                }
-            }
-
-            Notification::make()
-                ->title('Матчі серії '. $seriesIndex .' згенеровані')
-                ->success()
-                ->send();
-     
-            // Notification::make()
-            //     ->title('НЕЗГЕНЕРОВАНО, матчі серії '. $seriesIndex)
-            //     ->body('Вони вже створені раніше.')
-            //     ->warning()
-            //     ->send();
-     
-        } 
-
-        // Генерация для однодневного или регулярного турнира с форматом 4
-        if ($event->format_scheme == 4) {
-         
-            // Шаблон троек команд (4 команды — 12 туров)
-            $seriesTemplate = [
-                [$teamIds[0], $teamIds[1], $teamIds[2]],
-                [$teamIds[0], $teamIds[1], $teamIds[3]],
-                [$teamIds[0], $teamIds[2], $teamIds[3]],
-                [$teamIds[1], $teamIds[2], $teamIds[3]],
-            ];
-            $tours = array_merge($seriesTemplate, $seriesTemplate, $seriesTemplate);
-    
-            foreach ($tours as $index => $teamSet) {
-                $round = $index + 1;
-                $seriesNumber = 1;
-    
-                $date = $subtype === 'one-day'
-                    ? $startDate
-                    : $startDate->copy()->addWeeks($index);    
-    
-                foreach ($matches as [$team1, $team2]) {
-                    \App\Models\Matche::create([
-                        'event_id' => $event->id,
-                        'team1_id' => $teamSet[$team1],
-                        'team2_id' => $teamSet[$team2],
-                        'start_time' => $date->format('Y-m-d H:i:s'),
-                        'series' => $seriesNumber,
-                        'round' => $round,
-                    ]);
-                }
-            }
-
-            Notification::make()
-                ->title('Матчі серії '. $seriesIndex .' згенеровані')
-                ->success()
-                ->send();
-     
-            // Notification::make()
-            //     ->title('НЕЗГЕНЕРОВАНО, матчі серії '. $seriesIndex)
-            //     ->body('Вони вже створені раніше.')
-            //     ->warning()
-            //     ->send();
-     
-        } 
-
-        // Генерация для однодневного или регулярного турнира с форматом 4
-        if ($event->format_scheme == 6) {    
-
-            if($seriesIndex == 1) {
-                $series = [
-                    [$teamIds[0], $teamIds[1], $teamIds[2]],
-                    [$teamIds[4], $teamIds[1], $teamIds[3]],
-                    [$teamIds[3], $teamIds[4], $teamIds[2]],
-                    [$teamIds[5], $teamIds[1], $teamIds[2]],
-                    [$teamIds[4], $teamIds[2], $teamIds[1]],
-                    [$teamIds[1], $teamIds[3], $teamIds[0]],
-                    [$teamIds[5], $teamIds[1], $teamIds[3]],
-                    [$teamIds[3], $teamIds[2], $teamIds[0]],
-                    [$teamIds[1], $teamIds[0], $teamIds[4]],
-                    [$teamIds[5], $teamIds[4], $teamIds[0]],
-                ];
-            } else {
-                $series = [
-                    [$teamIds[3], $teamIds[4], $teamIds[5]],
-                    [$teamIds[0], $teamIds[2], $teamIds[5]],
-                    [$teamIds[5], $teamIds[0], $teamIds[1]],
-                    [$teamIds[3], $teamIds[4], $teamIds[0]],
-                    [$teamIds[0], $teamIds[3], $teamIds[5]],
-                    [$teamIds[2], $teamIds[5], $teamIds[4]],
-                    [$teamIds[0], $teamIds[4], $teamIds[2]],
-                    [$teamIds[4], $teamIds[1], $teamIds[5]],
-                    [$teamIds[2], $teamIds[5], $teamIds[3]],
-                    [$teamIds[1], $teamIds[3], $teamIds[2]],
-                ];    
-            }    
-
-            foreach ($series as $index => $teamSet) {
-                $round = $index + 1;
-
-                $date = $subtype === 'one-day'
-                    ? $startDate
-                    : $startDate->copy()->addWeeks($index);
-
-                foreach ($matches as [$team1, $team2]) {
-                    \App\Models\Matche::create([
-                        'event_id' => $event->id,
-                        'team1_id' => $teamSet[$team1],
-                        'team2_id' => $teamSet[$team2],
-                        'start_time' => $date->format('Y-m-d H:i:s'),
-                        'series' => $seriesIndex,
-                        'round' => $round,
-                    ]);
-                }
-            }
-    
-            Notification::make()
-                ->title('Матчі серії '. $seriesIndex .' згенеровані')
-                ->success()
-                ->send();
-            // }else {
-            //     Notification::make()
-            //         ->title('НЕЗГЕНЕРОВАНО, матчі серії '. $seriesIndex)
-            //         ->body('Вони вже створені раніше.')
-            //         ->warning()
-            //         ->send();
-            // }
-        } 
-
-        // Генерация для однодневного или регулярного турнира с форматом 4
-        if ($event->format_scheme == 9) {
-
-            if($seriesIndex == 1) {
-                $series = [
-                    [$teamIds[0], $teamIds[1], $teamIds[2]],
-                    [$teamIds[0], $teamIds[3], $teamIds[6]],
-                    [$teamIds[0], $teamIds[4], $teamIds[8]],
-                    [$teamIds[0], $teamIds[5], $teamIds[7]],
-                    [$teamIds[1], $teamIds[2], $teamIds[3]],
-                    [$teamIds[1], $teamIds[4], $teamIds[7]],
-                    [$teamIds[1], $teamIds[5], $teamIds[0]],
-                    [$teamIds[1], $teamIds[6], $teamIds[8]],
-                    [$teamIds[2], $teamIds[3], $teamIds[4]],
-                    [$teamIds[2], $teamIds[5], $teamIds[6]],
-                    [$teamIds[2], $teamIds[6], $teamIds[1]],
-                    [$teamIds[2], $teamIds[7], $teamIds[0]],
-                ];
-            } elseif($seriesIndex == 2) {
-                $series = [
-                    [$teamIds[3], $teamIds[4], $teamIds[5]],
-                    [$teamIds[1], $teamIds[4], $teamIds[7]],
-                    [$teamIds[1], $teamIds[5], $teamIds[6]],
-                    [$teamIds[1], $teamIds[3], $teamIds[8]],
-                    [$teamIds[4], $teamIds[5], $teamIds[6]],
-                    [$teamIds[2], $teamIds[5], $teamIds[8]],
-                    [$teamIds[2], $teamIds[6], $teamIds[7]],
-                    [$teamIds[2], $teamIds[4], $teamIds[0]],
-                    [$teamIds[5], $teamIds[6], $teamIds[7]],
-                    [$teamIds[3], $teamIds[6], $teamIds[0]],
-                    [$teamIds[3], $teamIds[7], $teamIds[8]],
-                    [$teamIds[3], $teamIds[5], $teamIds[1]],
-                ];    
-            } else {
-                $series = [
-                    [$teamIds[6], $teamIds[7], $teamIds[8]],
-                    [$teamIds[2], $teamIds[5], $teamIds[8]],
-                    [$teamIds[2], $teamIds[3], $teamIds[7]],
-                    [$teamIds[2], $teamIds[4], $teamIds[6]],
-                    [$teamIds[7], $teamIds[8], $teamIds[0]],
-                    [$teamIds[3], $teamIds[6], $teamIds[0]],
-                    [$teamIds[3], $teamIds[4], $teamIds[8]],
-                    [$teamIds[3], $teamIds[5], $teamIds[7]],
-                    [$teamIds[8], $teamIds[0], $teamIds[1]],
-                    [$teamIds[4], $teamIds[7], $teamIds[1]],
-                    [$teamIds[4], $teamIds[5], $teamIds[0]],
-                    [$teamIds[4], $teamIds[6], $teamIds[8]],
-                ];    
-            }         
-
-            foreach ($series as $index => $teamSet) {
-                $round = $index + 1;
-
-                $date = $subtype === 'one-day'
-                    ? $startDate
-                    : $startDate->copy()->addWeeks($index);
-
-                foreach ($matches as [$team1, $team2]) {
-                    \App\Models\Matche::create([
-                        'event_id' => $event->id,
-                        'team1_id' => $teamSet[$team1],
-                        'team2_id' => $teamSet[$team2],
-                        'start_time' => $date->format('Y-m-d H:i:s'),
-                        'series' => $seriesIndex,
-                        'round' => $round
-                    ]);
-                }
-            }
-
-            Notification::make()
-                ->title('Матчі серії '. $seriesIndex .' згенеровані')
-                ->success()
-                ->send();
-
-                // Notification::make()
-                //     ->title('НЕЗГЕНЕРОВАНО, матчі серії '. $seriesIndex)
-                //     ->body('Вони вже створені раніше.')
-                //     ->warning()
-                //     ->send();
-        }
-    } 
-
-    
 }

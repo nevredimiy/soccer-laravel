@@ -84,23 +84,22 @@
                 {{ $seriesMeta->size_field  }}м
             </div>
         </div>
-        @if ($event->tournament->type == 'team' && $event->tournament->team_creator == 'player')
-        <div class="hero-tournament__info">
-            <div class="hero-tournament__label hero-tournament__label--small">
-                <span>ЗАЯВКА КОМАНДИ:</span> 6-20 ГРАВЦІВ
-            </div>
-            <div class="hero-tournament__label hero-tournament__label--small">
-                <span>ЗАЯВКА НА СЕРІЮ:</span> 5-6 ГРАВЦІВ
-            </div>
-        </div>  
+        @if ($event->tournament->count_teams == 3)
+            <div class="hero-tournament__info">
+                <div class="hero-tournament__label hero-tournament__label--small">
+                    <span>ЗАЯВКА НА СЕРІЮ:</span> 18 ГРАВЦІВ
+                </div>
+                <p class="text-xs text-gray-400">по 6 гравців на команду</p>
+            </div>  
         @else
-        <div class="hero-tournament__info">
-            <div class="hero-tournament__label hero-tournament__label--small">
-                <span>ЗАЯВКА НА СЕРІЮ:</span> 18 ГРАВЦІВ
-            </div>
-            <p class="text-xs text-gray-400">по 6 гравців на команду</p>
-        </div>  
-
+            <div class="hero-tournament__info">
+                <div class="hero-tournament__label hero-tournament__label--small">
+                    <span>ЗАЯВКА КОМАНДИ:</span> 6-20 ГРАВЦІВ
+                </div>
+                <div class="hero-tournament__label hero-tournament__label--small">
+                    <span>ЗАЯВКА НА СЕРІЮ:</span> 5-6 ГРАВЦІВ
+                </div>
+            </div>  
         @endif
         <div class="hero-tournament__info">
             <div class="hero-tournament__label">
@@ -122,10 +121,14 @@
         </div>
         <div class="hero-tournament__info">
             <div class="hero-tournament__label">
-               <span> {{ is_array($playerPrice) ? '≈ ' . round(($playerPrice[6] + $playerPrice[9])/2) : $playerPrice}}  ГРН / ГРАВЕЦЬ</span>
+               <span> 
+                    {{ is_array($playerPrice) ? '≈ ' . round(($playerPrice[6] + $playerPrice[9])/2) : $playerPrice}}  ГРН / ГРАВЕЦЬ
+               </span>
             </div>
             @if (is_array($playerPrice))
-            <span class="text-xs text-gray-500">Ціна залежить від кількості граавців у команді. Може коливатися від {{$playerPrice[9]}} до {{$playerPrice[6]}} грн</span>                
+                <span class="text-xs text-gray-500">
+                    Ціна залежить від кількості граавців у команді. Може коливатися від {{$playerPrice[9]}} до {{$playerPrice[6]}} грн
+                </span>
             @endif
         </div>
     </div>

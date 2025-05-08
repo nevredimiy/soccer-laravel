@@ -40,6 +40,7 @@ class TeamShedule extends Component
                 'event_id' => $event->id,
                 'series_number' => 1
             ];
+
     }
 
     public function selectedRound($roundNumber, $eventId, $seriesNumber)

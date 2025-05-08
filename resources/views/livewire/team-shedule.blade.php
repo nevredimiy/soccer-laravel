@@ -24,6 +24,11 @@
                 <div wire:key="{{$series}}" class="calendar-section__item item-calendar item-calendar--gray-bg">
                     <div class="item-calendar__date">
                         {{ isset($seriesMetas[$series+1][$idxRound]) ?  \Carbon\Carbon::parse($seriesMetas[$series+1][$idxRound]['start_date'])->locale('uk')->settings(['formatFunction' => 'translatedFormat'])->format('d.m') : \Carbon\Carbon::parse($seriesMetas[$series+1][0]['start_date'])->locale('uk')->settings(['formatFunction' => 'translatedFormat'])->format('d.m')}}
+                        {{-- @if (isset($seriesMetas[$series+1][$idxRound]))
+                        {{\Carbon\Carbon::parse($seriesMetas[$series+1][$idxRound]['start_date'])->locale('uk')->settings(['formatFunction' => 'translatedFormat'])->format('d.m')}}    
+                        @else
+                        {{\Carbon\Carbon::parse($seriesMetas[$series+1][0]['start_date'])->locale('uk')->settings(['formatFunction' => 'translatedFormat'])->format('d.m')}}
+                        @endif --}}
                     </div>
                     <div wire:click="selectedRound({{ $idxRound + 1 }}, {{ session('current_event', 0) }}, {{$series + 1}})"  
                             class="item-calendar__wrapper @if ($currentRound['round_number'] == $idxRound + 1 && $currentRound['series_number'] == $series + 1)

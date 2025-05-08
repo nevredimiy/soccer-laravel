@@ -21,6 +21,7 @@ class CreateEvent extends CreateRecord
     protected function afterCreate(): void
     {
         $data = $this->form->getState();
+        // dd($data);
         $event = $this->record;
         $tournament = Tournament::find($data['tournament_id']);
         if (!$tournament) {
@@ -35,6 +36,7 @@ class CreateEvent extends CreateRecord
         );
 
         $this->createTeams($data['teams'] ?? [], $event->id);
+        $this->createTeamPrices($data['team_prices'] ?? [], $event->id);
 
         if ($tournament->team_creator === 'admin') {
             $teams = Team::where('event_id', $event->id)->get()->toArray();
@@ -68,7 +70,7 @@ class CreateEvent extends CreateRecord
                     'end_date' => $endDate->copy(),
                     'round' => $round,
                     'series' => $seriesIndex,
-                    'price' => $data['series_price_all'],
+                    'price' => $data['series_price_all'] ?? $data['player_price'] * 18,
                     'created_at' => now(),
                     'updated_at' => now(),
                 ];
@@ -155,5 +157,27 @@ class CreateEvent extends CreateRecord
         }
 
     }
+
+    protected function createTeamPrices(array $prices, int $eventId): void
+    {
+        $now = now();
+        $teamPrices = [];
+
+        foreach ($prices as $index => $price) {
+            $teamPrices[] = [
+                'event_id' => $eventId,
+                'team_index' => $index,
+                'price' => $price['price'],
+                'created_at' => $now,
+                'updated_at' => $now,
+            ];
+
+        }
+
+        if (!empty($teamPrices)) {
+            \DB::table('event_team_prices')->insert($teamPrices);
+        }
+    }
+
 }
 

@@ -20,6 +20,10 @@ use Illuminate\Support\Facades\Log;
 
         protected function mutateFormDataBeforeSave(array $data): array
         {
+            $this->teamPricesToSync = $data['team_prices'] ?? [];
+            // dd($this->teamPricesToSync[0]['price']);
+            unset($data['team_prices']); // Убираем, если это не нужно в основной таблице
+
             return $data;
         }
 
@@ -47,6 +51,20 @@ use Illuminate\Support\Facades\Log;
                 $data['stadium_id'] = $meta->stadium_id;
                 $data['league_id'] = $meta->league_id;
                 $data['size_field'] = $meta->size_field;
+            }
+
+            $eventId = $data['id'] ?? null;
+
+            // добавить массив команд из таблицы teams
+             if ($eventId) {
+                $teamPrices = \DB::table('event_team_prices')
+                    ->where('event_id', $eventId)
+                    ->orderBy('id') // Или другой порядок, если надо
+                    ->pluck('price')
+                    ->map(fn ($price) => ['price' => $price])
+                    ->toArray();
+
+                $data['team_prices'] = $teamPrices;
             }
 
             return $data;
@@ -77,6 +95,24 @@ use Illuminate\Support\Facades\Log;
                     ]);
                 }
             }
+
+            if (!isset($this->teamPricesToSync)) {
+                return;
+            }
+        
+
+            $eventId = $this->record->id;
+            $prices = \App\Models\EventTeamPrice::where('event_id', $this->record->id)->get();
+            $now = now();
+
+            foreach ($this->teamPricesToSync as $index => $price) {
+                \App\Models\EventTeamPrice::where('event_id', $eventId)
+                    ->where('team_index', $index)
+                    ->update(['price' => $price['price']]);
+
+            }
+
+
         }
 
 

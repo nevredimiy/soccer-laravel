@@ -10,6 +10,10 @@
             <a class="button button--red botton--small" href="{{route('balance.form', ['amount' => $missingAmount])}}">Поповнити баланс</a>
         </div>
         @endif
+
+        @if(session()->has('success'))
+            <p class="text-green-500 text-center mb-2">{{ session('success') }}</p>
+        @endif
     
         @if ($isSeriesClosed)
             <p class="text-red-500 text-center mb-2">Реєстрація закрита</p>
