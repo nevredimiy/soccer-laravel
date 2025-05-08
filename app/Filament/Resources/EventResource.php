@@ -116,7 +116,8 @@ class EventResource extends Resource
                                     $seriesNumber = $index + 1;
                                     $set("series_{$seriesNumber}_start_date", $state);
                                 }
-                            }),                        
+                            })
+                            ->seconds(false),                        
                         DateTimePicker::make('series_end_all')
                             ->label('Дата кінця для всіх Серій')
                             ->reactive()
@@ -127,7 +128,8 @@ class EventResource extends Resource
                                     $seriesNumber = $index + 1;
                                     $set("series_{$seriesNumber}_end_date", $state);
                                 }
-                            }),
+                            })
+                            ->seconds(false),
                         // Цена для всех серий
                         TextInput::make('series_price_all')
                             ->label('Ціна для всіх Серій')

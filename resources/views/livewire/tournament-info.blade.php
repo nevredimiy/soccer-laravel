@@ -1,24 +1,25 @@
 <div class="page__home home">
     <div class="home__block _block">        
         @if ($event->tournament->type == 'team')
-
             @livewire('tournament-table-team', ['teams' => $teams])            
         @else
             @livewire('tournament-table-individual', ['teams' => $teams])
-
         @endif
 
         @livewire('top-scorers-of-tournament', ['teams' => $teams, 'eventId' => $eventId])
+
     </div>
 
     <div class="home__block _block">
 
+        
+{{--         
         @if (count($teams) == 4)
 
-            @livewire('team-shedule-four')
+        @livewire('team-shedule-four')
 
         @elseif (count($teams) == 6)
-
+        
             @livewire('team-shedule-six')
 
         @elseif (count($teams) == 9)
@@ -26,6 +27,13 @@
             @livewire('team-shedule-nine')                
 
         @endif
+         --}}
+
+         @if ($event->tournament->subtype == 'regular')
+             @livewire('team-shedule', ['event' => $event])
+         @endif
+        
+        
 
         @if ($event->status == 'finished')
         <section class="home__series-result table-section">

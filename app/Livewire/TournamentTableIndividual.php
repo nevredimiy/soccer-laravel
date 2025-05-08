@@ -3,58 +3,37 @@
 namespace App\Livewire;
 
 use Livewire\Component;
-use App\Models\Team;
+use App\Services\TournamentService;
 use Livewire\Attributes\On;
+use Illuminate\Support\Collection;
 
 class TournamentTableIndividual extends Component
 {
 
-    public $teams = [];
-    public $players = [];
-    public array $roman = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
-    public $eventId = null;
+    public Collection $teams;
+    public array $players = [];
+    public array $roman = [];
+    public ?int $eventId = null;
 
-    public function mount($teams = [])
+    public function mount(array|Collection $teams = []): void
     {
         $this->teams = $teams;
-        $this->players = $this->getPlayers($teams);
-    }
-
-    protected function getPlayers($teams)
-    {
-        $players = [];
-        foreach ($teams as $team) {
-            foreach ($team->players as $player) {
-                $players[] = [
-                    'id' => $player->id,
-                    'number' => $player->number,
-                    'name' => $player->full_name,
-                    'photo' => $player->photo,
-                    'rating' => $player->rating,
-                    'team' => $team->name,
-                    'color' => $team->color->name,
-                ];
-            }
-        }
-        return $players;
-    }    
-
-    protected function getTeams($eventId)
-    {
-        $teams = Team::where('event_id', $eventId)->with(['color', 'players'])->get();       
-
-        return $teams;
+        $this->players = TournamentService::extractPlayers($this->teams);
+        $this->roman = TournamentService::getRomanRounds($this->teams);
     }
 
     #[On('eventSelected')]
-    public function updateEventId($eventId)
+    public function updateEventId($eventId): void
     {
-        if($eventId){
+        if ($eventId) {
             $this->eventId = $eventId;
-            $this->teams = $this->getTeams($eventId);
-            $this->players = $this->getPlayers($this->teams);
+            $this->teams = TournamentService::getTeamsByEvent($eventId);
+            $this->players = TournamentService::extractPlayers($this->teams);
+            $this->roman = TournamentService::getRomanRounds($this->teams);
         } else {
-            $this->teams = [];
+            $this->teams = collect();
+            $this->players = [];
+            $this->roman = [];
         }
     }
     

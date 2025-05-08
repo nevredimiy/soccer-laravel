@@ -19,13 +19,15 @@
                         </th>
                         @foreach ($roman as $value)
                         <th wire:key="{{$value}}">
-                            <span class="digit">{{$value}}</span>
+                            <span class="digit">
+                                @if ($loop->last)
+                                   Ф 
+                                @else
+                                    {{$value}}
+                                @endif
+                            </span>
                         </th>                                    
                         @endforeach                                
-                        
-                        <th>
-                            <span class="digit">Ф</span>
-                        </th>
                         <th>
                             <span>В</span>
                         </th>
@@ -65,17 +67,20 @@
                         <td>
                             <span class="team fz-big">{{$team->name}}</span>
                         </td>
-                        @foreach ($roman as $value)
+
+                        @foreach ($roman as $value)                        
                         <td>
                             <span class="digit"></span>
                         </td>    
                         @endforeach
+
+                        
                         <td>
                             <span class="border">0</span>
                         </td>
-                        <td>
-                            <span class="border">0</span>
-                        </td>
+                        
+
+                        
                         <td>
                             <span class="border">0</span>
                         </td>

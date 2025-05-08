@@ -51,6 +51,7 @@ class TeamSheduleFour extends Component
             [$teamIds[0], $teamIds[2], $teamIds[3]],
             [$teamIds[1], $teamIds[2], $teamIds[3]],
         ];
+        
     }
 
     public function getBgClass($colorName): string

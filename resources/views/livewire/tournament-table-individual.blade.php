@@ -15,7 +15,7 @@
                         </th>
                         <th></th>
                         <th>
-                            <span class="team fz-big">Команда</span>
+                            <span class="team fz-big">Гравці</span>
                         </th>
                         @foreach ($roman as $round)
                         <th>
@@ -63,14 +63,12 @@
                             <td>
                                 <span class="team fz-big">{{$player['name']}}</span>
                             </td>
-                            @for ($round = 1; $round <= 12; $round++)
-                            
-                                <td wire:key="$round">
-                                    <span class="digit">-</span>
-                                </td>
-                                
-                            @endfor
-                        
+
+                            @foreach ($roman as $round)
+                            <td wire:key="$round">
+                                <span class="digit">-</span>
+                            </td>                                
+                            @endforeach
                             <td>
                                 <span class="border">0</span>
                             </td>

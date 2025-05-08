@@ -3,42 +3,40 @@
 namespace App\Livewire;
 
 use Livewire\Component;
-use App\Models\Team;
 use Livewire\Attributes\On;
+use Illuminate\Support\Collection;
+use App\Services\TournamentService;
 
 class TournamentTableTeam extends Component
 {
 
-    public $teams = [];
-    public array $roman = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
-    public $eventId = null;
+    public Collection $teams;
+    public ?int $eventId = null;
+    public array $roman = [];
 
 
-    public function mount($teams = [])
+    public function mount(Collection|array $teams = []): void
     {
         $this->teams = $teams;
+        $this->roman = TournamentService::getRomanRounds($this->teams);
     }
-
+   
     #[On('eventSelected')]
-    public function updateEventId($eventId)
+    public function updateEventId($eventId): void
     {
-        if($eventId){
-            $this->eventId = $eventId;
-            $this->teams = $this->getTeams($eventId);
+        $this->eventId = $eventId;
+
+        if ($eventId) {
+            $this->teams = TournamentService::getTeamsByEvent($eventId);
+            $this->roman = TournamentService::getRomanRounds($this->teams);
         } else {
-            $this->teams = [];
+            $this->teams = collect();
+            $this->roman = [];
         }
     }
 
-    private function getTeams($eventId)
-    {
-        $teams = Team::where('event_id', $eventId)->with(['color', 'players'])->get();       
-
-        return $teams;
-    }
-
-    public function render()
-    {
+    public function render(): \Illuminate\View\View
+    {       
         return view('livewire.tournament-table-team');
     }
 }
