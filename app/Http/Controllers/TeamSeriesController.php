@@ -18,7 +18,19 @@ class TeamSeriesController extends Controller
    public function index()
    {
         $tournaments = Tournament::with('events.seriesMeta')->where('type', 'team')->get(); 
-        
+        $events = [];
+        $today = \Carbon\Carbon::now()->timezone(config('app.timezone'))->format('Y-m-d H:i:s'); 
+        foreach($tournaments as $tournament){
+            foreach($tournament->events as $event){
+                foreach($event->seriesMeta as $series){
+                    
+                    if(\Carbon\Carbon::parse($series->start_date)->timezone(config('app.timezone'))->format('Y-m-d H:i:s') > $today){
+                        $tournament->isShedule = $series;   
+                    }
+                }
+            }
+        }
+       
         return view('teams.series.index', compact('tournaments'));
    }
    public function show($id)

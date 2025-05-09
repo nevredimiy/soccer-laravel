@@ -105,7 +105,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/teams/request/store', [TeamRequestController::class, 'store'])->name('teams.request.store');
     // Route::post('/teams/request/pay', [TeamRequestController::class, 'pay'])->name('teams.request.pay');
     // Route::post('/teams/request/callback', [TeamRequestController::class, 'callback'])->name('teams.request.callback');
-    Route::get('/teams/request/pay/{team_id}', [TeamRequestController::class, 'pay'])->name('teams.request.payment');
+    Route::get('/teams/request/pay/{team_id}/{amount}', [TeamRequestController::class, 'pay'])->name('teams.request.payment');
     Route::post('/teams/request/callback', [TeamRequestController::class, 'liqpayCallback'])->name('teams.request.callback');
     Route::get('/teams/request/success/{team_id}', [TeamRequestController::class, 'success'])->name('teams.request.success');
     Route::get('/teams/request/check/{team_id}', [TeamRequestController::class, 'checkPaymentStatus'])->name('teams.request.check');

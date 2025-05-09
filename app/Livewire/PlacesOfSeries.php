@@ -22,6 +22,8 @@ class PlacesOfSeries extends Component
     public ?Matche $matche = null;
     public ?Team $team = null;
     public ?SeriesMeta $seriesMeta = null;
+
+    public ?Event $event = null;
     public $userId = null; 
     public $playerId = null;
     public $seriesTeams = [];
@@ -41,44 +43,25 @@ class PlacesOfSeries extends Component
         $this->userId = Auth::id();
         $player = Player::where('user_id', $this->userId)->first();
         $this->playerId = $player ? $player->id : null;
-        $today = Carbon::today()->format('Y-m-d H:i:s'); 
-        $this->matche = $this->team->event->matches()
-            ->where('start_time', '>=', Carbon::today())
-            ->where('team1_id', $this->team->id)
-            ->whereOr('team2_id', $this->team->id)
-            ->first();
-
+        $today = Carbon::now()->timezone(config('app.timezone'))->format('Y-m-d H:i:s'); 
+        $event = Event::with('tournament')->find($team->event_id);        
+        
+        $this->seriesMeta = SeriesMeta::where('event_id', $event->id)->where('start_date', '>', $today)->orderBy('start_date')->first();
 
         $service = new SeriesTemplatesService();
 
-        // dd($this->matche);
-            
-        // dd($this->team);
-        if ($this->matche) {
-            // $this->matche = Matche::query()
-            //     ->where('event_id', $this->team->event->id)
-            //     ->where('start_time', '>=', $today)
-            //     ->where('team1_id', $this->team->id)
-            //     ->orWhere('team2_id', $this->team->id)
-            //     ->first();
+        $templateSeries = $service->getTemplateShedule($event->tournament->count_teams);
+        $teams = Team::with('color')->where('event_id', $this->team->event->id)->get()->toArray();
 
-            $this->seriesMeta = SeriesMeta::query()
-                ->where('event_id', '=', $this->matche->event_id)
-                ->where('series', '=', $this->matche->series)
-                ->first();
-
-            $this->formatDate = Carbon::parse($this->matche->start_time);
-            $idxTeamIds = $service->getTeamIds($this->team->event->tournament->count_teams, $this->matche->series, $this->matche->round-1);
-
-
-            $teams = Team::with('color')->where('event_id', $this->team->event->id)->get()->toArray();
-    
-            foreach($idxTeamIds as $key => $id){
-                $this->seriesTeams[$key]['name'] = $teams[$id]['name'];
-                $this->seriesTeams[$key]['classColor'] = $service->getColorClass($teams[$id]['color']['name']);
+        foreach($templateSeries[$this->seriesMeta->round-1][$this->seriesMeta->series-1] as $key => $teamIndex){
+            if(isset($teams[$teamIndex])){
+                $this->seriesTeams[$key]['name'] = $teams[$teamIndex]['name'];
+                $this->seriesTeams[$key]['classColor'] = $service->getColorClass($teams[$teamIndex]['color']['name']);
+            }else {
+                $this->seriesTeams[$key]['name'] = 'Очікуємо';
+                $this->seriesTeams[$key]['classColor'] = 'default-bg';
             }
         }
-        
                 
         if ($this->team) {
             $this->maxPlayer = $this->team->max_players;
@@ -88,8 +71,7 @@ class PlacesOfSeries extends Component
             $this->checkStatusPlayer();         
         }
         $this->getPlayerSeriesRegistration();
-        $this->statusRegistration = $this->seriesMeta?->status_registration;
-       
+        $this->statusRegistration = $this->seriesMeta?->status_registration;       
     }
 
     public function dropRegPlayer($player_id)
@@ -129,58 +111,6 @@ class PlacesOfSeries extends Component
     {
         $this->showModal = false;
     }
-
-    // public function takePlace($numPlayer = 0)
-    // {
-    //     // проверка статуса Основной / Резервный
-    //     $status = PlayerTeam::where('player_id', '=', $this->playerId)->where('team_id', '=', $this->team->id)->value('status');
-        
-    //     if($status == 'reserve') {
-    //         return redirect()->to('/profile');
-    //     }       
-        
-    //     // Проверка баланса
-    //     $user = User::find($this->userId);
-    //     $balance = $user->balance;
-
-    //     $price = SeriesMeta::where('event_id',$this->team->event->id)
-    //         ->where('series', $this->matche->series)
-    //         ->value('price');
-    //     if(!$price){
-    //         $price = SeriesMeta::where('event_id',$this->team->event->id)->first()->value('price');
-    //     }
-    //     $this->minBalance = ceil($price / 6);
-    //     $this->desiredBalance = $this->minBalance - $balance;            
-        
-    //     if($this->minBalance > $balance){
-    //         $this->showModal = true;
-    //         return;
-    //     }
-
-    //     // Проверка повторной регистрации
-    //     $existing = PlayerSeriesRegistration::where('player_id', $this->playerId)
-    //         ->where('series', $this->matche->series)
-    //         ->where('team_id', $this->team->id)
-    //         ->exists();
-    //     if ($existing) {
-    //         session()->flash('message', 'Ви вже зареєстровані в цій серії.');
-    //         return; // Прерываем выполнение
-    //     }
-
-    //     // Добавление игрока в серию
-    //     if($numPlayer){
-    //         PlayerSeriesRegistration::create([
-    //             'event_id' => $this->team->event->id,
-    //             'team_id' => $this->team->id,
-    //             'player_id' => $this->playerId,
-    //             'player_number' => $numPlayer,
-    //             'series' => $this->matche->series,
-    //             'round' => $this->matche ? $this->matche->round : null,
-    //         ]);
-    //     }
-    //     $this->getPlayerSeriesRegistration();
-        
-    // }
 
     public function takePlace($numPlayer = 0)
     {

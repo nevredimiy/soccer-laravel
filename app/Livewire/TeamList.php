@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\Team;
 use App\Models\Event;
 use App\Models\Player;
+use App\Models\EventTeamPrice;
 
 class TeamList extends Component
 {
@@ -33,18 +34,21 @@ class TeamList extends Component
             ->orWhereIn('id', $playerTeamIds)
             ->orderByDesc('id')
             ->get();
-    
-            $this->activeTeamId = ($this->teams->first())->id;
-        // foreach($this->teams as $team){
-        //     if($team->owner_id == $this->userId){
-        //         $this->activeTeamId = $team->id;
-        //         break;
-        //     }
-        // }
-            
-    
-        // $this->dispatch('team-selected', team_id: $this->activeTeamId);
 
+        $this->activeTeamId = ($this->teams->first())->id;
+
+        //  Получаем сумму неоплаченной команды
+        $awaitingPaymentTeams = $this->teams->where('status', 'awaiting_payment')->sortBy('id');
+        foreach($awaitingPaymentTeams as $t){
+            $eventTeams = Team::where('event_id', $t->event_id)->orderBy('id')->get();
+            $eventTeamPrices = EventTeamPrice::where('event_id', $t->event_id)->get()->toArray();
+
+            foreach($eventTeams as $idxEvT => $eventTeam){
+                if($eventTeam->id == $t->id){
+                    $t->amount = $eventTeamPrices[$idxEvT]['price'];
+                }
+            }
+        }
        
     }
     

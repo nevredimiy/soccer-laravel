@@ -7,6 +7,9 @@ use App\Models\TeamColor;
 use App\Models\PromoCode;
 use App\Models\Team;
 use App\Models\Event;
+use App\Models\SeriesMeta;
+use App\Models\EventTeamPrice;
+use App\Services\SeriesTemplatesService;
 use Illuminate\Support\Facades\Auth;
 use LiqPay\LiqPay;
 use Illuminate\Support\Facades\Log;
@@ -35,7 +38,18 @@ class TeamRequestController extends Controller
 
         $teams = Team::where('event_id', '=', $eventId)->get();
 
-        return view('teams.request.create', compact('colors', 'promoCodes', 'teams', 'eventId', 'event'));
+        $eventTeamPrice = EventTeamPrice::where('event_id', $event->id)->get()->toArray();
+        if($teams->count()){
+            foreach($teams as $idx => $team){
+                $price = $eventTeamPrice[$idx+1]['price'] ?? 0;
+            }
+        }else{
+            $price = $eventTeamPrice[0]['price'];
+        }
+
+      
+
+        return view('teams.request.create', compact('colors', 'promoCodes', 'teams', 'eventId', 'event', 'price'));
     }
 
     public function store(Request $request)
@@ -54,12 +68,34 @@ class TeamRequestController extends Controller
             'price' => 'required|numeric|min:0',
         ]);
 
-        $color = TeamColor::where('id', $request->color_id)->first();
+        $color = TeamColor::find($request->color_id);
+        if (!$color) {
+            return back()->withErrors(['color' => 'Колір не знайдено.']);
+        }
+
+        $teams = Team::where('event_id', $request->event_id)->get();
+
+        
      
         // Проверка на уникальность цвета
-        $existingColor = Team::where('color_id', $color->id)->where('event_id', $request->event_id)->first();
+        $existingColor = $teams->firstWhere('color_id', $color->id);
+
         if ($existingColor) {
             return back()->withErrors(['color' => 'Цей колір вже зайнятий.']);
+        }
+
+        $promoCode = null;
+        if ($request->filled('promo_code')) {
+            $promo = PromoCode::where('code', $request->promo_code)->first();
+            if ($promo) {
+                $promoCode = $promo->id;
+            }
+        }
+        $event = Event::with('tournament')->find($request->event_id);
+
+        // Защита от создания команды, если все места заняты.
+        if($teams->count() >= $event->tournament->count_teams ){
+            return back()->withErrors(['count_teams' => "Неможна створити команду! Кількість команд у цьому турнірі вже {$event->tournament->count_teams}. "]);
         }
 
         // Создание команды
@@ -67,9 +103,10 @@ class TeamRequestController extends Controller
             'owner_id' => Auth::id(),
             'name' => $request->name,
             'color_id' => $request->color_id,
-            'promo_code_id' => PromoCode::where('code', $request->promo_code)->first()->id ?? null,
+            'promo_code_id' => $promoCode,
             'event_id' => $request->event_id,
-            'status' => 'awaiting_payment'
+            'status' => 'awaiting_payment',
+            'player_request_status' => 'needed'
         ]);
 
         // Логика для обработки логотипа
@@ -78,22 +115,45 @@ class TeamRequestController extends Controller
             $team->update(['logo' => $logoPath]);
         }
 
-        // return redirect()->route('profile')->with('success', 'Команда успішно створена.');
-        // Перенаправление на оплату
-        return redirect()->route('teams.request.payment', ['team_id' => $team->id]);
+        // Проверка количество команд в турнире для генерации матчей.
+       
+        if ($event && $event->tournament && $teams->count() == $event->tournament->count_teams) {  
+            // Генерируем матчи
+            $this->generateMatches($event, $teams);
+        }
+
+        // Получения баланса польователя
+        $user = auth()->user();    
+        $balance = $user->balance;
+        $price = floatval($request->input('price'));   
+        $amount = $price - $balance;
+
+        if($amount > 0){
+            // Перенаправление на оплату
+            return redirect()->route('teams.request.payment', ['team_id' => $team->id, 'amount' => $amount]);
+        } else {
+            // снимаем с баланса
+            $user->balance = $balance - $price;
+            $user->save();
+            $team->status = 'paid';
+            $team->save();
+            return redirect()->route('profile');
+        }
+
     }
 
-    public function pay($team_id)
+    public function pay($team_id, $amount)
     {
+
+        // dd($team_id, $amount);
         $team = Team::findOrFail($team_id);
         $event = Event::findOrFail($team->event_id);
-        $price = $event->price;
 
         $liqpay = new \LiqPay(env('LIQPAY_PUBLIC_KEY'), env('LIQPAY_PRIVATE_KEY'));
 
         $params = [
             'action'      => 'pay',
-            'amount'      => $price,
+            'amount'      => $amount,
             'currency'    => 'UAH',
             'description' => "Оплата заявки на турнир #{$event->id} командой {$team->name}",
             // 'order_id'    => 'team_' . $team->id . '_' . time(),
@@ -210,6 +270,42 @@ class TeamRequestController extends Controller
         } else {
             return redirect()->route('profile')->with('notice', "Оплата не знайдена або в обробці");
         }
+    }
+
+    protected function generateMatches($event, $teams){
+
+        $teamsArray = $teams->toArray(); // превращаем коллекцию в массив для быстрого доступа по индексам
+        $seriesMetas = SeriesMeta::where('event_id', $event->id)->get();
+    
+        $service = new SeriesTemplatesService();
+    
+        // Получаем шаблоны сериалов и матчей
+        $templateSeries = $service->getTemplateShedule($event->tournament->count_teams);
+        $templateMatches = $service->getMatchTemplate();
+
+        $matches = [];
+
+        foreach($seriesMetas as $indexRound => $seriesMeta){
+            foreach($templateSeries as $indexSeries => $series){
+                 foreach ($templateMatches as $templateMatche) {
+                    $matches[] = [
+                        'event_id' => $event->id,
+                        'team1_id' => $teams[ $templateSeries[ $indexRound ][ $indexSeries ][ $templateMatche[ 0 ] ] ][ 'id' ],
+                        'team2_id' => $teams[ $templateSeries[ $indexRound ][ $indexSeries ][ $templateMatche[ 1 ] ] ][ 'id' ],
+                        'start_time' => \Carbon\Carbon::parse($seriesMeta->start_date)->format('Y-m-d H:i:s'),
+                        'series' => $indexSeries+1,
+                        'round' => $indexRound+1,
+                        'status' => 'scheduled',
+                        'created_at' => now(),
+                        'updated_at' => now()
+                    ];
+                }
+            }
+        }
+
+        if (!empty($matches)) {
+            \DB::table('matches')->insert($matches);
+        }        
     }
 
 }

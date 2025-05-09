@@ -29,12 +29,10 @@
                             {{ $tournament->name }}
                         </h2>
                         
-                        @if ($tournament->events->count())
-                        
-                        @livewire('series-list', ['tournamentId' => $tournament->id], key($tournament->id))
-
+                        @if ($tournament->isShedule)                        
+                            @livewire('series-list', ['tournamentId' => $tournament->id], key($tournament->id))
                         @else
-                            <p>На даний момент в цьому турнірі немає подій</p>
+                            <p class="text-center">На даний момент в цьому турнірі немає подій</p>
                         @endif
 
                     </div>

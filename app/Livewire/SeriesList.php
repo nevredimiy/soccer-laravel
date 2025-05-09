@@ -29,13 +29,23 @@ class SeriesList extends Component
         $events = $this->tournament->events;
     
         $eventIds = $events->pluck('id');
+        $today = \Carbon\Carbon::now()->timezone(config('app.timezone'))->format('Y-m-d H:i:s'); 
     
         $this->series = SeriesMeta::query()
             ->whereIn('event_id', $eventIds)
+            ->where('start_date', '>', $today)
             ->with(['stadium.location.district', 'teams.players', 'event.tournament'])
-            ->get();
-
+            ->orderBy('start_date')
+            ->get()
+            ->groupBy('event_id')    // группируем по event_id
+            ->map(function ($seriesGroup) {
+                // берем первый элемент каждого agrupировки для получения уникального
+                return $seriesGroup->first();
+            })
+            ->values(); // переиндексируем коллекцию
+            
         $this->series = $this->calculateStats($this->series);
+            
 
     }
 

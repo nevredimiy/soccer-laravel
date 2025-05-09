@@ -20,7 +20,7 @@
                         <form action="{{ url('/teams/request/store') }}" method="post" class="team-setup__block _block" enctype="multipart/form-data">
                             @csrf
                             <input type="hidden" name="event_id" value="{{ $eventId }}">
-                            <input type="hidden" name="price" value="{{ $event->price }}">
+                            <input type="hidden" name="price" value="{{ $price }}">
                             <div class="team-setup__name">
                                 <div class="team-setup__label team-setup__label--big">
                                     НАЗВА КОМАНДИ
@@ -71,7 +71,7 @@
                                 </div>
                                 <div class="team-setup__field">
                                     <div class="team-setup__label">
-                                        ВНЕСОК: <span>{{ $event->price }} ГРН</span>
+                                        ВНЕСОК: <span>{{ $price }} ГРН</span>
                                     </div>
                                     <button type="submit" class="team-setup__pay-button button button--blue">
                                         Оплатити внесок

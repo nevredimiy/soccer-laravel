@@ -5,35 +5,43 @@
     <h2 class="latest-series__title section-title section-title--margin">
         ЗАЯВКА НА НАЙБЛИЖЧУ СЕРІЮ
     </h2>
-    <div class="latest-series__match-info match-info">
-        <div class="match-info__details">
-            <div class="match-info__label">
-                {{isset($matche) ? $formatDate->translatedFormat('d F') : ''}}
-            </div>
-            <div class="match-info__label">
-                {{isset($matche) ? $formatDate->translatedFormat('D') : ''}}
-            </div>
-            <div class="match-info__label">
-                {{isset($matche) ? $formatDate->translatedFormat('H:i') : ''}}
-            </div>
-            <div class="match-info__label">
-                {{$matche->round ?? ''}} ТУР
 
-            </div>
-            <div class="match-info__label">
-                СЕРІЯ {{$matche->series?? ''}}
-            </div>
-        </div>
-        <div class="match-info__teams">
-            @foreach ($seriesTeams as $key => $seriesTeam)
-            <div wire:key="{{$key}}" class="match-info__label {{$seriesTeam['classColor']}}">
-                {{$seriesTeam['name']}}
-            </div>                        
-            @endforeach
-            
-        </div>
-    </div>   
+    @if (empty($seriesMeta))
+        <h3>Немає серій у цієї команди</h3>
+    @else
+    @php
+        $formateDate = \Carbon\Carbon::parse($seriesMeta->start_date);
+    @endphp
+        <div class="latest-series__match-info match-info">
+            <div class="match-info__details">
+                <div class="match-info__label">
+                    {{$formateDate->translatedFormat('d F') ?? ''}}
+                </div>
+                <div class="match-info__label">
+                    {{$formateDate->translatedFormat('D') ?? ''}}
+                </div>
+                <div class="match-info__label">
+                    {{$formateDate->translatedFormat('H:i') ?? ''}}
+                </div>
+                <div class="match-info__label">
+                    {{$seriesMeta->round ?? ''}} ТУР
 
+                </div>
+                <div class="match-info__label">
+                    СЕРІЯ {{$seriesMeta->series ?? ''}}
+                </div>
+            </div>
+            <div class="match-info__teams">
+                @foreach ($seriesTeams as $key => $seriesTeam)
+                <div wire:key="{{$key}}" class="match-info__label {{$seriesTeam['classColor']}}">
+                    {{$seriesTeam['name']}}
+                </div>                        
+                @endforeach
+                
+            </div>
+        </div>   
+    @endif
+        
     <h2 class="@if($isPlayerReserve) block @else hidden @endif text-center text-red-400">Ви в резерві! Не можете приймати участь у цій серії.</h2>
     @if (session()->has('message'))
         <div class="text-center bg-yellow-100 text-yellow-800 p-2 rounded mb-2">

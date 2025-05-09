@@ -327,7 +327,8 @@ class SeriesTemplatesService
             'Червоний' => 'red-bg',
             'Рожевий' => 'pink-bg',
             'Голубий' => 'sky-bg',
-            'Лаймовий' => 'lime-bg'
+            'Лаймовий' => 'lime-bg',
+            'Білий' => 'white-bg'
         ];
 
         return  $colorClasses[$colorName];

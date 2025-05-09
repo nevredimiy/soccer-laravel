@@ -28,7 +28,7 @@ class Player extends Model
 
     public function setPhotoAttribute($value)
     {
-        $this->attributes['photo'] = $plavalue ?: '/img/avatars/default_avatar.jpg';
+        $this->attributes['photo'] = $value ?: '/img/avatars/default_avatar.jpg';
     }
 
     public function playerTeams()
