@@ -5,6 +5,7 @@ namespace App\Livewire;
 use Livewire\Component;
 use App\Models\Team;
 use App\Models\Player;
+use App\Models\SeriesPlayer;
 use App\Models\User;
 use App\Models\Matche;
 use App\Models\Event;
@@ -70,17 +71,24 @@ class PlacesOfSeries extends Component
         if($this->playerId){
             $this->checkStatusPlayer();         
         }
-        $this->getPlayerSeriesRegistration();
-        $this->statusRegistration = $this->seriesMeta?->status_registration;       
+        $this->getPlayerSeries();
+        $this->statusRegistration = $this->seriesMeta?->status_registration;    
+    }
+
+    #[On('team-selected')]
+    public function updateSelectedTeam($team_id)
+    {
+        $this->team = Team::find($team_id);
+        $this->getPlayerSeries();
     }
 
     public function dropRegPlayer($player_id)
     {
-        PlayerSeriesRegistration::where('player_id', $player_id)
+        SeriesPlayer::where('player_id', $player_id)
             ->where('team_id', $this->team->id)
-            ->where('series', $this->matche->series)
+            ->where('series_meta_id', $this->seriesMeta->id)
             ->delete();
-        $this->getPlayerSeriesRegistration();
+        $this->getPlayerSeries();
     }
 
     #[On('togglePlayerStatus')]
@@ -112,13 +120,12 @@ class PlacesOfSeries extends Component
         $this->showModal = false;
     }
 
-    public function takePlace($numPlayer = 0)
+    public function takePlace($playerNumber = 0)
     {
         $eventId = $this->team->event->id;
         $teamId = $this->team->id;
         $playerId = $this->playerId;
-        $series = $this->matche->series ?? null;
-        $round = $this->matche->round ?? null;
+       
         $event = Event::with('tournament')->find($eventId);
 
         // 1. Проверка: резервный игрок
@@ -133,10 +140,7 @@ class PlacesOfSeries extends Component
         // 2. Проверка: баланс
         $balance = User::find($this->userId)?->balance ?? 0;
 
-        $price = SeriesMeta::where('event_id', $eventId)
-            ->where('series', $series)
-            ->value('price') 
-            ?? SeriesMeta::where('event_id', $eventId)->value('price');
+        $price = $this->seriesMeta->price;
 
         if($event->tournament->team_creator == 'admin'){
             $this->minBalance = ceil($price / 18); // 18 это количество игроков в турнире. По 6 в команде.
@@ -151,40 +155,34 @@ class PlacesOfSeries extends Component
         }
 
         // 3. Проверка: не зарегистрирован ли уже
-        $alreadyRegistered = PlayerSeriesRegistration::where([
-            ['player_id', '=', $playerId],
-            ['series', '=', $series],
-            ['team_id', '=', $teamId],
-        ])->exists();
+        $alreadyRegistered = SeriesPlayer::where('series_meta_id', $this->seriesMeta->id)->where('player_id', $this->playerId)->where('team_id', $this->team->id)->exists();
 
         if ($alreadyRegistered) {
             session()->flash('message', 'Ви вже зареєстровані в цій серії.');
             return;
         }
 
-        // 4. Регистрация
-        if ($numPlayer) {
-            PlayerSeriesRegistration::create([
-                'event_id'      => $eventId,
-                'team_id'       => $teamId,
-                'player_id'     => $playerId,
-                'player_number' => $numPlayer,
-                'series'        => $series,
-                'round'         => $round,
+        if($playerNumber){
+            SeriesPlayer::create([
+                'player_id' => $playerId,
+                'series_meta_id' => $this->seriesMeta->id,
+                'player_number' => $playerNumber,
+                'team_id' => $teamId
             ]);
         }
 
-        $this->getPlayerSeriesRegistration();
+        $this->getPlayerSeries();
+
+
     }
 
-
-    protected function getPlayerSeriesRegistration()
+    protected function getPlayerSeries()
     {
-        $this->regPlayers = PlayerSeriesRegistration::with('player')
+        $this->regPlayers = SeriesPlayer::with('player')
+            ->where('series_meta_id', $this->seriesMeta->id)
             ->where('team_id', $this->team->id)
-            ->where('series', $this->matche?->series)
-            ->get();  
-           
+            ->get(); 
+            
         // Проверка на Закрывать заявку или нет
         if($this->statusRegistration == 'open'){
             $maxPlayers = $this->team->max_players;
@@ -196,19 +194,17 @@ class PlacesOfSeries extends Component
         }
     }
 
+
     public function closeRegistrations()
     {
         //
         $this->seriesMeta->update(['status_registration' => 'closed']);
         $this->statusRegistration = 'closed';
-        // списание баланса
 
-        $seriesPlayers = PlayerSeriesRegistration::query()
-            ->with('player')
+        // списание баланса
+        $seriesPlayers = SeriesPlayer::query()
+            ->where('series_meta_id', '=', $this->SeriesMeta->id)
             ->where('team_id', '=', $this->team->id)
-            ->where('event_id', '=', $this->team->event->id)
-            ->where('series', '=', $this->matche->series)
-            ->where('round', '=', $this->matche->round)
             ->get();
         
         $seriesPrice = SeriesMeta::query()
@@ -223,6 +219,7 @@ class PlacesOfSeries extends Component
             $balance = User::query()
                 ->where('id', $player->player->user_id)
                 ->value('balance');
+
             User::query()
                 ->where('id', $player->player->user_id)
                 ->update(['balance' => $balance - $writeOffAmount]);

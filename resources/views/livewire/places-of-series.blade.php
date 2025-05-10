@@ -90,7 +90,7 @@
                     </button>
                 @endif
 
-                <div class="latest-series__number">{{$playerNumber}}</div>
+                <div style="background-color: {{$team->color->color_picker}}" class="latest-series__number">{{$playerNumber}}</div>
 
                 @if ($regPlayer && $team->owner_id == $userId)
                     <button wire:click="dropRegPlayer({{$regPlayer->player_id}})" class="button button--yellow button--small">Відкликати</button>

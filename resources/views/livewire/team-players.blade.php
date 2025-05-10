@@ -55,7 +55,7 @@
                     @endfor
                 </div>
             </article>
-            <div class="players-tournament__actions">
+            <div data-status="{{$player['status']}}" class="players-tournament__actions">
                 <div class="players-tournament__label {{ $player['status'] === 'main' ? 'green-bg' : 'gray-bg' }}">
                     {{ $player['status'] === 'main' ? 'ОСНОВИЙ' : 'РЕЗЕРВНИЙ' }}
                 </div>

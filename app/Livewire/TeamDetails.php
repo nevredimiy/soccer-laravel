@@ -32,7 +32,7 @@ class TeamDetails extends Component
             })
             ->pluck('team_id');        
         
-        $this->teams = Team::with('event.tournament')
+        $this->teams = Team::with(['event.tournament', 'color'])
             ->where('owner_id', $this->userId)
             ->orWhereIn('id', $playerTeamIds)
             ->orderByDesc('id')
@@ -41,7 +41,7 @@ class TeamDetails extends Component
             $playerId = Player::where('user_id', $this->userId)->pluck('id');
             $teamIds = PlayerTeam::where('player_id', $playerId)->pluck('team_id');
             
-            $this->teams = Team::with('event.tournament')
+            $this->teams = Team::with(['event.tournament', 'color'])
                 ->whereIn('id', $teamIds)
                 ->orderByDesc('id')
                 ->get();

@@ -433,7 +433,6 @@ body::after {
   background-color: #728099;
   color: #fff;
   border: .0625rem solid rgba(10,38,64,.1);
-  cursor: not-allowed;
 }
 
 
@@ -4964,4 +4963,8 @@ body > div.wrapper > main > div > a:hover {
 .ball {
   width: 30px;
   height: 30px;
+}
+
+.button.disabled{
+  cursor: not-allowed;
 }
