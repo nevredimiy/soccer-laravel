@@ -12,28 +12,9 @@
 
     <div class="home__block _block">
 
-        
-{{--         
-        @if (count($teams) == 4)
-
-        @livewire('team-shedule-four')
-
-        @elseif (count($teams) == 6)
-        
-            @livewire('team-shedule-six')
-
-        @elseif (count($teams) == 9)
-
-            @livewire('team-shedule-nine')                
-
-        @endif
-         --}}
-
          @if ($event->tournament->subtype == 'regular')
              @livewire('team-shedule', ['event' => $event])
          @endif
-        
-        
 
         @if ($event->status == 'finished')
         <section class="home__series-result table-section">
@@ -232,7 +213,7 @@
                             <img src="img/player/shoe.svg" alt="Image" class="ibg ibg--contain">
                         </div>
                     </div>
-                    <ol class="item-team-home__list">
+                    {{-- <ol class="item-team-home__list">
                         @foreach ($team->players as $player)
                         <li class="item-team-home__member">
                             <div class="item-team-home__circle"></div>
@@ -241,194 +222,26 @@
                             <div class="item-team-home__value">0</div>
                         </li>    
                         @endforeach
-                        
-                       
-                    </ol>
+                    </ol> --}}
+                    @if (isset($seriesPlayers[$team->id]))
+                        <ol class="item-team-home__list">
+                            @foreach ($seriesPlayers[$team->id] as $player)
+                                <li class="item-team-home__member">
+                                    <div class="item-team-home__circle">
+                                        <img src="{{asset('storage/'. $player->player->photo)}}" alt="{{$player->player->full_name}}">
+                                    </div>
+                                    {{-- <span class="active">{{$player->player->first_name}} {{$player->player->last_name}}</span> --}}
+                                    <span class="">{{$player->player->full_name}}</span>
+                                    <div class="item-team-home__value">2</div>
+                                    <div class="item-team-home__value">0</div>
+                                </li>    
+                            @endforeach
+                        </ol>    
+                                        
+                    @endif
                 </div>
                 @endforeach
-            </div>
-            {{-- <div class="teams-section__body">
-                <div style="--color: #0053A0" class="teams-section__item item-team-home">
-                    <div data-rating-size="10" data-rating-value="7" class="item-team-home__team-rating rating">
-                        <div class="rating__items">
-                            
-                        </div>
-                    </div>
-                    <div class="item-team-home__header">
-                        <div class="item-team-home__title">
-                            №
-                        </div>
-                        <div class="item-team-home__title">
-                            ГРАВЕЦЬ
-                        </div>
-                        <div class="item-team-home__icon">
-                            <img src="img/player/ball.webp" alt="Image" class="ibg ibg--contain">
-                        </div>
-                        <div class="item-team-home__icon">
-                            <img src="img/player/shoe.svg" alt="Image" class="ibg ibg--contain">
-                        </div>
-                    </div>
-                    <ol class="item-team-home__list">
-                        <li class="item-team-home__member">
-                            <div class="item-team-home__circle"></div>
-                            <span class="active">МАКСИМ МАМЕДОВ</span>
-                            <div class="item-team-home__value">2</div>
-                            <div class="item-team-home__value">0</div>
-                        </li>
-                        <li class="item-team-home__member">
-                            <div class="item-team-home__circle"></div>
-                            <span>МАКСИМ МАМЕДОВ</span>
-                            <div class="item-team-home__value">2</div>
-                            <div class="item-team-home__value">0</div>
-                        </li>
-                        <li class="item-team-home__member">
-                            <div class="item-team-home__circle"></div>
-                            <span>МАКСИМ МАМЕДОВ</span>
-                            <div class="item-team-home__value">2</div>
-                            <div class="item-team-home__value">0</div>
-                        </li>
-                        <li class="item-team-home__member">
-                            <div class="item-team-home__circle"></div>
-                            <span>МАКСИМ МАМЕДОВ</span>
-                            <div class="item-team-home__value">2</div>
-                            <div class="item-team-home__value">0</div>
-                        </li>
-                        <li class="item-team-home__member">
-                            <div class="item-team-home__circle"></div>
-                            <span>МАКСИМ МАМЕДОВ</span>
-                            <div class="item-team-home__value">2</div>
-                            <div class="item-team-home__value">0</div>
-                        </li>
-                        <li class="item-team-home__member">
-                            <div class="item-team-home__circle"></div>
-                            <span>МАКСИМ МАМЕДОВ</span>
-                            <div class="item-team-home__value">2</div>
-                            <div class="item-team-home__value">0</div>
-                        </li>
-                    </ol>
-                </div>
-                <div style="--color: #59C65D" class="teams-section__item item-team-home">
-                    <div data-rating data-rating-size="10" data-rating-value="7" class="item-team-home__team-rating rating">
-                    </div>
-                    <div class="item-team-home__header">
-                        <div class="item-team-home__title">
-                            №
-                        </div>
-                        <div class="item-team-home__title">
-                            ГРАВЕЦЬ
-                        </div>
-                        <div class="item-team-home__icon">
-                            <img src="img/player/ball.webp" alt="Image" class="ibg ibg--contain">
-                        </div>
-                        <div class="item-team-home__icon">
-                            <img src="img/player/shoe.svg" alt="Image" class="ibg ibg--contain">
-                        </div>
-                    </div>
-                    <ol class="item-team-home__list">
-                        <li class="item-team-home__member">
-                            <div class="item-team-home__circle"></div>
-                            <span class="active">МАКСИМ МАМЕДОВ</span>
-                            <div class="item-team-home__value">2</div>
-                            <div class="item-team-home__value">0</div>
-                        </li>
-                        <li class="item-team-home__member">
-                            <div class="item-team-home__circle"></div>
-                            <span>МАКСИМ МАМЕДОВ</span>
-                            <div class="item-team-home__value">2</div>
-                            <div class="item-team-home__value">0</div>
-                        </li>
-                        <li class="item-team-home__member">
-                            <div class="item-team-home__circle"></div>
-                            <span>МАКСИМ МАМЕДОВ</span>
-                            <div class="item-team-home__value">2</div>
-                            <div class="item-team-home__value">0</div>
-                        </li>
-                        <li class="item-team-home__member">
-                            <div class="item-team-home__circle"></div>
-                            <span>МАКСИМ МАМЕДОВ</span>
-                            <div class="item-team-home__value">2</div>
-                            <div class="item-team-home__value">0</div>
-                        </li>
-                        <li class="item-team-home__member">
-                            <div class="item-team-home__circle"></div>
-                            <span>МАКСИМ МАМЕДОВ</span>
-                            <div class="item-team-home__value">2</div>
-                            <div class="item-team-home__value">0</div>
-                        </li>
-                        <li class="item-team-home__member">
-                            <div class="item-team-home__circle"></div>
-                            <span>МАКСИМ МАМЕДОВ</span>
-                            <div class="item-team-home__value">2</div>
-                            <div class="item-team-home__value">0</div>
-                        </li>
-                    </ol>
-                </div>
-                <div style="--color: #F7E10E" class="teams-section__item item-team-home">
-                    <div data-rating data-rating-size="10" data-rating-value="7" class="item-team-home__team-rating rating">
-                    </div>
-                    <div class="item-team-home__header">
-                        <div class="item-team-home__title">
-                            №
-                        </div>
-                        <div class="item-team-home__title">
-                            ГРАВЕЦЬ
-                        </div>
-                        <div class="item-team-home__icon">
-                            <img src="img/player/ball.webp" alt="Image" class="ibg ibg--contain">
-                        </div>
-                        <div class="item-team-home__icon">
-                            <img src="img/player/shoe.svg" alt="Image" class="ibg ibg--contain">
-                        </div>
-                        <div class="item-team-home__icon">
-                            <img src="img/player/star.svg" alt="Image" class="ibg ibg--contain">
-                        </div>
-                    </div>
-                    <ol class="item-team-home__list">
-                        <li class="item-team-home__member">
-                            <div class="item-team-home__circle"></div>
-                            <span class="active">МАКСИМ МАМЕДОВ</span>
-                            <div class="item-team-home__value">2</div>
-                            <div class="item-team-home__value">0</div>
-                            <div class="item-team-home__value">4,76</div>
-                        </li>
-                        <li class="item-team-home__member">
-                            <div class="item-team-home__circle"></div>
-                            <span>МАКСИМ МАМЕДОВ</span>
-                            <div class="item-team-home__value">2</div>
-                            <div class="item-team-home__value">0</div>
-                            <div class="item-team-home__value">4,76</div>
-                        </li>
-                        <li class="item-team-home__member">
-                            <div class="item-team-home__circle"></div>
-                            <span>МАКСИМ МАМЕДОВ</span>
-                            <div class="item-team-home__value">2</div>
-                            <div class="item-team-home__value">0</div>
-                            <div class="item-team-home__value">4,76</div>
-                        </li>
-                        <li class="item-team-home__member">
-                            <div class="item-team-home__circle"></div>
-                            <span>МАКСИМ МАМЕДОВ</span>
-                            <div class="item-team-home__value">2</div>
-                            <div class="item-team-home__value">0</div>
-                            <div class="item-team-home__value">4,76</div>
-                        </li>
-                        <li class="item-team-home__member">
-                            <div class="item-team-home__circle"></div>
-                            <span>МАКСИМ МАМЕДОВ</span>
-                            <div class="item-team-home__value">2</div>
-                            <div class="item-team-home__value">0</div>
-                            <div class="item-team-home__value">4,76</div>
-                        </li>
-                        <li class="item-team-home__member">
-                            <div class="item-team-home__circle"></div>
-                            <span>МАКСИМ МАМЕДОВ</span>
-                            <div class="item-team-home__value">2</div>
-                            <div class="item-team-home__value">0</div>
-                            <div class="item-team-home__value">4,76</div>
-                        </li>
-                    </ol>
-                </div>
-            </div> --}}
+            </div>      
         </section>
         <section class="home__gallery gallery-home">
             <h2 class="gallery-home__title section-title section-title--margin">

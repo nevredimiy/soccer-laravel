@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Матчі')
+@section('title', 'Серії')
 
 
 
@@ -11,7 +11,7 @@
     
     <div class="page__container">
         <div class="page__wrapper">
-            <livewire:manager-match-list />
+            <livewire:manager-series-list />
         </div>
     </div>
 @endsection	

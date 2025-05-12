@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Elooquent\Relations\HasMany;
 
 class SeriesMeta extends Model
 {
@@ -27,9 +29,9 @@ class SeriesMeta extends Model
     {
         return $this->belongsTo(Event::class);
     }
-    public function player()
+    public function players()
     {
-        return $this->belongsTo(Player::class, 'player_id');
+        return $this->belongsToMany(Player::class, 'series_players', 'series_meta_id', 'player_id');
     }
     public function stadium()
     {
@@ -48,6 +50,10 @@ class SeriesMeta extends Model
         );
     }
 
+    public function seriesPlayers()
+    {
+        return $this->hasMany(SeriesPlayer::class, 'series_meta_id');
+    }
 
     public function getStartDateAttribute($value)
     {

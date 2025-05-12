@@ -3,16 +3,16 @@
 @section('title', 'Дані матча')
 
 <div class="flex justify-center mt-2">
-   <a href="{{route('manager.matches')}}" class="button button--blue mb-4 text-center">Повернутися до списку серій</a>
+   <a href="{{route('manager.series')}}" class="button button--blue mb-4 text-center">Повернутися до списку серій</a>
 </div>
 
-<div class="flex justify-center gap-2 mt-4">
+<div class="flex justify-center gap-4 mt-4">
    
       @foreach(['football' => 'Гол', 'boots-icon' => 'Асист', 'red-football' => 'Автогол', 'yellow-card-icon' => 'ЖК', 'red-card-icon' => 'ЧК'] as $key => $label)
          <label>
             <input type="radio" name="event_type" value="{{ $key }}" class="hidden peer">
-            <div class="peer-checked:border-black border border-transparent flex flex-col justify-end items-center gap-2 uppercase rounded p-2 w-20 h-30 cursor-pointer hover:border-black">
-               <img class="w-10" src="{{ asset('img/icons/' . $key . '.png') }}" alt="{{ $label }}">
+            <div class="peer-checked:border-black border border-transparent flex flex-col justify-end items-center gap-2 uppercase rounded p-2 w-30 h-40 cursor-pointer hover:border-black">
+               <img class="w-20" src="{{ asset('img/icons/' . $key . '.png') }}" alt="{{ $label }}">
                {{ $label }}
             </div>
          </label>
@@ -22,8 +22,10 @@
 <div class="flex justify-center gap-2 mt-4">
    <button class="button button--black">Додати подію</button>
    <button class="button button--black">Крок назад</button>
+   <button class="button button--black">Завершити серію</button>
 </div>
-<div class="flex flex-col items-center gap-2 mt-4">
+
+<div class="flex flex-col items-center gap-4 mt-6 mb-10">
    @php
       $colors = ['#0053a0', '#59c65d', '#ed1c24'];
    @endphp
@@ -37,11 +39,8 @@
       </div>
    @endfor
 </div>
-<div class="flex justify-center gap-2 mt-4">
-   <button class="button button--black">Завершити Матч</button>
-   <button class="button button--black">Завершити серію</button>
-</div>
-<div class="flex justify-center gap-2 mt-4">
+
+<div class="flex justify-center gap-2">
    <section class="home__protocol protocol">
       <h2 class="protocol__title section-title section-title--margin">Протокол серії</h2>
       <div  class="protocol__body">

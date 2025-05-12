@@ -30,10 +30,13 @@
                         {{\Carbon\Carbon::parse($seriesMetas[$series+1][0]['start_date'])->locale('uk')->settings(['formatFunction' => 'translatedFormat'])->format('d.m')}}
                         @endif --}}
                     </div>
-                    <div wire:click="selectedRound({{ $idxRound + 1 }}, {{ session('current_event', 0) }}, {{$series + 1}})"  
-                            class="item-calendar__wrapper @if ($currentRound['round_number'] == $idxRound + 1 && $currentRound['series_number'] == $series + 1)
-                        item-calendar--active
-                    @endif">
+                    <div 
+                        wire:click="selectedRound({{ $idxRound + 1 }}, {{ session('current_event', 0) }}, {{$series + 1}})"  
+                        class="item-calendar__wrapper 
+                        @if ($currentRound['round_number'] == $idxRound + 1 && $currentRound['series_number'] == $series + 1)
+                            item-calendar--active
+                        @endif"
+                    >
                         <div class="item-calendar__label">
                             @if ($loop->last)
                                 ФІНАЛ

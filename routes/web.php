@@ -24,7 +24,7 @@ use App\Http\Controllers\TeamEventController;
 use App\Http\Controllers\TeamSeriesController;
 use App\Http\Controllers\TeamRequestController;
 use App\Http\Controllers\TournamentController;
-use App\Http\Controllers\ManagerMatchesController;
+use App\Http\Controllers\ManagerSeriesController;
 
 use App\Models\Article;
 
@@ -131,8 +131,8 @@ Route::get('/no-access', function () {
 })->name('no-access');
 
 Route::middleware(['auth', 'role:manager,admin'])->group(function () {
-    Route::get('/manager/matches', [ManagerMatchesController::class, 'index'])->name('manager.matches');
-    Route::get('/manager/matches/{id}', [ManagerMatchesController::class, 'show'])->name('manager.matches.show');
+    Route::get('/manager/series', [ManagerSeriesController::class, 'index'])->name('manager.series');
+    Route::get('/manager/series/{id}', [ManagerSeriesController::class, 'show'])->name('manager.series.show');
 });
 
 

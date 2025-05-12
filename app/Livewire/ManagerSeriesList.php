@@ -13,10 +13,9 @@ use App\Models\SeriesMeta;
 use App\Models\Event;
 use Illuminate\Database\Eloquent\Collection;
 
-class ManagerMatchList extends Component
+class ManagerSeriesList extends Component
 {
 
-    public $matches = null;
     public $stadiums = null;
     public $events = null;
     
@@ -38,7 +37,6 @@ class ManagerMatchList extends Component
         $this->selectedCity = session('current_city', 2);
         $this->selectedEvent = session('current_event', 0);
     
-        $this->updateMatches();
         $this->updateSeriesMetas();
     
         $this->events = Event::query()
@@ -57,7 +55,6 @@ class ManagerMatchList extends Component
         $this->selectedTournament = null;
         $this->selectedLeague = null;
        
-        $this->updateMatches();
         $this->updateSeriesMetas();
     }
 
@@ -69,7 +66,6 @@ class ManagerMatchList extends Component
         $this->selectedTournament = null;
         $this->selectedLeague = null;
 
-        $this->updateMatches();
         $this->updateSeriesMetas();
     }
 
@@ -80,7 +76,6 @@ class ManagerMatchList extends Component
         $this->selectedTournament = null;
         $this->selectedLeague = null;
 
-        $this->updateMatches();
         $this->updateSeriesMetas();
     }
 
@@ -89,7 +84,6 @@ class ManagerMatchList extends Component
     {
 
         $this->selectedTournament = $typeTournament;
-        $this->updateMatches();
         $this->updateSeriesMetas();
     }
 
@@ -97,36 +91,16 @@ class ManagerMatchList extends Component
     public function updateLeagueId($league_id)
     {
         $this->selectedLeague = $league_id;
-        $this->updateMatches();
         $this->updateSeriesMetas();
     }
 
     public function updatedSelectedEvent($event_id)
     {
         session(['current_event' => $event_id]); 
-        $this->updateMatches();
         $this->updateSeriesMetas();
     }
 
-    protected function updateMatches()
-    {
-        $eventIds = $this->selectedEvent
-            ? collect([$this->selectedEvent])
-            : $this->buildSeriesMetaQuery()->pluck('event_id');
-    
-        $matchQuery = Matche::query()
-            ->where('status', '!=', 'finished')
-            ->whereIn('event_id', $eventIds);
-    
-        if ($this->selectedTournament) {
-            $matchQuery->whereHas('event.tournament', function ($q) {
-                $q->where('type', $this->selectedTournament);
-            });
-        }
-    
-        $this->matches = $matchQuery->get();
-    }
-    
+   
 
     protected function updateSeriesMetas()
     {
@@ -172,6 +146,6 @@ class ManagerMatchList extends Component
     public function render()
     {
         
-        return view('livewire.manager-match-list');
+        return view('livewire.manager-series-list');
     }
 }

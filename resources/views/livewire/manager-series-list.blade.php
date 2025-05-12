@@ -19,7 +19,7 @@
             <li wire:key="{{$round}}">
                 <a 
                     class="border rounded p-2 mb-2 hover:bg-yellow-300" 
-                    href="{{route('manager.matches.show', ['id' => $round])}}"
+                    href="{{route('manager.series.show', ['id' => $round])}}"
                 >
                 <p>Тур {{$round}}</p>
                 @foreach ( $seriaMeta as $item )
@@ -34,31 +34,5 @@
             <li>Немає серій</li>
         @endforelse      
     </ul>
-
-
-
-    <hr />
-
-    <ul class="grid grid-cols-1 justify-items-center md:grid-cols-2 lg:grid-cols-3">
-        @forelse ($matches ?? [] as $match)
-            <li wire:key="{{$match->id}}">
-                <a 
-                    class="border rounded p-2 mb-2 hover:bg-yellow-300 
-                    @if ($match->status == 'finished')
-                        finished
-                    @endif" 
-                    href="{{route('manager.matches.show', ['id' => $match->id])}}"
-                >
-                    Матч {{$loop->iteration}} - {{$match->event_id}}-Тур {{$match->round}}-Серія {{$match->series}}-Початок {{\Carbon\Carbon::parse($match->start_time)->format('d.m.Y')}} {{\Carbon\Carbon::parse($match->start_time)->format('H:i')}}
-
-                </a>
-            </li>                    
-        @empty
-            <li>Немає матчів</li>
-        @endforelse
-        
-    </ul>
-    
- 
     
 </div>

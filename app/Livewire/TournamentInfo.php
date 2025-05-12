@@ -5,29 +5,19 @@ namespace App\Livewire;
 use Livewire\Component;
 use App\Models\Team;
 use App\Models\Event;
-
+use App\Models\Player;
+use App\Models\SeriesMeta;
+use App\Models\SeriesPlayer;
 use Livewire\Attributes\On;
+use Illuminate\Database\Eloquent\Relations\Relation;
 
 
 class TournamentInfo extends Component
 {
     
-    public $romeNum = ['I', 'II', 'III'];
     public $teams = [];
     public $eventId = null;
     public $event = null;
-
-    public $colors = [
-        '#ff0000', 
-        '#00b050',
-        '#ffff00',
-        '#ff7f27',
-        '#0070c0',
-        '#808080',
-        '#99d9ea',
-        '#9bbb59',
-        '#ff99ff',
-    ];
 
     protected array $tourTemplate = [
         ['Червоний', 'Зелений', 'Жовтий'], 
@@ -36,31 +26,53 @@ class TournamentInfo extends Component
         ['Зелений', 'Жовтий', 'Рожевий'], 
     ];
 
-    public array $series1 = [];
 
-    protected array $colorClasses = [
-        'Червоний' => 'red-bg',
-        'Зелений' => 'green-bg',
-        'Жовтий' => 'yellow-bg',
-        'Рожевий' => 'orange-bg',
-    ];
+    // protected array $colorClasses = [
+    //     'Червоний' => 'red-bg',
+    //     'Зелений' => 'green-bg',
+    //     'Жовтий' => 'yellow-bg',
+    //     'Рожевий' => 'orange-bg',
+    // ];
 
     public $shedule = [];
+    public $currentRound = [];
+    public $seriesPlayers = null;
 
     public function mount()
     {
         $eventId = session('current_event', 0);
+        $this->eventId = $eventId;
         $this->event = Event::with('tournament')->find($eventId);
         $this->teams = $this->getTeams($eventId);
         $this->shedule = $this->getScheduleProperty($this->teams);
 
+        // что касаеться отображения игроков игры, т.е. выбранной серии
+        $this->currentRound = [
+            'round_number' => 1,
+            'event_id' => $this->event->id,
+            'series_number' => 1
+        ];
+        $this->getSeriesPlayers($this->currentRound);
         
-        $this->series1 = [
-            ['Червоний', 'Зелений', 'Жовтий'], 
-            ['Червоний', 'Зелений', 'Рожевий'],
-            ['Червоний', 'Жовтий', 'Рожевий'], 
-            ['Зелений', 'Жовтий', 'Рожевий'], 
-        ];        
+    }
+
+    #[On('currentRound')]
+    public function getSeriesPlayers(array $currentRound)
+    {
+
+        $series = SeriesMeta::query()
+            ->with('seriesPlayers.player')
+            ->where('event_id', $this->eventId)
+            ->where('series', $currentRound['series_number'])
+            ->where('round', $currentRound['round_number'])
+            ->first();
+
+        // dd($series);
+        if(isset($series->seriesPlayers)){
+            $this->seriesPlayers = $series->seriesPlayers->groupBy('team_id')->all();
+        }else {
+            $this->seriesPlayers = [];
+        }
     }
 
     private function getTeams($eventId)
@@ -79,10 +91,10 @@ class TournamentInfo extends Component
         return $teams;
     }
 
-    public function getBgClass($colorName): string
-    {
-        return $this->colorClasses[$colorName] ?? 'default-bg';
-    }
+    // public function getBgClass($colorName): string
+    // {
+    //     return $this->colorClasses[$colorName] ?? 'default-bg';
+    // }
 
 
     public function getScheduleProperty($teams)
@@ -112,7 +124,6 @@ class TournamentInfo extends Component
                 'resting' => $restingTeam,
             ];
         }
-
         return $schedule;
     }
 
@@ -127,6 +138,8 @@ class TournamentInfo extends Component
         } else {
             $this->teams = [];
         }
+
+        $this->getSeriesPlayers($this->currentRound);
     }
 
 
