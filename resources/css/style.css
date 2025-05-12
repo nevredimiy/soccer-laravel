@@ -1165,7 +1165,8 @@ body::after {
   background-color: #f2f6fa;
   grid-row: span 2;
   display: flex;
-  align-items: center
+  align-items: center;
+  border: 2px solid transparent;
 }
 .match-protocol span {
   display: block;
@@ -4968,3 +4969,10 @@ body > div.wrapper > main > div > a:hover {
 .button.disabled{
   cursor: not-allowed;
 }
+
+.match-protocol__label.__active,
+.social__item.ball.__active,
+.active-type{
+  border: 2px solid #000;
+}
+

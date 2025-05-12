@@ -16,19 +16,16 @@
 
     <ul class="grid grid-cols-1 justify-items-center md:grid-cols-2 lg:grid-cols-3 mb-4">
         @forelse ($seriesMetasGroup ?? [] as $round => $seriaMeta)
-            <li wire:key="{{$round}}">
-                <a 
-                    class="border rounded p-2 mb-2 hover:bg-yellow-300" 
-                    href="{{route('manager.series.show', ['id' => $round])}}"
-                >
+            <li class="border rounded p-2 mb-2 flex flex-col gap-2"  wire:key="{{$round}}">
+              
                 <p>Тур {{$round}}</p>
                 @foreach ( $seriaMeta as $item )
-                <div wire:key="{{$item->id}}" class="">
+                <a class="button button--blue" href="{{route('manager.series.show', ['id' => $item->id])}}" wire:key="{{$item->id}}" class="">
                     Серія {{$item->series}}-Початок {{\Carbon\Carbon::parse($item->start_date)->format('H:i - d.m.Y')}}                    
-                </div>
+                </a>
                 @endforeach
 
-                </a>
+                
             </li>                    
         @empty
             <li>Немає серій</li>

@@ -109,16 +109,19 @@ class TeamRequestController extends Controller
             'player_request_status' => 'needed'
         ]);
 
+       
+
         // Логика для обработки логотипа
         if ($request->hasFile('logo')) {
             $logoPath = $request->file('logo')->store('img/team_logo', 'public');
             $team->update(['logo' => $logoPath]);
         }
 
-        // Проверка количество команд в турнире для генерации матчей.
-       
-        if ($event && $event->tournament && $teams->count() == $event->tournament->count_teams) {  
-            // Генерируем матчи
+        // Проверяем количество матчей. Если оно равно нужному количеству, то гинерируем матчи. 
+        // Получаем актуальный список команд
+        $teams = Team::where('event_id', $request->event_id)->get();
+
+        if ($event && $event->tournament && $teams->count() == $event->tournament->count_teams) {
             $this->generateMatches($event, $teams);
         }
 
@@ -139,6 +142,8 @@ class TeamRequestController extends Controller
             $team->save();
             return redirect()->route('profile');
         }
+
+
 
     }
 

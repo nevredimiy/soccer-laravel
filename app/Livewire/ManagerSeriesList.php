@@ -38,10 +38,13 @@ class ManagerSeriesList extends Component
         $this->selectedEvent = session('current_event', 0);
     
         $this->updateSeriesMetas();
+
+        $eventIds = SeriesMeta::pluck('event_id')->unique();
     
         $this->events = Event::query()
-            ->whereIn('id', SeriesMeta::pluck('event_id')->unique())
+            ->whereIn('id', $eventIds)
             ->get();
+
     }
     
     
@@ -112,7 +115,11 @@ class ManagerSeriesList extends Component
             ->whereIn('event_id', $eventIds)
             ->get();
     
+
         $this->seriesMetasGroup = collect($this->seriesMetas)->groupBy('round');
+
+    
+
     }
     
 
