@@ -13,13 +13,7 @@ return new class extends Migration
     {
         Schema::table('player_series_registrations', function (Blueprint $table) {
             $table->foreignId('series_meta_id')->after('id')->constrained('series_metas')->onDelete('cascade');
-            $table->dropForeign(['event_id']);
-            $table->dropColumn('event_id');
-            $table->dropForeign(['team_id']);
-            $table->dropColumn('team_id');
-            $table->dropColumn('player_number');
-            $table->dropColumn('series');
-            $table->dropColumn('round');
+           
         });
     }
 
