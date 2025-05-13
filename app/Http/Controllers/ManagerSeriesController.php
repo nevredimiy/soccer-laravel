@@ -62,7 +62,8 @@ class ManagerSeriesController extends Controller
             'teamIdsInSeries',
             'playersByNumberByTeamId',
             'teamColors',
-            'templateMatches'
+            'templateMatches',
+            'seriesMeta'
         ));
     }
 }

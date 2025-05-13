@@ -21,6 +21,7 @@
         'teamColors' => $teamColors,
         'templateMatches' => $templateMatches,
         'teamIdsInSeries' => $teamIdsInSeries,
+        'seriesMeta' => $seriesMeta,
     ]
 )
 

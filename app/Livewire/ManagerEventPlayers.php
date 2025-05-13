@@ -41,7 +41,7 @@ class ManagerEventPlayers extends Component
     {
         // dump($seriesPlayer);
         $this->selectedPlayerId = $seriesPlayer['id'];
-        session(['selected-player' => $seriesPlayer['id']]);
+        session(['selected-player' => $seriesPlayer['player_id']]);
         session(['selected-teamId' => $teamId]);
     }
 

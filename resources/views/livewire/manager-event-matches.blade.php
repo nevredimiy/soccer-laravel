@@ -21,6 +21,7 @@
                 @endphp
 
                 <div class="protocol__block">
+                    
                     <div class="protocol__match match-protocol">
                         <button wire:click="selectedMatch({{ $matchNumber }})" class="match-protocol__label {{ $activeClass }}">
                             МАТЧ {{ $matchNumber }}
@@ -29,25 +30,28 @@
                         <span style="background: {{ $color2 }}" class="yellow-bg">1</span>
                     </div>
                     <div class="protocol__content">
-                        @if (isset($matches[$i]['matchEvents']))
-                        @foreach ($matches[$i]['matchEvents'] as $matchEvents)
-                            <div class="protocol__item yellow-bg">
-                                <span class="protocol__ball">
-                                    2
-                                    <img src="/img/player/ball.webp" alt="Image" class="ibg ibg--contain">
+                        @if (isset($matches[$i]['match_events']))
+                                   
+                        @foreach ($matches[$i]['match_events'] as $matchEvents)
+                        
+                        
+                            <div 
+                                @if ($matchEvents['team_id']==$teamIdsInSeries[$teamId1])
+                                style="background: {{$color1}}"
+                                @else
+                                style="background: {{$color2}}"
+                                @endif
+                                
+                                data-team1-id="{{$matchEvents['team_id']}}" 
+                                data-team2-id="{{$teamIdsInSeries[$teamId1]}}"  
+                                class="protocol__item">
+                                <span class="protocol__ball @if ( $matchEvents['team_id'] == $teamIdsInSeries[$teamId1] ) up @endif">
+                                    {{ $seriesPlayers[$matchEvents['player_id']]['player_number'] }}
+                                    <img width="15" height="15" src="{{ asset('img/icons/' . $icons[$matchEvents['type']] . '.png') }}" alt="Image" class="ibg ibg--contain">
                                 </span>
                             </div>
                         @endforeach                            
                         @endif
-                        {{-- <div class="protocol__item blue-bg">
-                            <span class="protocol__yellow up">5</span>
-                        </div>
-                        <div class="protocol__item yellow-bg">
-                            <span class="protocol__ball">
-                                2
-                                <img src="/img/player/ball.webp" alt="Image" class="ibg ibg--contain">
-                            </span>
-                        </div> --}}
                     </div>
                 </div>
             @endforeach

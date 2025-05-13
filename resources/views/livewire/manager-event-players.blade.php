@@ -1,7 +1,4 @@
 <div class="flex flex-col items-center gap-4 mt-6 mb-10">
-    @empty($teamsByMatch)
-            <p class="text-red-700">Спочатку виберіть матч</p>
-    @endempty
     @foreach ($teamIdsInSeries as $idx => $teamId)
         @php
             $color = $teamColors[$teamId] ?? '#ccc';

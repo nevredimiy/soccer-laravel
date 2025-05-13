@@ -22,7 +22,7 @@
     </div>
     <div class="flex justify-center gap-2 mt-4">
         <button wire:click="addEvent" class="button button--black">Додати подію</button>
-        <button class="button button--black">Крок назад</button>
+        <button wire:click="deleteEvent" class="button button--black">Крок назад</button>
         <button class="button button--black">Завершити серію</button>
     </div>
 </div>
