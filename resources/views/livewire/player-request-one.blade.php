@@ -65,7 +65,7 @@
                         </div>
                     </div>
                 </article>
-                @if ($currentPlayer->id == $player['id'])
+                @if ($currentPlayer->id == $player['id'] && !$isSeriesClosed)
                 <div class="flex justify-center">
                     <button 
                         wire:click="deletePlayer"

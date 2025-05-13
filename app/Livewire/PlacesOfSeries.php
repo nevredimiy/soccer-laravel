@@ -10,7 +10,6 @@ use App\Models\User;
 use App\Models\Matche;
 use App\Models\Event;
 use App\Models\SeriesMeta;
-use App\Models\PlayerSeriesRegistration;
 use App\Services\SeriesTemplatesService;
 use Carbon\Carbon;
 use Livewire\Attributes\On;

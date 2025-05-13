@@ -3,10 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Team;
-use App\Models\TeamColor;
-use App\Models\PromoCode;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class TeamController extends Controller
 {
@@ -15,6 +12,12 @@ class TeamController extends Controller
     public function index()
     {
         return view('teams.index');
-    }   
+    }  
+    
+    public function show($id)
+    {
+        $team = Team::with(['color', 'players'])->find($id);
+        return view('teams.show', compact('team'));
+    }
     
 }

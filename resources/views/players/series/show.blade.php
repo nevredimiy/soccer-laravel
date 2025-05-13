@@ -19,7 +19,11 @@
                 @livewire('shedule-matches-tournament-one-day', ['event' => $event])
 
                 @if ($event->tournament->type == 'solo')
-                    @livewire('player-request-one', ['event' => $event, 'playerPrice' => $playerPrice])
+                    @livewire('player-request-one', [
+                        'event' => $event, 
+                        'playerPrice' => $playerPrice,
+                        'seriesMeta' => $seriesMeta,
+                        ])
                 @elseif ($event->tournament->type == 'solo_private')
                     @livewire('player-request-one-private', ['event' => $event, 'playerPrice' => $playerPrice])
                 @endif                   

@@ -9,12 +9,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class PlayerSeriesRegistration extends Model
 {
     protected $fillable = [
-        'event_id',
-        'team_id',
+        'series_meta_id',
         'player_id',
-        'player_number',
-        'series',
-        'round',
     ];
 
     public function player(): BelongsTo
@@ -22,13 +18,9 @@ class PlayerSeriesRegistration extends Model
         return $this->belongsTo(Player::class, 'player_id');
     }
 
-    public function team(): BelongsTo
-    {
-        return $this->belongsTo(Team::class, 'team_id');
-    }
 
-    public function event(): BelongsTo
+    public function seriesMeta(): BelongsTo
     {
-        return $this->belongsTo(Event::class, 'event_id');
+        return $this->belongsTo(SeriesMeta::class, 'series_meta_id');
     }
 }

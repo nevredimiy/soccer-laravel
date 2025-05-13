@@ -126,6 +126,7 @@ Route::get('/cities', [CityController::class, 'index'])->name('cities');
 Route::get('/tables', [TableController::class, 'index'])->name('tables');
 Route::get('/stadiums', [StadiumController::class, 'index'])->name('stadiums');
 Route::get('/teams', [TeamController::class, 'index'])->name('teams.index');
+Route::get('/teams/{id}', [TeamController::class, 'show'])->name('teams.show');
 Route::get('/no-access', function () {
     return view('no-access');
 })->name('no-access');
