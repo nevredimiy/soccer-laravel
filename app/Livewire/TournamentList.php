@@ -122,6 +122,8 @@ class TournamentList extends Component
 
     protected function getSeriesPlayers()
     {
+        $this->playersSeries = [];
+
         $seriesPlayers = SeriesPlayer::query()
             ->with('player')
             ->where('series_meta_id', $this->activeSeries)
@@ -132,6 +134,29 @@ class TournamentList extends Component
             $this->playersSeries[$seriesPlayer->team_id][$seriesPlayer->player_number] = $seriesPlayer->player;
         }
 
+    }
+
+    public function deletePlaceOfTeam($teamId, $playerid, $playerNumber)
+    {
+        SeriesPlayer::query()
+            ->where('team_id', $teamId)
+            ->where('player_id', $playerid)
+            ->where('player_number', $playerNumber)
+            ->delete();
+        PlayerTeam::query()
+            ->where('team_id', $teamId)
+            ->where('player_id', $playerid)
+            ->where('player_number', $playerNumber)
+            ->delete();
+        PlayerSeriesRegistration::create([
+            'series_meta_id' => $this->activeSeries,
+            'player_id' => $playerid,
+        ]);
+
+        $this->getPlayersRegistration($this->activeEvent);
+        $this->getSeriesPlayers();        
+        $this->selectedPlayer = null;
+        session()->flash('notice', 'Гравця видалено з команди і переведено у загальний кошик');
     }
 
 

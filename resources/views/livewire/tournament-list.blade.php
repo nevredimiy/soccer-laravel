@@ -63,17 +63,23 @@
         @if (session()->has('error'))
             <p class="text-red-500 text-center">{{session('error')}}</p>
         @endif
+         @if (session()->has('notice'))
+            <p class="text-yellow-700 text-center">{{session('notice')}}</p>
+        @endif
         @foreach ($teams as $team)
         <div style="--color: {{$team->color->color_picker}}" class="players-tournament__team">
 
             @for ($i=1; $i<=6; $i++)
 
                 @if(isset($playersSeries[$team->id][$i]))
-                    <div class="players-tournament__item">
+                    <div 
+                        wire:click="deletePlaceOfTeam({{$team->id}}, {{$playersSeries[$team->id][$i]->id}}, {{$i}})" 
+                        class="players-tournament__item"
+                    >
                         <article class="item-player item-player--stats">
-                            <a href="#" class="item-player__image-link">
+                            <div class="item-player__image-link">
                                 <img src="{{asset('storage/' . $playersSeries[$team->id][$i]->photo)}}" alt="Image" class="ibg">
-                            </a>
+                            </div>
                             <div class="item-player__name">
                                 <a href="#">{{$playersSeries[$team->id][$i]->full_name}}</a>
                             </div>

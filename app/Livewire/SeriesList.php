@@ -34,6 +34,7 @@ class SeriesList extends Component
         $this->series = SeriesMeta::query()
             ->whereIn('event_id', $eventIds)
             ->where('start_date', '>', $today)
+            ->where('status_registration', 'open')
             ->with(['stadium.location.district', 'teams.players', 'event.tournament', 'playerSeriesRegistration'])
             ->orderBy('start_date')
             ->get()
