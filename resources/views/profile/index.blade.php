@@ -97,6 +97,11 @@
                         
                     @endif
 
+                    @if ($user->role == 'admin')
+                        @livewire('tournament-list')                        
+                    @endif
+                    
+
 
                     <section class="profile__teams teams-profile">                        
                         <h2 class="teams-profile__title section-title section-title--margin">

@@ -2210,6 +2210,14 @@ body::after {
   counter-increment: position-counter;
   min-height: 193px;
 }
+.players-tournament__item.active{
+  border: 1px solid #000;
+  border-radius: 5px;
+  background-color: #faebd7;
+}
+.active .item-player.item-player--stats{
+  background-color: #faebd7;
+}
 .players-tournament__text {
   color: rgba(10,38,64,.5);
   text-align: center;
@@ -2459,8 +2467,8 @@ body::after {
   color: #9196ad;
   font-weight: 700;
   font-size: 1.25rem;
-  max-width: -webkit-min-content;
-  max-width: min-content;
+  /* max-width: -webkit-min-content;
+  max-width: min-content; */
   line-height: 1.4
 }
 .teams-profile__items {

@@ -33,17 +33,13 @@ class TournamentEvents extends Component
         $this->selectedLeague = session('current_league', 0);
         $this->activeEvent = session('current_event', 0);
 
-        $isEvent = Event::find($this->activeEvent);
-
-        if(!$isEvent){
+        if($this->activeEvent == 0){
             $firstEvent = Event::with(['tournament', 'seriesMeta'])->first();
             $this->activeEvent  = $firstEvent->id;
         }
 
         $this->selectEvent($this->activeEvent);
         $this->updateEvents();
-
-
     }
     
     #[On('city-selected')]
