@@ -9,14 +9,6 @@
 
 <livewire:dependent-dropdown />
 
-<div class="flex justify-center">
-    <form action="{{route('payment.create')}}" method="post">
-        @csrf
-        <input name="amount" type="number">
-        <button type="submit"> Pay </button>
-    </form>
-</div>
-
 <div class="page__container">
     <div class="page__wrapper">
         <div class="page__video video-section">
