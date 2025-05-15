@@ -123,7 +123,9 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
- 
+
+    'liqpay_public_key' => env('LIQPAY_PUBLIC_KEY'),
+    'liqpay_private_key' => env('LIQPAY_PRIVATE_KEY'), 
 
     
 ];
