@@ -48,7 +48,7 @@ class BalanceController extends Controller
             'updated_at' => now(),
         ]);
 
-        $liqpay = new LiqPay(env('LIQPAY_PUBLIC_KEY'), env('LIQPAY_PRIVATE_KEY'));
+        $liqpay = new LiqPay(config('app.liqpay_public_key'), config('app.liqpay_private_key'));
 
         $params = [
             'action'         => 'pay',
