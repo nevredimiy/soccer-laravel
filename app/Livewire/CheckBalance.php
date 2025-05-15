@@ -29,7 +29,7 @@ class CheckBalance extends Component
             return;
         }
 
-        $liqpay = new LiqPay(env('LIQPAY_PUBLIC_KEY'), env('LIQPAY_PRIVATE_KEY'));
+        $liqpay = new LiqPay(config('app.liqpay_public_key'), config('app.liqpay_private_key'));
         $response = $liqpay->api('request', [
             'action'   => 'status',
             'version'  => '3',
