@@ -23,4 +23,4 @@ yarn-error.log
 /docker
 compose.yaml
 public_html
-/config
+/config/*
