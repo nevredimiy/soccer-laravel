@@ -20,11 +20,10 @@ class BalanceController extends Controller
 
     public function showForm(Request $request)
     {
-        $amount = 0;
-        if($request->get('amount')){
-            $amount = $request->get('amount');
-        }
-        return view('balance.top-up', compact('amount'));
+        $amount = $request->get('amount', 0);
+        // Запоминаем URL страницы, с которой пришли:
+        $return_url = url()->previous(); 
+        return view('balance.top-up', compact('amount', 'return_url'));
     }
 
     public function processPayment(Request $request)
@@ -50,15 +49,19 @@ class BalanceController extends Controller
 
         $liqpay = new LiqPay(config('app.liqpay_public_key'), config('app.liqpay_private_key'));
 
+        $return_url = $request->input('return_url', route('profile'));
+        
+
         $params = [
             'action'         => 'pay',
             'amount'         => $amount,
             'currency'       => 'UAH',
             'description'    => 'Поповнення балансу',
-            'order_id'       => "balance_{$user->id}_" . time(),
+            'order_id'       => $orderId,
             'version'        => '3',
             'result_url'     => route('profile'), // Перенаправление после оплаты
             'server_url'     => route('balance.callback'), // Коллбэк от LiqPay
+            'result_url' => $return_url,
         ];
 
         $form = $liqpay->cnb_form($params);
@@ -73,6 +76,7 @@ class BalanceController extends Controller
         $data = json_decode(base64_decode($request->input('data')), true);
 
         if ($data['status'] === 'success' || $data['status'] === 'sandbox') {
+
             $orderIdParts = explode('_', $data['order_id']);
             $userId = $orderIdParts[1] ?? null;
 
@@ -83,46 +87,57 @@ class BalanceController extends Controller
                     Log::info("Баланс пользователя #{$user->id} пополнен на {$data['amount']} UAH.");
                 }
             }
+
+            $payment = \DB::table('payments')->where('order_id', $data['order_id'])->first();
+
+            if (!$payment) {
+                Log::warning("Платёж с order_id {$data['order_id']} не найден");
+                return response()->json(['message' => 'Платёж не найден'], 404);
+            }
+
+            \DB::table('payments')
+                ->where('order_id', $data['order_id'])
+                ->update(['status' => 'paid', 'updated_at' => now()]);
         }
         
         return response()->json(['message' => 'Payment processed']);
     }
 
-    // public function checkPayment(Request $request)
-    // {
-    //     $user = auth()->user();
-    //     if (!$user) {
-    //         return response()->json(['message' => 'Не авторизован'], 401);
-    //     }
+    public function checkPayment(Request $request)
+    {
+        $user = auth()->user();
+        if (!$user) {
+            return response()->json(['message' => 'Не авторизован'], 401);
+        }
 
-    //     $payment = Payment::where('user_id', $user->id)
-    //         ->where('status', 'pending')
-    //         ->latest()
-    //         ->first();
+        $payment = Payment::where('user_id', $user->id)
+            ->where('status', 'pending')
+            ->latest()
+            ->first();
     
-    //     if (!$payment) {
-    //         $this->statusMessage = 'Нет ожидаемых платежей';
-    //         return;
-    //     }
+        if (!$payment) {
+            $this->statusMessage = 'Нет ожидаемых платежей';
+            return;
+        }
     
-    //     $liqpay = new LiqPay(env('LIQPAY_PUBLIC_KEY'), env('LIQPAY_PRIVATE_KEY'));
-    //     $response = $liqpay->api('request', [
-    //         'action'   => 'status',
-    //         'version'  => '3',
-    //         'order_id' => $payment->order_id,
-    //     ]);
+        $liqpay = new LiqPay(env('LIQPAY_PUBLIC_KEY'), env('LIQPAY_PRIVATE_KEY'));
+        $response = $liqpay->api('request', [
+            'action'   => 'status',
+            'version'  => '3',
+            'order_id' => $payment->order_id,
+        ]);
   
-    //     if ($response->status === 'success') {
-    //         // Обновляем баланс и статус платежа
-    //         $user->increment('balance', $payment->amount);
-    //         $payment->update(['status' => 'paid']);
+        if ($response->status === 'success') {
+            // Обновляем баланс и статус платежа
+            $user->increment('balance', $payment->amount);
+            $payment->update(['status' => 'paid']);
     
-    //         session()->flash('message', 'Баланс успешно обновлён');
+            session()->flash('message', 'Баланс успешно обновлён');
             
-    //         return redirect(request()->header('Referer')); // Перезагрузка страницы
-    //     } else {
-    //         $this->statusMessage = 'Платёж не завершён: ' . $response->status;
-    //     }
-    // }
+            return redirect(request()->header('Referer')); // Перезагрузка страницы
+        } else {
+            $this->statusMessage = 'Платёж не завершён: ' . $response->status;
+        }
+    }
 
 }

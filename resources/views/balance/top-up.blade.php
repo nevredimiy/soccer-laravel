@@ -13,6 +13,7 @@
         <h2 class="title">Поповнення балансу</h2>
         <form action="{{ route('balance.process') }}" method="POST">
             @csrf
+            <input type="hidden" name="return_url" value="{{ $return_url }}">
             <div class="account__body">
                 <div class="account__field">
                     <label class="account__label" for="amount">Введіть суму:</label>

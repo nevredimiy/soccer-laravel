@@ -20,7 +20,6 @@ use App\Http\Controllers\TableController;
 use App\Http\Controllers\StadiumController;
 use App\Http\Controllers\PlayerRequestController;
 use App\Http\Controllers\PlayerSeriesController;
-use App\Http\Controllers\TeamEventController;
 use App\Http\Controllers\TeamSeriesController;
 use App\Http\Controllers\TeamRequestController;
 use App\Http\Controllers\TournamentController;
@@ -90,9 +89,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/players/events/{id}', [PlayerRequestController::class, 'show'])->name('players.events.show');
     Route::post('/players/events/{id}/access', [PlayerRequestController::class, 'checkAccessCode'])->name('players.events.access');
     
-    
-    // Route::get('/teams/events', [TeamEventController::class, 'index'])->name('teams.events');
-    // Route::get('/teams/events/{id}', [TeamEventController::class, 'show'])->name('teams.events.show');
 
     Route::get('/teams/series', [TeamSeriesController::class, 'index'])->name('teams.series');
     Route::get('/teams/series/{id}', [TeamSeriesController::class, 'show'])->name('teams.series.show');

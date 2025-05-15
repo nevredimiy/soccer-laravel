@@ -39,8 +39,6 @@ class PlayerRequestOne extends Component
             ->exists();
 
         $this->loadPlayers();
-        
-
     }
 
     public function loadPlayers()
