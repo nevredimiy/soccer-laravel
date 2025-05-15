@@ -40,6 +40,7 @@
             
                         <!-- Кнопка проверки баланса через Livewire -->
                         <livewire:check-balance />
+
                     </div>
             
                     <a href="{{ route('profile') }}" class="header__link button button--transparent _icon-user-circle">

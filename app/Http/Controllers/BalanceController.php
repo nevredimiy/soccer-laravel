@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Services\BalanceService;
 use App\Models\User;
 use App\Models\Payment;
 use LiqPay;
@@ -11,12 +10,6 @@ use Illuminate\Support\Facades\Log;
 
 class BalanceController extends Controller
 {
-    protected $balanceService;
-
-    public function __construct(BalanceService $balanceService)
-    {
-        $this->balanceService = $balanceService;
-    }
 
     public function showForm(Request $request)
     {
@@ -59,7 +52,6 @@ class BalanceController extends Controller
             'description'    => 'Поповнення балансу',
             'order_id'       => $orderId,
             'version'        => '3',
-            'result_url'     => route('profile'), // Перенаправление после оплаты
             'server_url'     => route('balance.callback'), // Коллбэк от LiqPay
             'result_url' => $return_url,
         ];
@@ -72,6 +64,9 @@ class BalanceController extends Controller
     public function liqpayCallback(Request $request)
     {
         Log::info('LiqPay callback received', $request->all());
+        Log::info('LiqPay callback triggered');
+        Log::info('Request headers:', $request->headers->all());
+        Log::info('Request input:', $request->all());
 
         $data = json_decode(base64_decode($request->input('data')), true);
 
@@ -79,6 +74,10 @@ class BalanceController extends Controller
 
             $orderIdParts = explode('_', $data['order_id']);
             $userId = $orderIdParts[1] ?? null;
+
+            Log::info("номер заказа от ПриватБ #{$data['order_id']}");
+            Log::info("Распарсиный номер заказа #{$orderIdParts}");
+            Log::info("Вытащеннвый юзер айди #{$userId}");
 
             if ($userId) {
                 $user = User::find($userId);

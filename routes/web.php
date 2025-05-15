@@ -134,3 +134,6 @@ Route::middleware(['auth', 'role:manager,admin'])->group(function () {
 
 
 
+Route::post('/payment/create', [PaymentController::class, 'createPayment'])->name('payment.create');
+Route::post('/payment/ipn', [PaymentController::class, 'ipn'])->name('payment.ipn');
+Route::post('/payment/callback', [PaymentController::class, 'callback'])->name('payment.callback');

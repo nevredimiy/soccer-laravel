@@ -1,34 +1,33 @@
 <?php
 
 namespace App\Services;
+use LiqPay;
 
 class LiqPayService
 {
-    private $public_key;
-    private $private_key;
-
+    protected $liqPay;
     public function __construct()
     {
-        $this->public_key = env('LIQPAY_PUBLIC_KEY');
-        $this->private_key = env('LIQPAY_PRIVATE_KEY');
+        // Передайте ваши ключи сюда или через параметры конструктора
+        $this->liqPay = new LiqPay(config('app.liqpay_public_key'), config('app.liqpay_private_key'));
     }
 
-    public function getForm($amount, $order_id, $description, $result_url, $server_url)
+    /**
+     * Генерация формы оплаты
+     */
+    public function generatePaymentForm(array $params)
     {
-        $liqpay = new \LiqPay($this->public_key, $this->private_key);
+        return $this->liqPay->cnb_form($params);
+    }
 
-        $params = [
-            'action'        => 'pay',
-            'amount'        => $amount,
-            'currency'      => 'UAH',
-            'description'   => $description,
-            'order_id'      => $order_id,
-            'version'       => '3',
-            'sandbox'       => env('LIQPAY_SANDBOX', 1),
-            'result_url'    => $result_url,
-            'server_url'    => $server_url,
-        ];
-
-        return $liqpay->cnb_form($params);
+    /**
+     * Обработка проверки подписи и декодирование данных
+     */
+    public function decodeResponse($data, $signature)
+    {
+        if ($this->liqPay->str_to_sign(config('liqpay.private_key') . $data . config('liqpay.private_key')) !== $signature) {
+            throw new \Exception('Invalid signature');
+        }
+        return $this->liqPay->decode_params($data);
     }
 }
