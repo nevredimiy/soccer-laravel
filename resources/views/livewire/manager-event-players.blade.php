@@ -4,7 +4,7 @@
             $color = $teamColors[$teamId] ?? '#ccc';
             // Получаем массив игроков по номерам
             $playersByNumber = $playersByNumberByTeamId[$teamId] ?? [];
-            $disabledClass = $teamsByMatch && !in_array($teamId, $teamsByMatch) ? ' opacity-50' : '';
+            $disabledClass = $teamsByMatch && !in_array($teamId, $teamsByMatch) ? ' opacity-40' : '';
         @endphp
         
         <div data-team-id="{{$teamId}}" class="flex gap-2{{$disabledClass}}">

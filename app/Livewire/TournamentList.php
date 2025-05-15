@@ -65,8 +65,15 @@ class TournamentList extends Component
         $this->getPlayersRegistration($event);
 
         $this->teams = Team::with(['color', 'players'])->where('event_id', $eventId)->get();
+        $teamIds = $this->teams->pluck('id')->toArray();
         
-        if(!empty($this->playersRegistraion)){
+
+        $playersTeams = PlayerTeam::whereIn('team_id', $teamIds)->get();
+
+
+        
+        
+        if(!empty($this->playersRegistraion || $playersTeams->count()>0)){
             $this->isPanel = true;
         }
     }

@@ -1,11 +1,9 @@
 <div>
-    @if (session()->has('error'))
-        <p class="text-red-500 text-center">{{session('error')}}</p>
-    @endif
+   
     <div class="flex justify-center gap-4 mt-4">
    
         @foreach(['football' => 'Гол', 'boots-icon' => 'Асист', 'red-football' => 'Автогол', 'yellow-card-icon' => 'ЖК', 'red-card-icon' => 'ЧК'] as $key => $label)
-            <label wire:click="selecteEventType('{{ $key }}')" wire:key="{{ $key }}">
+            <label wire:key="{{$key}}" wire:click="selecteEventType('{{ $key }}')" wire:key="{{ $key }}">
                 <div class="
                     bg-orange-100 
                     flex flex-col justify-end items-center 
@@ -20,9 +18,7 @@
         @endforeach
    
     </div>
-    <div class="flex justify-center gap-2 mt-4">
-        <button wire:click="addEvent" class="button button--black">Додати подію</button>
-        <button wire:click="deleteEvent" class="button button--black">Крок назад</button>
-        <button class="button button--black">Завершити серію</button>
-    </div>
+
+    @livewire('manager-event-actions')
+    
 </div>

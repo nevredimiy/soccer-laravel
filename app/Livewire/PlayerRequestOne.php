@@ -57,22 +57,6 @@ class PlayerRequestOne extends Component
             $this->players [] = $item['player'];
         }
 
-
-        // if($this->isSeriesClosed){
-        //     $teams = $this->event->teams()->with('players')->get();
-        //     foreach($teams as $team){
-        //         $this->players = array_merge($this->players, $team->players->toArray());
-        //     }
-
-        // } 
-
-        if(count($this->players) >= 18){
-            $this->closeSeries();
-            $this->debitFromBalance();
-        }else {
-            $this->openSeries();
-        }   
-
     }
 
     public function BookingPlace()
@@ -95,6 +79,13 @@ class PlayerRequestOne extends Component
 
         // обновляем компонент
         $this->loadPlayers();
+
+
+        // Закрываем серию и снимаем деньги.
+        if(count($this->players) >= 18){
+            $this->closeSeries();
+            $this->debitFromBalance();
+        }
     }
 
     // Алгоритм добавления игрока в команду
@@ -106,33 +97,6 @@ class PlayerRequestOne extends Component
             'player_id' => $playerId
         ]);
 
-        // // Отфильтруем команды, где меньше 6 игроков
-        // $teams = $this->event->teams()
-        //     ->withCount('players')
-        //     ->having('players_count', '<', 6)
-        //     ->get();
-
-        
-        // // Если нет доступных команд, то закрываем регистрацию
-        // if ($teams->isEmpty()) {
-        //     $this->isSeriesClosed = true;
-        //     session()->flash('error', 'Всі команди заповнені!');
-        //     $this->closeSeries();
-        //     return;
-        // }
-
-        // // Выбираем первую команду из доступных
-        // $team = $teams->first();
-        // $teamId = $team->id;
-        // $playerNumber = $team->players()->count() + 1;
-
-        // // записываем игрока в команду
-        // PlayerTeam::query()->create([
-        //     'player_id' => $playerId,
-        //     'team_id' => $teamId,
-        //     'status' => 'main',
-        //     'player_number' => $playerNumber,
-        // ]);
     }
 
     public function deletePlayer()
@@ -143,6 +107,10 @@ class PlayerRequestOne extends Component
         session()->flash('success', 'Гравця успішно видалено зі складу.');
         // обновляем компонент
         $this->loadPlayers();
+
+        if($this->isSeriesClosed && count($this->players) < 18){
+            $this->openSeries();
+        }
     }
 
 

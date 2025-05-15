@@ -1,8 +1,8 @@
-<section class="profile__teams teams-profile">                        
+<section class="profile__teams teams-profile hero-tournament__info">                        
     <h2 class="teams-profile__title section-title section-title--margin">
         УПРАВЛІННЯ Турнирами
     </h2>   
-    <div class="flex gap-2 ">
+    <div class="flex gap-2">
         @if (empty($events))
             <div class="teams-profile__none">
                 На даний момент немає турнірів якими можна управляти
@@ -10,7 +10,7 @@
         @else
         
             @foreach ($events as $event)
-            <div wire:key="{{$event->id}}" class="">
+            <div wire:key="{{$event->id}}" class=" border rounded p-4">
                 <button wire:click="selectedEvent({{$event->id}})" class="button @if ($activeEventId == $event->id)
                     button--blue
                 @endif">
@@ -28,6 +28,8 @@
         @endif
     </div>
     @if ($isPanel)
+
+    @if (!empty($playersRegistraion))
     <div class="players-tournament__items">
         @foreach ($playersRegistraion as $player)
         <div class="players-tournament__item {{ $player->id == $selectedPlayer ? 'active' : '' }}">
@@ -52,12 +54,10 @@
                     </div>
                 </div>
             </article>
-        </div>
-           
-            
+        </div>            
         @endforeach
-
-    </div>
+    </div>           
+    @endif
 
     <div class="players-tournament__items">
         @if (session()->has('error'))
@@ -86,7 +86,7 @@
                            <div class="item-player__rating rating">
                                 <div class="rating__items">
                                     @for ($j=0; $j<10; $j++)
-                                    <label class="rating__item @if($j < $player->rating)
+                                    <label class="rating__item @if($j < $playersSeries[$team->id][$i]->rating)
                                         rating__item--active
                                     @endif">					
                                         <svg width="18" height="19" viewBox="0 0 18 19" fill="none" xmlns="http://www.w3.org/2000/svg">

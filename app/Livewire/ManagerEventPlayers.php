@@ -22,6 +22,10 @@ class ManagerEventPlayers extends Component
         $this->playersByNumberByTeamId = $playersByNumberByTeamId;
         $this->teamColors = $teamColors;
         $this->templateMatches = $templateMatches;
+
+        
+        $this->teamsByMatch = ['not empty']; // когда матч еще не выбран, то все игроки не активны
+        
       
     }
 
@@ -35,6 +39,9 @@ class ManagerEventPlayers extends Component
         foreach($templateMatch as $v){
             $this->teamsByMatch[] = $this->teamIdsInSeries[$v];
         }
+
+         $this->selectedPlayerId = null;
+         session()->forget('selected-player');
     }
 
     public function selectedPlayer($seriesPlayer, $teamId)
