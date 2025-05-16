@@ -8,6 +8,13 @@ use App\Models\MatcheEvent;
 class ManagerEventActions extends Component
 {
 
+    public $seriesId = null;
+
+    public function mount($id)
+    {
+        $this->seriesId =  $id;
+    }
+
      public function addEvent()
     {
         

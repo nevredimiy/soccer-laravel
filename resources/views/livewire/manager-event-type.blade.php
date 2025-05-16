@@ -19,6 +19,5 @@
    
     </div>
 
-    @livewire('manager-event-actions')
-    
+   
 </div>

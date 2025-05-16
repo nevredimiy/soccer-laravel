@@ -66,4 +66,47 @@ class ManagerSeriesController extends Controller
             'seriesMeta'
         ));
     }
+
+    public function vote($id)
+    {
+        // Получаем серию по ID
+        $series = SeriesMeta::with([
+                    'teams.players', 
+                    'teams.color', 
+                    'seriesPlayers.player', 
+                    'event.tournament'
+                ])
+                ->findOrFail($id);
+
+        $playersTeam = [];
+        foreach($series->seriesPlayers as $playerSR){
+            $playersTeam[$playerSR->team_id][$playerSR->player_number] = $playerSR->player;
+        }
+
+        // сортируем игроков по их номерам
+        foreach ($playersTeam as &$inner) {
+            ksort($inner);
+        }
+        unset($inner);
+
+        // Передаём серию в представление
+        return view('manager.series.vote', [
+            'series' => $series,
+            'id' => $id,
+            'playersTeam' => $playersTeam
+        ]);
+    }
+
+    public function submitVote(Request $request, $id)
+    {
+        // Обработка голоса
+        $voteOption = $request->input('vote_option');
+        
+        // Логика сохранения голоса, например, в базу
+        
+        // Перенаправление с сообщением
+        return redirect()->route('manager.series.show', $id)
+            ->with('success', 'Ваш голос учтён!');
+    }
+
 }

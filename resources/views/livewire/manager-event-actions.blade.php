@@ -7,7 +7,7 @@
         <button wire:click="deleteEvent" class="button button--black">Крок назад</button>
         <button class="button button--black">Завершити серію</button>
         
-        <button class="button button--red outline outline-offset-2">Голосування</button>
+        <a href="{{route('manager.series.vote', $seriesId)}}" class="button button--red outline outline-offset-2">Голосування</a>
         
     </div>
  </div>

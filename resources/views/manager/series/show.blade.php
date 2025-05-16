@@ -7,6 +7,7 @@
 </div>
 
 @livewire('manager-event-type')
+@livewire('manager-event-actions', ['id' => $id])
 
 @livewire('manager-event-players', [
         'teamIdsInSeries' => $teamIdsInSeries,

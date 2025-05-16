@@ -130,5 +130,6 @@ Route::get('/no-access', function () {
 Route::middleware(['auth', 'role:manager,admin'])->group(function () {
     Route::get('/manager/series', [ManagerSeriesController::class, 'index'])->name('manager.series');
     Route::get('/manager/series/{id}', [ManagerSeriesController::class, 'show'])->name('manager.series.show');
+    Route::get('/manager/series/{id}/vote', [ManagerSeriesController::class, 'vote'])->name('manager.series.vote');
 });
 
