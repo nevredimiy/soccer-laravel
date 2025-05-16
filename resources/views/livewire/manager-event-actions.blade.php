@@ -6,8 +6,10 @@
         <button wire:click="addEvent" class="button button--black">Додати подію</button>
         <button wire:click="deleteEvent" class="button button--black">Крок назад</button>
         <button class="button button--black">Завершити серію</button>
-        
-        <a href="{{route('manager.series.vote', $seriesId)}}" class="button button--red outline outline-offset-2">Голосування</a>
+
+        @if ($isActiveVoteButton)
+            <a href="{{route('manager.series.vote', $seriesId)}}" class="button button--red outline outline-offset-2">Голосування</a>            
+        @endif
         
     </div>
  </div>

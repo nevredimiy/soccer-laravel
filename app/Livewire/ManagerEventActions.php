@@ -4,11 +4,13 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\MatcheEvent;
+use Livewire\Attributes\On; 
 
 class ManagerEventActions extends Component
 {
 
     public $seriesId = null;
+    public $isActiveVoteButton = false;
 
     public function mount($id)
     {
@@ -68,7 +70,15 @@ class ManagerEventActions extends Component
 
         $this->dispatch('add-event');
 
+    }
 
+    #[On('selected-match')]
+    public function selectMatch($matchIteration)
+    {
+        dump($matchIteration);
+        if($matchIteration > 9){
+            $this->isActiveVoteButton = true;
+        }
     }
 
 
