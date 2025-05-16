@@ -15,21 +15,4 @@
         ]
     )
 
-    @livewire('manager-vote-best-players',
-        [
-            'series' => $series,
-            'playersTeam' => $playersTeam
-        ]
-    )
-
-     @livewire('manager-vote-worst-players',
-        [
-            'series' => $series,
-            'playersTeam' => $playersTeam
-        ]
-    )
-
-    <button class="button button--black">Вибір зроблено</button>
-   
-
 </div>
