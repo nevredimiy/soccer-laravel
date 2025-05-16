@@ -35,7 +35,7 @@ class SeriesList extends Component
             ->whereIn('event_id', $eventIds)
             ->where('start_date', '>', $today)
             ->where('status_registration', 'open')
-            ->with(['stadium.location.district', 'teams.players', 'event.tournament', 'playerSeriesRegistration'])
+            ->with(['stadium.location.district', 'teams.players', 'event.tournament', 'playerSeriesRegistration.player'])
             ->orderBy('start_date')
             ->get()
             ->groupBy('event_id')    // группируем по event_id
@@ -47,6 +47,7 @@ class SeriesList extends Component
             
         $this->series = $this->calculateStats($this->series);
 
+
     }
 
     protected function calculateStats($seriesCollection)
@@ -55,17 +56,12 @@ class SeriesList extends Component
             $series->teams_count = $series->teams->count();
             $series->players_count += $series->playerSeriesRegistration->count();
 
-
             $totalRating = 0;
             $totalPlayers = 0;
 
-
-            foreach ($series->teams as $team) {
-                $players = $team->players;
-                $totalRating += $players->sum('rating');
-                $totalPlayers += $players->count();
-                // $series->players_count += $team->players->count();
-                
+            foreach($series->playerSeriesRegistration as $playerSR){
+                $totalRating += $playerSR->player->rating;
+                $totalPlayers += 1;
             }
 
             $series->average_player_rating = $totalPlayers > 0

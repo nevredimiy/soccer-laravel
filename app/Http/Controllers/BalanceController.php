@@ -5,11 +5,18 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Payment;
-use LiqPay;
 use Illuminate\Support\Facades\Log;
+use App\Services\LiqPayService;
 
 class BalanceController extends Controller
 {
+    protected $liqpay;
+
+    // Инжектируйте сервис в конструкторе (если используете)
+    public function __construct(LiqPayService $liqpay)
+    {
+        $this->liqpay = $liqpay;
+    }
 
     public function showForm(Request $request)
     {
@@ -40,24 +47,23 @@ class BalanceController extends Controller
             'updated_at' => now(),
         ]);
 
-        $liqpay = new LiqPay(config('app.liqpay_public_key'), config('app.liqpay_private_key'));
+        // $liqpay = new \LiqPay(config('app.liqpay_public_key'), config('app.liqpay_private_key'));
 
-        $return_url = $request->input('return_url', route('profile'));
-        
+        $return_url = $request->input('return_url', route('profile'));        
 
         $params = [
-            'action'         => 'pay',
-            'amount'         => $amount,
-            'currency'       => 'UAH',
-            'description'    => 'Поповнення балансу',
-            'order_id'       => $orderId,
-            'version'        => '3',
-            'server_url'     => route('balance.callback'), // Коллбэк от LiqPay
-            'result_url' => $return_url,
+            'action'        => 'pay',
+            'amount'        => $amount,
+            'currency'      => 'UAH',
+            'description'   => 'Поповнення балансу',
+            'order_id'      => $orderId,
+            'version'       => '3',
+            'server_url'    => route('balance.callback'), 
+            'result_url'    => $return_url,
         ];
 
-        $form = $liqpay->cnb_form($params);
-
+        // $form = $liqpay->cnb_form($params);
+        $form = $this->liqpay->generatePaymentForm($params);
         return view('payment.pay', compact('form'));
     }
 
@@ -69,37 +75,66 @@ class BalanceController extends Controller
         Log::info('Request input:', $request->all());
 
         $data = json_decode(base64_decode($request->input('data')), true);
+        $signature = $request->input('signature');
 
-        if ($data['status'] === 'success' || $data['status'] === 'sandbox') {
+        try {
+            // Раскодируем и проверяем подпись
+            $decoded = $this->liqpay->decodeResponse($data, $signature);
 
-            $orderIdParts = explode('_', $data['order_id']);
-            $userId = $orderIdParts[1] ?? null;
+            // Проверяем статус и обновляем платеж
+            if ($decoded['status'] === 'success') {
+                $payment = Payment::where('order_id', $decoded['order_id'])->first();
 
-            Log::info("номер заказа от ПриватБ #{$data['order_id']}");
-            Log::info("Распарсиный номер заказа #{$orderIdParts}");
-            Log::info("Вытащеннвый юзер айди #{$userId}");
+                if ($payment && $payment->status !== 'paid') {
+                    $payment->status = 'paid';
+                    $payment->save();
 
-            if ($userId) {
-                $user = User::find($userId);
-                if ($user) {
-                    $user->increment('balance', $data['amount']);
-                    Log::info("Баланс пользователя #{$user->id} пополнен на {$data['amount']} UAH.");
+                    // Пополнение баланса пользователя
+                    $user = User::find($payment->user_id);
+                    if ($user) {
+                        $user->balance += $payment->amount;
+                        $user->save();
+                    }
                 }
+
+                return response()->json(['status' => 'success']);
             }
-
-            $payment = \DB::table('payments')->where('order_id', $data['order_id'])->first();
-
-            if (!$payment) {
-                Log::warning("Платёж с order_id {$data['order_id']} не найден");
-                return response()->json(['message' => 'Платёж не найден'], 404);
-            }
-
-            \DB::table('payments')
-                ->where('order_id', $data['order_id'])
-                ->update(['status' => 'paid', 'updated_at' => now()]);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
         }
+
+        return response()->json(['status' => 'error'], 400);
+
+        // if ($data['status'] === 'success' || $data['status'] === 'sandbox') {
+
+        //     $orderIdParts = explode('_', $data['order_id']);
+        //     $userId = $orderIdParts[1] ?? null;
+
+        //     Log::info("номер заказа от ПриватБ #{$data['order_id']}");
+        //     Log::info("Распарсиный номер заказа #{$orderIdParts}");
+        //     Log::info("Вытащеннвый юзер айди #{$userId}");
+
+        //     if ($userId) {
+        //         $user = User::find($userId);
+        //         if ($user) {
+        //             $user->increment('balance', $data['amount']);
+        //             Log::info("Баланс пользователя #{$user->id} пополнен на {$data['amount']} UAH.");
+        //         }
+        //     }
+
+        //     $payment = \DB::table('payments')->where('order_id', $data['order_id'])->first();
+
+        //     if (!$payment) {
+        //         Log::warning("Платёж с order_id {$data['order_id']} не найден");
+        //         return response()->json(['message' => 'Платёж не найден'], 404);
+        //     }
+
+        //     \DB::table('payments')
+        //         ->where('order_id', $data['order_id'])
+        //         ->update(['status' => 'paid', 'updated_at' => now()]);
+        // }
         
-        return response()->json(['message' => 'Payment processed']);
+        // return response()->json(['message' => 'Payment processed']);
     }
 
     public function checkPayment(Request $request)

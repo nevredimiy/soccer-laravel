@@ -132,8 +132,3 @@ Route::middleware(['auth', 'role:manager,admin'])->group(function () {
     Route::get('/manager/series/{id}', [ManagerSeriesController::class, 'show'])->name('manager.series.show');
 });
 
-
-
-Route::post('/payment/create', [PaymentController::class, 'createPayment'])->name('payment.create');
-Route::post('/payment/ipn', [PaymentController::class, 'ipn'])->name('payment.ipn');
-Route::post('/payment/callback', [PaymentController::class, 'callback'])->name('payment.callback');
