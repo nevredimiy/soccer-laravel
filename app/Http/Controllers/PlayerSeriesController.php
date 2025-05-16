@@ -28,7 +28,7 @@ class PlayerSeriesController extends Controller
         $userId = auth()->id();
         $player = Player::where('user_id', $userId)->first();
 
-        $seriesMeta = SeriesMeta::with(['stadium.location.district.city', 'teams.players'])
+        $seriesMeta = SeriesMeta::with(['stadium.location.district.city', 'teams.players', 'playerSeriesRegistration.player'])
            ->where('id', $id)
            ->firstOrFail();
         $eventId = SeriesMeta::where('id', $id)->value('event_id');

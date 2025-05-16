@@ -48,6 +48,7 @@ use Illuminate\Support\Facades\Log;
                 $data['series_start_all'] = $meta->start_date;
                 $data['series_end_all'] = $meta->end_date;
                 $data['series_price_all'] = $meta->price;
+                $data['player_price'] = round($meta->price / 18);
                 $data['stadium_id'] = $meta->stadium_id;
                 $data['league_id'] = $meta->league_id;
                 $data['size_field'] = $meta->size_field;
