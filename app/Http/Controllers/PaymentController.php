@@ -80,8 +80,6 @@ class PaymentController extends Controller
         return view('payment.form', ['form' => $form]);
     }
 
-   
-
     // Метод для фронтенд-уведомления (от пользователя или успех после оплаты)
     public function callback(Request $request)
     {
@@ -149,4 +147,7 @@ class PaymentController extends Controller
 
         return response('OK', 200);
     }
+
+   
+
 }

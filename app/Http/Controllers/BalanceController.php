@@ -47,6 +47,10 @@ class BalanceController extends Controller
             'updated_at' => now(),
         ]);
 
+        // // Установим сессионный флаг (если нужно для интерфейса)
+        // session()->put('awaiting_payment', true);
+
+     
         // $liqpay = new \LiqPay(config('app.liqpay_public_key'), config('app.liqpay_private_key'));
 
         $return_url = $request->input('return_url', route('profile'));        

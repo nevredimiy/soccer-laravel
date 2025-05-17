@@ -74,6 +74,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/balance/callback', [BalanceController::class, 'liqpayCallback'])->name('balance.callback');
     Route::post('/balance/check-payment', [BalanceController::class, 'checkPayment'])->name('balance.check');
 
+    Route::post('/payment/redirect', [BalanceController::class, 'redirectToLiqpay'])->name('liqpay.redirect');
+
     Route::post('/liqpay/pay', [LiqPayController::class, 'pay'])->name('liqpay.pay');
     Route::get('/liqpay/result', [LiqPayController::class, 'result'])->name('liqpay.result');
     Route::post('/liqpay/callback', [LiqPayController::class, 'callback'])->name('liqpay.callback');

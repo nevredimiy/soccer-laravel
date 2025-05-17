@@ -52,14 +52,16 @@ class PlacesOfSeries extends Component
 
         $templateSeries = $service->getTemplateShedule($event->tournament->count_teams);
         $teams = Team::with('color')->where('event_id', $this->team->event->id)->get()->toArray();
-
-        foreach($templateSeries[$this->seriesMeta->round-1][$this->seriesMeta->series-1] as $key => $teamIndex){
-            if(isset($teams[$teamIndex])){
-                $this->seriesTeams[$key]['name'] = $teams[$teamIndex]['name'];
-                $this->seriesTeams[$key]['classColor'] = $service->getColorClass($teams[$teamIndex]['color']['name']);
-            }else {
-                $this->seriesTeams[$key]['name'] = 'Очікуємо';
-                $this->seriesTeams[$key]['classColor'] = 'default-bg';
+    
+        if($this->seriesMeta){
+            foreach($templateSeries[$this->seriesMeta->round-1][$this->seriesMeta->series-1] as $key => $teamIndex){
+                if(isset($teams[$teamIndex])){
+                    $this->seriesTeams[$key]['name'] = $teams[$teamIndex]['name'];
+                    $this->seriesTeams[$key]['classColor'] = $service->getColorClass($teams[$teamIndex]['color']['name']);
+                }else {
+                    $this->seriesTeams[$key]['name'] = 'Очікуємо';
+                    $this->seriesTeams[$key]['classColor'] = 'default-bg';
+                }
             }
         }
                 
@@ -83,6 +85,8 @@ class PlacesOfSeries extends Component
 
     public function dropRegPlayer($player_id)
     {
+        if (!$this->team || !$this->seriesMeta) return;
+
         SeriesPlayer::where('player_id', $player_id)
             ->where('team_id', $this->team->id)
             ->where('series_meta_id', $this->seriesMeta->id)
@@ -93,6 +97,8 @@ class PlacesOfSeries extends Component
     #[On('togglePlayerStatus')]
     public function updatePlayerStatus($playerStatus)
     {
+        if (!$this->team) return;
+
         if ($playerStatus == 'reserve') {
             $this->isPlayerReserve = true;
         } else {
@@ -119,8 +125,33 @@ class PlacesOfSeries extends Component
         $this->showModal = false;
     }
 
+    protected function playerIsReserve(): bool
+    {
+        return PlayerTeam::where('player_id', $this->playerId)
+            ->where('team_id', $this->team->id)
+            ->value('status') === 'reserve';
+    }
+
+    protected function hasEnoughBalance($price): bool
+    {
+        if (!$this->team || !$this->team->event || !$this->team->event->tournament) return false;
+        
+        $balance = Auth::user()->balance;
+
+        $required = $this->team->event->tournament->team_creator === 'admin'
+            ? ceil($price / 18)
+            : ceil($price / 6);
+
+        $this->minBalance = $required;
+        $this->desiredBalance = $required - $balance;
+
+        return $balance >= $required;
+    }
+
     public function takePlace($playerNumber = 0)
     {
+         if (!$this->team || !$this->seriesMeta) return;
+
         $eventId = $this->team->event->id;
         $teamId = $this->team->id;
         $playerId = $this->playerId;
@@ -128,27 +159,14 @@ class PlacesOfSeries extends Component
         $event = Event::with('tournament')->find($eventId);
 
         // 1. Проверка: резервный игрок
-        $status = PlayerTeam::where('player_id', $playerId)
-            ->where('team_id', $teamId)
-            ->value('status');
+        $status = $this->playerIsReserve();
 
         if ($status === 'reserve') {
             return redirect()->to('/profile');
         }
 
         // 2. Проверка: баланс
-        $balance = User::find($this->userId)?->balance ?? 0;
-
-        $price = $this->seriesMeta->price;
-
-        if($event->tournament->team_creator == 'admin'){
-            $this->minBalance = ceil($price / 18); // 18 это количество игроков в турнире. По 6 в команде.
-        }else {
-            $this->minBalance = ceil($price / 6); // минимальное количество в команде.
-        }
-        $this->desiredBalance = $this->minBalance - $balance;
-
-        if ($balance < $this->minBalance) {
+        if ($this->hasEnoughBalance($this->seriesMeta->price)) {
             $this->showModal = true;
             return;
         }
@@ -177,13 +195,17 @@ class PlacesOfSeries extends Component
 
     protected function getPlayerSeries()
     {
+
+         if (!$this->team || !$this->seriesMeta) return;
+        
         $this->regPlayers = SeriesPlayer::with('player')
             ->where('series_meta_id', $this->seriesMeta->id)
             ->where('team_id', $this->team->id)
             ->get(); 
+    
             
-        // Проверка на Закрывать заявку или нет
-        if($this->statusRegistration == 'open'){
+        // Проверка - Закрывать заявку или нет
+        if($this->statusRegistration == 'open' &&  $this->regPlayers){
             $maxPlayers = $this->team->max_players;
             
             if($maxPlayers <= $this->regPlayers->count())
@@ -196,32 +218,36 @@ class PlacesOfSeries extends Component
 
     public function closeRegistrations()
     {
-        //
+
+        if (!$this->team || !$this->seriesMeta) return;
+        
         $this->seriesMeta->update(['status_registration' => 'closed']);
         $this->statusRegistration = 'closed';
 
         // списание баланса
         $seriesPlayers = SeriesPlayer::query()
-            ->where('series_meta_id', '=', $this->SeriesMeta->id)
+            ->where('series_meta_id', '=', $this->seriesMeta->id)
             ->where('team_id', '=', $this->team->id)
             ->get();
         
         $seriesPrice = SeriesMeta::query()
             ->where('event_id', '=', $this->team->event->id)
-            ->where('series', '=',  $this->matche->series)
+            ->where('series', '=',  $this->seriesMeta->series)
             ->value('price');
         
         $writeOffAmount = round($seriesPrice / $seriesPlayers->count());
         $balance = 0;
 
         foreach($seriesPlayers as $player){
-            $balance = User::query()
-                ->where('id', $player->player->user_id)
-                ->value('balance');
+            // $balance = User::query()
+            //     ->where('id', $player->player->user_id)
+            //     ->value('balance');
 
-            User::query()
-                ->where('id', $player->player->user_id)
-                ->update(['balance' => $balance - $writeOffAmount]);
+            // User::query()
+            //     ->where('id', $player->player->user_id)
+            //     ->update(['balance' => $balance - $writeOffAmount]);
+            $user = User::find($player->player->user_id);
+            $user->decrement('balance', $writeOffAmount);
         }
         
     }

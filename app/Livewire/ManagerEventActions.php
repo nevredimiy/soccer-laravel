@@ -75,7 +75,7 @@ class ManagerEventActions extends Component
     #[On('selected-match')]
     public function selectMatch($matchIteration)
     {
-        dump($matchIteration);
+
         if($matchIteration > 9){
             $this->isActiveVoteButton = true;
         }

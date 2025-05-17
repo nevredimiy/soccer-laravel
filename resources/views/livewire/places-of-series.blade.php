@@ -1,13 +1,11 @@
-<section class="team__latest-series latest-series">
-
-   
+<section class="team__latest-series latest-series">   
    
     <h2 class="latest-series__title section-title section-title--margin">
         ЗАЯВКА НА НАЙБЛИЖЧУ СЕРІЮ
     </h2>
 
     @if (empty($seriesMeta))
-        <h3>Немає серій у цієї команди</h3>
+        <h3 class="text-center">Немає серій у цієї команди</h3>
     @else
     @php
         $formateDate = \Carbon\Carbon::parse($seriesMeta->start_date);
@@ -41,6 +39,8 @@
             </div>
         </div>   
     @endif
+
+
         
     <h2 class="@if($isPlayerReserve) block @else hidden @endif text-center text-red-400">Ви в резерві! Не можете приймати участь у цій серії.</h2>
     @if (session()->has('message'))
@@ -51,54 +51,57 @@
     <div class="latest-series__items relative p-2">        
         <div class="@if($isPlayerReserve) block @else hidden @endif absolute inset-0 bg-gray-400 opacity-50 rounded z-10"></div>
        
-        {{-- @for ($i=0; $i<$maxPlayer; $i++) --}}
-        @for ($i=0; $i<9; $i++)
-            @php
-                $playerNumber = $i + 1;
-                $regPlayer = $regPlayers->firstWhere('player_number', $playerNumber);
-            @endphp
-            <div wire:key="{{$i}}" class="latest-series__item">
-                @if ($regPlayer)
-                    <article class="item-player item-player--stats">
-                        <a href="#" class="item-player__image-link">
-                            <img src="img/player/player.webp" alt="Image" class="ibg">
-                        </a>
-                        <div class="item-player__name">
-                            <a href="#">{{$regPlayer->player->last_name}} {{$regPlayer->player->first_name}}</a>
-                        </div>
-                        <div class="item-player__details">
-                            <div class="item-player__info">
-                                31
-                                <img src="img/player/field.webp" alt="Image" class="ibg ibg--contain">
+        @if ($regPlayers)
+            @for ($i=0; $i<9; $i++)
+                @php
+                    $playerNumber = $i + 1;
+                    $regPlayer = $regPlayers->firstWhere('player_number', $playerNumber);
+                @endphp
+                <div wire:key="{{$i}}" class="latest-series__item">
+                    @if ($regPlayer)
+                        <article class="item-player item-player--stats">
+                            <a href="#" class="item-player__image-link">
+                                <img src="img/player/player.webp" alt="Image" class="ibg">
+                            </a>
+                            <div class="item-player__name">
+                                <a href="#">{{$regPlayer->player->last_name}} {{$regPlayer->player->first_name}}</a>
                             </div>
-                            <div class="item-player__info">
-                                28
-                                <img src="img/player/ball.webp" alt="Image" class="ibg ibg--contain">
+                            <div class="item-player__details">
+                                <div class="item-player__info">
+                                    31
+                                    <img src="img/player/field.webp" alt="Image" class="ibg ibg--contain">
+                                </div>
+                                <div class="item-player__info">
+                                    28
+                                    <img src="img/player/ball.webp" alt="Image" class="ibg ibg--contain">
+                                </div>
+                                <div class="item-player__info item-player__info--yellow-card">
+                                    1
+                                </div>
+                                <div class="item-player__info item-player__info--red-card">
+                                    0
+                                </div>
                             </div>
-                            <div class="item-player__info item-player__info--yellow-card">
-                                1
-                            </div>
-                            <div class="item-player__info item-player__info--red-card">
-                                0
-                            </div>
-                        </div>
-                        <div data-rating="" data-rating-size="10" data-rating-value="{{$regPlayer->player->rating}}" class="item-player__rating rating"></div>
-                    </article>
-                @elseif ($statusRegistration !== 'closed')
-                    <button wire:click="takePlace({{$i + 1}})" class="latest-series__empty">
-                        ЗАЙНЯТИ МІСЦЕ
-                    </button>
-                @endif
+                            <div data-rating="" data-rating-size="10" data-rating-value="{{$regPlayer->player->rating}}" class="item-player__rating rating"></div>
+                        </article>
+                    @elseif ($statusRegistration !== 'closed')
+                        <button wire:click="takePlace({{$i + 1}})" class="latest-series__empty">
+                            ЗАЙНЯТИ МІСЦЕ
+                        </button>
+                    @endif
 
-                <div style="background-color: {{$team->color->color_picker}}" class="latest-series__number">{{$playerNumber}}</div>
+                    <div style="background-color: {{$team->color->color_picker}}" class="latest-series__number">{{$playerNumber}}</div>
 
-                @if ($regPlayer && $team->owner_id == $userId)
-                    <button wire:click="dropRegPlayer({{$regPlayer->player_id}})" class="button button--yellow button--small">Відкликати</button>
-                @elseif($regPlayer && $regPlayer->player_id == $playerId)
-                    <button wire:click="dropRegPlayer({{$regPlayer->player_id}})" class="button button--yellow button--small">Вийти</button>
-                @endif
-            </div>              
-        @endfor
+                    @if ($regPlayer && $team->owner_id == $userId)
+                        <button wire:click="dropRegPlayer({{$regPlayer->player_id}})" class="button button--yellow button--small">Відкликати</button>
+                    @elseif($regPlayer && $regPlayer->player_id == $playerId)
+                        <button wire:click="dropRegPlayer({{$regPlayer->player_id}})" class="button button--yellow button--small">Вийти</button>
+                    @endif
+                </div>              
+            @endfor
+        @else
+            <p class="text-center text-red-500">Дані про зареєстрованих гравців недоступні</p>
+        @endif
 
     </div>
     @if ($team->owner_id == $userId)

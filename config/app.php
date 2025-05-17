@@ -66,7 +66,7 @@ return [
     */
 
     'timezone' => 'UTC',
-
+    'schedule_timezone' => 'Europe/Kyiv',
     /*
     |--------------------------------------------------------------------------
     | Application Locale Configuration
