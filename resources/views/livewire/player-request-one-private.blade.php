@@ -32,7 +32,7 @@
                 @if ($regPlayer)
                     <article class="item-player item-player--stats">
                         <a href="#" class="item-player__image-link">
-                            <img src="{{ asset($regPlayer['photo']) }}" alt="{{ $regPlayer['last_name'] }} {{ $regPlayer['first_name'] }}" class="ibg">
+                            <img src="{{ asset('storage/'. $regPlayer['photo']) }}" alt="{{ $regPlayer['last_name'] }} {{ $regPlayer['first_name'] }}" class="ibg">
                         </a>
                         <div class="item-player__name">
                             <a href="#">{{ $regPlayer['last_name'] }} {{ $regPlayer['first_name'] }}</a>

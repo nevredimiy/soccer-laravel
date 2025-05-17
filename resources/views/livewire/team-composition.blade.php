@@ -14,7 +14,7 @@
                     <div wire:key="{{$player['id']}}" data-player-id="{{$player['id']}}" class="players-tournament__item">
                         <article class="item-player item-player--stats">
                             <a href="#" class="item-player__image-link">
-                                <img src="{{asset($player['photo'])}}" alt="{{$player['last_name']}} {{$player['first_name']}}" class="ibg">
+                                <img src="{{asset('storage/' . $player['photo'])}}" alt="{{$player['last_name']}} {{$player['first_name']}}" class="ibg">
                             </a>
                             <div class="item-player__name">
                                 <a href="#">{{$player['last_name']}} {{$player['first_name']}}</a>

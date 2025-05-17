@@ -32,14 +32,12 @@
                                  class="ibg">
                         </div>
                         <div class="profile-header__label">
-                            <span id="balance-display">
-                                {{ number_format(auth()->user()->balance ?? 0, 2) }} грн
-                            </span>
+                           @livewire('user-balance')
                         </div>
                         <a href="{{ route('balance.form') }}" class="profile-header__add _icon-add-circle"></a>
             
                         <!-- Кнопка проверки баланса через Livewire -->
-                        <livewire:check-balance />
+                        @livewire('check-balance')
 
                     </div>
             

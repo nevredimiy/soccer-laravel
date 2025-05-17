@@ -66,7 +66,7 @@ class CheckBalance extends Component
             $this->balance = $this->user->fresh()->balance;
             $this->dispatch('balanceUpdated', balance: $this->balance);
             $this->statusMessage = 'Баланс успешно обновлён!';
-            return redirect()->route('profile'); // Перезагрузка страницы
+            // return redirect()->route('profile'); // Перезагрузка страницы
         } else {
             $this->statusMessage = 'Помилка: ' . $response->err_description;
         }
