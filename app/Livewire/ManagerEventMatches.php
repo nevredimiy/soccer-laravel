@@ -17,13 +17,8 @@ class ManagerEventMatches extends Component
     public int $activeMatch = 0; 
     public array $matches = []; 
     public array $seriesPlayers = [];
-    public array $icons = [
-        'goal' => 'football', 
-        'assist' => 'boots-icon', 
-        'autogoal' => 'red-football', 
-        'yellow_card' => 'yellow-card-icon', 
-        'red_card' => 'red-card-icon'
-    ];
+    public array $goals = [];    
+
 
     public function mount($event, $teamColors, $templateMatches, $teamIdsInSeries, $seriesMeta)
     {
@@ -39,7 +34,37 @@ class ManagerEventMatches extends Component
         }
         
         $this->getDataMatcheEvents();
-        
+
+        $this->goals = $this->getGoals();
+     
+    }
+
+    protected function getGoals()
+    {
+        $goals = [];
+
+        foreach ($this->matches as $i => $match) {
+            $matchNumber = $i+1;
+            foreach ($match['match_events'] as $event) {
+                if ($event['type'] == 'goal') {
+                    if ($event['team_id'] == $match['team1_id']) {
+                        $goals[$matchNumber][$match['team1_id']] = ($goals[$matchNumber][$match['team1_id']] ?? 0) + 1;
+                    } else {
+                        $goals[$matchNumber][$match['team2_id']] = ($goals[$matchNumber][$match['team2_id']] ?? 0) + 1;
+                    }
+                }
+
+                if ($event['type'] == 'autogoal') {
+                    if ($event['team_id'] == $match['team1_id']) {
+                        $goals[$matchNumber][$match['team2_id']] = ($goals[$matchNumber][$match['team2_id']] ?? 0) + 1;
+                    } else {
+                        $goals[$matchNumber][$match['team1_id']] = ($goals[$matchNumber][$match['team1_id']] ?? 0) + 1;
+                    }
+                }
+            }
+        }
+        return $goals;
+
     }
 
 
@@ -56,11 +81,22 @@ class ManagerEventMatches extends Component
     public function getDataMatcheEvents()
     {
          $this->matches = Matche::with('matchEvents.team.color')->where('event_id', $this->event->id)->get()->toArray();
+         $this->goals = $this->getGoals();
     }
 
 
     public function render()
     {
-        return view('livewire.manager-event-matches');
+        $icons = [
+            'goal' => 'football', 
+            'assist' => 'boots-icon', 
+            'autogoal' => 'red-football', 
+            'yellow_card' => 'yellow-card-icon', 
+            'red_card' => 'red-card-icon'
+        ];
+
+        return view('livewire.manager-event-matches', [
+            'icons' => $icons
+        ]);
     }
 }

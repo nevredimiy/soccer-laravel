@@ -845,9 +845,9 @@ body::after {
 .home__indiv-table .table-section__table {
   min-width: 55.375rem
 }
-.home__indiv-table .table-section__body {
-  max-height: 37.5rem
-}
+  /* .home__indiv-table .table-section__body {
+    max-height: 37.5rem
+  } */
 .table-section__title:has(+.table-section__subtitle):not(:last-child) {
   margin-bottom: .25rem
 }
@@ -3152,9 +3152,9 @@ body::after {
   .home__teams:not(:last-child) {
     margin-bottom: 3.125rem
   }
-  .home__indiv-table:not(:last-child) {
+  /* .home__indiv-table:not(:last-child) {
     margin-bottom: 3.125rem
-  }
+  } */
   .home__best-players:not(:last-child) {
     margin-bottom: 3.75rem
   }
@@ -3895,9 +3895,9 @@ body::after {
   .home__teams:not(:last-child) {
     margin-bottom: 2rem
   }
-  .home__indiv-table:not(:last-child) {
+  /* .home__indiv-table:not(:last-child) {
     margin-bottom: 2rem
-  }
+  } */
   .home__best-players:not(:last-child) {
     margin-bottom: 2rem
   }
@@ -4265,16 +4265,16 @@ body::after {
       margin-bottom: calc(2rem + 1.125*(100vw - 27.5rem)/ 57.625)
     }
   }
-  @supports (margin-bottom:clamp(2rem ,1.4631236443rem + 1.9522776573vw ,3.125rem)) {
+  /* @supports (margin-bottom:clamp(2rem ,1.4631236443rem + 1.9522776573vw ,3.125rem)) {
     .home__indiv-table:not(:last-child) {
       margin-bottom: clamp(2rem ,1.4631236443rem + 1.9522776573vw ,3.125rem)
     }
-  }
-  @supports not (margin-bottom:clamp(2rem ,1.4631236443rem + 1.9522776573vw ,3.125rem)) {
+  } */
+  /* @supports not (margin-bottom:clamp(2rem ,1.4631236443rem + 1.9522776573vw ,3.125rem)) {
     .home__indiv-table:not(:last-child) {
       margin-bottom: calc(2rem + 1.125*(100vw - 27.5rem)/ 57.625)
     }
-  }
+  } */
   @supports (margin-bottom:clamp(2rem ,1.1648590022rem + 3.0368763557vw ,3.75rem)) {
     .home__best-players:not(:last-child) {
       margin-bottom: clamp(2rem ,1.1648590022rem + 3.0368763557vw ,3.75rem)
