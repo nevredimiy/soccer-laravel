@@ -64,7 +64,6 @@ class ManagerEventMatches extends Component
             }
         }
         return $goals;
-
     }
 
 

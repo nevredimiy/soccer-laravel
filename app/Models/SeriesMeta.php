@@ -55,6 +55,11 @@ class SeriesMeta extends Model
         return $this->hasMany(SeriesPlayer::class, 'series_meta_id');
     }
 
+    public function matches()
+    {
+        return $this->hasMany(Matche::class, 'series_meta_id');
+    }
+
     public function playerSeriesRegistration()
     {
         return $this->hasMany(PlayerSeriesRegistration::class, 'series_meta_id');

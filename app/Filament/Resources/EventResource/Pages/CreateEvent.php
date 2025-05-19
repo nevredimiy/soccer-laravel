@@ -125,10 +125,17 @@ class CreateEvent extends CreateRecord
         $startTime = $startTime instanceof \Carbon\Carbon
             ? $startTime->copy()
             : \Carbon\Carbon::parse($startTime);
+        
+        $seriesMetaIdx = SeriesMeta::where('event_id', $eventId)->pluck('id')->toArray();
 
         $matches = [];
 
         for ($round = 1; $round <= $countRounds; $round++) {
+
+            if (!isset($seriesMetaIdx[$round - 1])) {
+                continue;
+            }
+            
             foreach ($templateMatches as [$i, $j]) {
                 if (!isset($teams[$i], $teams[$j])) {
                     // Защита от выхода за пределы массива
@@ -137,6 +144,7 @@ class CreateEvent extends CreateRecord
 
                 $matches[] = [
                     'event_id'   => $eventId,
+                    'series_meta_id'   => $seriesMetaIdx[$round - 1],
                     'team1_id'   => $teams[$i]['id'],
                     'team2_id'   => $teams[$j]['id'],
                     'start_time' => $startTime->copy(),

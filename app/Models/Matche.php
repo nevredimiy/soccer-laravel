@@ -12,6 +12,7 @@ class Matche extends Model
 {
     protected $fillable = [
         'event_id',
+        'series_meta_id',
         'team1_id',
         'team2_id',
         'start_time',
@@ -47,6 +48,11 @@ class Matche extends Model
         return $this->belongsTo(Team::class, 'team2_id');
     }
 
+    public function seriesMeta()
+    {
+        return $this->belongsTo(SeriesMeta::class, 'series_meta_id');
+    }
+
     public function matchEvents()
     {
         return $this->hasMany(MatcheEvent::class, 'match_id');
@@ -65,6 +71,7 @@ class Matche extends Model
             ->where('type', 'goal')
             ->whereColumn('team_id', 'team2_id');
     }
+
 
     
    
