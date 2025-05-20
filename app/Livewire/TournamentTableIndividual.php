@@ -36,7 +36,8 @@ class TournamentTableIndividual extends Component
 
     protected function getPlayers($eventId)
     {
-        $seriesMetas = SeriesMeta::with(['seriesResults.player'])->where('event_id', $eventId)->get();
+        $seriesMetas = SeriesMeta::with(['seriesResults.player', 'seriesPlayers.player'])->where('event_id', $eventId)->get();
+
 
         foreach ($seriesMetas as $seriesMeta) {
             // Сортируем всю коллекцию результатов
@@ -59,23 +60,43 @@ class TournamentTableIndividual extends Component
         $players = [];
 
         foreach ($seriesMetas as $seriesMeta) {
-            $sorted = $seriesMeta->rankedResults->sortBy('place')->values();
-            foreach ($sorted as $playerResult) {
-                $players[] = [
-                    'id' => $playerResult->player->id,
-                    'name' => $playerResult->player->full_name,
-                    'photo' => $playerResult->player->photo,
-                    'rating' => $playerResult->player->rating,
-                    'wins' =>$playerResult->wins,
-                    'draw' => $playerResult->draw,
-                    'defeat' => $playerResult->defeat,
-                    'goals_scored' => $playerResult->goals_scored,
-                    'goals_conceded' => $playerResult->goals_conceded,
-                    'goal_difference' => $playerResult->goal_difference,
-                    'points' => $playerResult->points,
-                    'scores' => $playerResult->scores,
-                    'place' => $playerResult->place,
-                ];
+            if(empty($seriesMeta->rankedResults)){
+                $sorted = $seriesMeta->rankedResults->sortBy('place')->values();
+                foreach ($sorted as $playerResult) {
+                    $players[] = [
+                        'id' => $playerResult->player->id,
+                        'name' => $playerResult->player->full_name,
+                        'photo' => $playerResult->player->photo,
+                        'rating' => $playerResult->player->rating,
+                        'wins' =>$playerResult->wins,
+                        'draw' => $playerResult->draw,
+                        'defeat' => $playerResult->defeat,
+                        'goals_scored' => $playerResult->goals_scored,
+                        'goals_conceded' => $playerResult->goals_conceded,
+                        'goal_difference' => $playerResult->goal_difference,
+                        'points' => $playerResult->points,
+                        'scores' => $playerResult->scores,
+                        'place' => $playerResult->place,
+                    ];
+                }
+            }else {
+                foreach($seriesMeta->seriesPlayers as $playerResult){
+                    $players[] = [
+                        'id' => $playerResult->player->id,
+                        'name' => $playerResult->player->full_name,
+                        'photo' => $playerResult->player->photo,
+                        'rating' => $playerResult->player->rating,
+                        'wins' => 0,
+                        'draw' => 0,
+                        'defeat' => 0,
+                        'goals_scored' => 0,
+                        'goals_conceded' => 0,
+                        'goal_difference' => 0,
+                        'points' => 0,
+                        'scores' => 0,
+                        'place' => null,
+                    ];
+                }
             }
         }
 

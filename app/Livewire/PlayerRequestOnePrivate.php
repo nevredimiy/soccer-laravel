@@ -6,12 +6,15 @@ use Livewire\Component;
 use App\Models\Event;
 use App\Models\Player;
 use App\Models\PlayerTeam;
+use App\Models\SeriesMeta;
+use App\Models\SeriesPlayer;
 use App\Models\Team;
 
 class PlayerRequestOnePrivate extends Component
 {
 
     public ?Event $event = null;
+    public ?SeriesMeta $seriesMeta = null;
     public $regPlayers = [];
     public array $playerIds = [];
     public $playerPrice = 0;
@@ -21,7 +24,8 @@ class PlayerRequestOnePrivate extends Component
 
     public function mount($event, $playerPrice = 0)
     {
-
+        //Непаримся. Берем первую серию. Так как у данного турнира всегда всего одна серия.
+        $this->seriesMeta = SeriesMeta::with('seriesPlayers')->where('event_id', $this->event->id)->first();
         $this->event = $event;
         $this->playerPrice = $playerPrice;
         $this->user = auth()->user();
@@ -46,6 +50,15 @@ class PlayerRequestOnePrivate extends Component
             return;
         }
 
+        SeriesPlayer::create([
+            'series_meta_id' => $this->seriesMeta->id,
+            'player_id' => $this->currentPlayer->id,
+            'team_id' => $teamId,
+            'player_number' => $playerNumber,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
         // записываем игрока в команду
         PlayerTeam::query()->create([
             'player_id' => $this->currentPlayer->id,
@@ -61,10 +74,15 @@ class PlayerRequestOnePrivate extends Component
     {
         $teamIds = Team::where('event_id', $this->event->id)->pluck('id');
 
+        SeriesPlayer::where('player_id', $this->currentPlayer->id)
+            ->where('series_meta_id', $this->seriesMeta?->id)
+            ->first()?->delete();
+
         PlayerTeam::where('player_id', $this->currentPlayer->id)
             ->whereIn('team_id', $teamIds)
             ->first()?->delete(); // безопасный вызов
         session()->flash('success', 'Гравця успішно видалено зі складу команды.');
+
         // обновляем компонент
         $this->loadPlayers();
     }
@@ -73,6 +91,8 @@ class PlayerRequestOnePrivate extends Component
     {
         $this->regPlayers = [];
         $this->playerIds = [];
+
+
 
         foreach ($this->event->teams as $team) {
             $playerTeams = PlayerTeam::query()

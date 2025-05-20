@@ -16,7 +16,8 @@
                     
                 ], key($seriesMeta->id))
                 
-                @livewire('shedule-matches-tournament-one-day', ['event' => $event])
+                {{-- @livewire('shedule-matches-tournament-one-day', ['event' => $event]) --}}
+                @livewire('shedule-matches-tournament', ['event' => $event])
 
                 @if ($event->tournament->type == 'solo')
                     @livewire('player-request-one', [

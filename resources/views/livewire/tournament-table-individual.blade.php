@@ -53,7 +53,7 @@
                     @foreach ($players as $key => $player)
                         <tr wire:key="{{$key}}">
                             <td>
-                                <span class="place">{{ $player['place'] }}</span>
+                                <span class="place">{{ $player['place'] ?? $loop->iteration }}</span>
                             </td>
                             <td>
                                 <div class="photo">

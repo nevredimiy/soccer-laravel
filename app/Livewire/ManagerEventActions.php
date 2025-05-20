@@ -174,7 +174,8 @@ class ManagerEventActions extends Component
 
             SeriesResult::insert($seriesResult);
             SeriesMeta::where('id', $this->seriesId)->update(['status' => 'closed']);
-            // $this->dispatchBrowserEvent('notify', ['type' => 'success', 'message' => 'Сесія закрита.']);
+            Matche::where('series_meta_id', $this->seriesId)->update(['status' => 'finished']);
+            
             session()->flash('success', 'Сесія успішно закрита!');
             $this->seriesMeta = $this->seriesMeta->fresh();
 
@@ -242,6 +243,7 @@ class ManagerEventActions extends Component
     {
         SeriesMeta::where('id', $this->seriesId)->update(['status' => 'open']);
         SeriesResult::where('series_meta_id', $this->seriesId)->delete();
+        Matche::where('id', $this->seriesId)->update(['status' => 'scheduled']);
         
         session()->flash('success', 'Серію відкрито, результати очищено.');
     

@@ -15,17 +15,25 @@ class SeriesInfo extends Component
     {
         $this->playerPrice = $playerPrice;
         $this->event = $event;
-        $this->seriesMeta = $this->calculateRating($seriesMeta);
+        $this->seriesMeta = $this->calculateRating($seriesMeta, $event->tournament->type);
     }
 
-    protected function calculateRating($seriesMeta)
+    protected function calculateRating($seriesMeta, $type)
     {
         $totalRating = 0;
         $totalPlayers = 0;
 
-        foreach($seriesMeta->playerSeriesRegistration as $playerSR){
-            $totalRating += $playerSR->player->rating;
-            $totalPlayers += 1;
+        if($type == 'team'){
+            foreach($seriesMeta->playerSeriesRegistration as $playerSR){
+                $totalRating += $playerSR->player->rating;
+                $totalPlayers += 1;
+            }
+        }else {
+            $seriesMeta->load('seriesPlayers');
+            foreach($seriesMeta->seriesPlayers as $playerSP){
+                $totalRating += $playerSP->player->rating;
+                $totalPlayers += 1;
+            }
         }
 
         $seriesMeta->average_player_rating = $totalPlayers > 0
