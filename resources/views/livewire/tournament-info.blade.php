@@ -3,7 +3,7 @@
         @if ($event->tournament->type == 'team')
             @livewire('tournament-table-team', ['teams' => $teams])            
         @else
-            @livewire('tournament-table-individual', ['teams' => $teams])
+            @livewire('tournament-table-individual', ['teams' => $teams, 'eventId' => $eventId])
         @endif
 
         @livewire('top-scorers-of-tournament', ['teams' => $teams, 'eventId' => $eventId])
@@ -176,7 +176,7 @@
         @endif
 
 
-        @livewire('tournament-protocol', ['teams' => $teams])
+        @livewire('tournament-protocol', ['teams' => $teams, 'eventId' => $eventId])
        
     
         <section class="home__teams teams-section">

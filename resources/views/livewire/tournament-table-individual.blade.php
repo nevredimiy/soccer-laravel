@@ -53,7 +53,7 @@
                     @foreach ($players as $key => $player)
                         <tr wire:key="{{$key}}">
                             <td>
-                                <span class="place">{{ $loop->iteration }}</span>
+                                <span class="place">{{ $player['place'] }}</span>
                             </td>
                             <td>
                                 <div class="photo">
@@ -70,28 +70,28 @@
                             </td>                                
                             @endforeach
                             <td>
-                                <span class="border">0</span>
+                                <span class="border">{{$player['wins']}}</span>
                             </td>
                             <td>
-                                <span class="border">0</span>
+                                <span class="border">{{$player['draw']}}</span>
                             </td>
                             <td>
-                                <span class="border">0</span>
+                                <span class="border">{{$player['defeat']}}</span>
+                            </td>                           
+                            <td>
+                                <span class="border">{{$player['goals_scored']}}</span>
                             </td>
                             <td>
-                                <span class="border">0</span>
+                                <span class="border">{{$player['goals_conceded']}}</span>
                             </td>
                             <td>
-                                <span class="border">0</span>
+                                <span class="border">{{$player['goal_difference']}}</span>
                             </td>
                             <td>
-                                <span class="border">0</span>
+                                <span class="border">{{$player['points']}}</span>
                             </td>
-                            <td>
-                                <span class="border">0</span>
-                            </td>
-                            <td>
-                                <span class="gray-bg">0</span>
+                             <td>
+                                <span class="gray-bg">{{$player['scores']}}</span>
                             </td>
                         </tr>
                    @endforeach

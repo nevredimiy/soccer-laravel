@@ -48,6 +48,16 @@ class SeriesResult extends Model
         return $this->belongsTo(SeriesMeta::class);
     }
 
+    public function player()
+    {
+        return $this->belongsTo(Player::class);
+    }
+
+    public function team()
+    {
+        return $this->belongsTo(Team::class);
+    }
+
 }
 
 

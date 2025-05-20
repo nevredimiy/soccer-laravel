@@ -59,4 +59,9 @@ class Player extends Model
         'birth_date' => 'date',
     ];
 
+    public function getCountGames($teamId)
+    {
+        
+    }
+
 }

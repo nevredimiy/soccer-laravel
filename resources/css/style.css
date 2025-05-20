@@ -321,7 +321,7 @@ body::after {
   background-color: #f7e10e
 }
 .orange-bg {
-  background-color: #ff7f27
+  background-color: #ec5600
 }
 .gray-bg {
   background-color: #c9c9c9
@@ -336,7 +336,7 @@ body::after {
   background-color: #99d9ea
 }
 .lime-bg {
-  background-color: #9bbb59
+  background-color: #9de500
 }
 .white-bg {
   background-color: #ffffff;
@@ -2183,12 +2183,12 @@ body::after {
   border-radius: 50%;
   aspect-ratio: 1/1;
   flex: 1 1 auto;
-  border: .0625rem solid #8593a0;
+  border: .0625rem solid #79716b;
   max-width: 40px;
   max-height: 40px;
 }
 .players-tournament__progress span._active {
-  background-color: #8593a0
+  background-color: #79716b
 }
 .players-tournament__progress:not(:last-child) {
   margin-bottom: 1.375rem

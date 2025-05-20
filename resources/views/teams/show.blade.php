@@ -16,14 +16,14 @@
                             <div class="hero-team__card team-card">
                                 <h3 class="team-card__name">{{$team->name ?? ''}}</h3>
                                 <div class="team-card__logo">
-                                    <img src="/img/teams/01.webp" alt="Image" class="ibg ibg--contain">
+                                    <img src="{{ asset('storage/' . $team->logo) }}" alt="{{$team->name ?? 'Логотип команди'}}" class="ibg ibg--contain">
                                 </div>
-                                <div style="--color: #0053A0" data-rating data-rating-size="10" data-rating-value="8" class="team-card__rating rating">
+                                <div style="--color: {{$team->color->color_picker}}" data-rating data-rating-size="10" data-rating-value="{{$rating}}" class="team-card__rating rating">
 
                                 </div>
                             </div>
                             <div class="hero-team__image">
-                                <img src="/img/gallery/01.webp" alt="Image" class="ibg">
+                                <img src="{{ asset($team->group_photo ? 'storage/'.$team->group_photo : 'img/gallery/01.webp') }}" alt="{{$team->name ?? 'Групове фото команди'}}" class="ibg">
                             </div>
                         </div>
                     </section>
@@ -160,12 +160,13 @@
                             СКЛАД КОМАНДИ
                         </h2>
                         <div class="members-team__items">
+                            @foreach ($team->players as $player)
                             <article class="item-player item-player--stats">
                                 <a href="#" class="item-player__image-link">
-                                    <img src="/img/player/player.webp" alt="Image" class="ibg">
+                                    <img src="{{ asset($player->photo ? 'storage/'.$player->photo : '/img/player/player.webp') }}" alt="{{$player->full_name ?? 'фото гравця'}}" class="ibg">
                                 </a>
                                 <div class="item-player__name">
-                                    <a href="#">МАКСИМ МАМЕДОВ</a>
+                                    <a href="#">{{$player->full_name}}</a>
                                 </div>
                                 <div class="item-player__details">
                                     <div class="item-player__info">
@@ -183,295 +184,11 @@
                                         0
                                     </div>
                                 </div>
-                                <div data-rating data-rating-size="10" data-rating-value="8" class="item-player__rating rating">
+                                <div data-rating data-rating-size="10" data-rating-value="{{$player->rating}}" class="item-player__rating rating">
                                 </div>
-                            </article>
-                            <article class="item-player item-player--stats">
-                                <a href="#" class="item-player__image-link">
-                                    <img src="/img/player/player.webp" alt="Image" class="ibg">
-                                </a>
-                                <div class="item-player__name">
-                                    <a href="#">МАКСИМ МАМЕДОВ</a>
-                                </div>
-                                <div class="item-player__details">
-                                    <div class="item-player__info">
-                                        31
-                                        <img src="/img/player/field.webp" alt="Image" class="ibg ibg--contain">
-                                    </div>
-                                    <div class="item-player__info">
-                                        28
-                                        <img src="/img/player/ball.webp" alt="Image" class="ibg ibg--contain">
-                                    </div>
-                                    <div class="item-player__info item-player__info--yellow-card">
-                                        1
-                                    </div>
-                                    <div class="item-player__info item-player__info--red-card">
-                                        0
-                                    </div>
-                                </div>
-                                <div data-rating data-rating-size="10" data-rating-value="8" class="item-player__rating rating">
-                                </div>
-                            </article>
-                            <article class="item-player item-player--stats">
-                                <a href="#" class="item-player__image-link">
-                                    <img src="/img/player/player.webp" alt="Image" class="ibg">
-                                </a>
-                                <div class="item-player__name">
-                                    <a href="#">МАКСИМ МАМЕДОВ</a>
-                                </div>
-                                <div class="item-player__details">
-                                    <div class="item-player__info">
-                                        31
-                                        <img src="/img/player/field.webp" alt="Image" class="ibg ibg--contain">
-                                    </div>
-                                    <div class="item-player__info">
-                                        28
-                                        <img src="/img/player/ball.webp" alt="Image" class="ibg ibg--contain">
-                                    </div>
-                                    <div class="item-player__info item-player__info--yellow-card">
-                                        1
-                                    </div>
-                                    <div class="item-player__info item-player__info--red-card">
-                                        0
-                                    </div>
-                                </div>
-                                <div data-rating data-rating-size="10" data-rating-value="8" class="item-player__rating rating">
-                                </div>
-                            </article>
-                            <article class="item-player item-player--stats">
-                                <a href="#" class="item-player__image-link">
-                                    <img src="/img/player/player.webp" alt="Image" class="ibg">
-                                </a>
-                                <div class="item-player__name">
-                                    <a href="#">МАКСИМ МАМЕДОВ</a>
-                                </div>
-                                <div class="item-player__details">
-                                    <div class="item-player__info">
-                                        31
-                                        <img src="/img/player/field.webp" alt="Image" class="ibg ibg--contain">
-                                    </div>
-                                    <div class="item-player__info">
-                                        28
-                                        <img src="/img/player/ball.webp" alt="Image" class="ibg ibg--contain">
-                                    </div>
-                                    <div class="item-player__info item-player__info--yellow-card">
-                                        1
-                                    </div>
-                                    <div class="item-player__info item-player__info--red-card">
-                                        0
-                                    </div>
-                                </div>
-                                <div data-rating data-rating-size="10" data-rating-value="8" class="item-player__rating rating">
-                                </div>
-                            </article>
-                            <article class="item-player item-player--stats">
-                                <a href="#" class="item-player__image-link">
-                                    <img src="/img/player/player.webp" alt="Image" class="ibg">
-                                </a>
-                                <div class="item-player__name">
-                                    <a href="#">МАКСИМ МАМЕДОВ</a>
-                                </div>
-                                <div class="item-player__details">
-                                    <div class="item-player__info">
-                                        31
-                                        <img src="/img/player/field.webp" alt="Image" class="ibg ibg--contain">
-                                    </div>
-                                    <div class="item-player__info">
-                                        28
-                                        <img src="/img/player/ball.webp" alt="Image" class="ibg ibg--contain">
-                                    </div>
-                                    <div class="item-player__info item-player__info--yellow-card">
-                                        1
-                                    </div>
-                                    <div class="item-player__info item-player__info--red-card">
-                                        0
-                                    </div>
-                                </div>
-                                <div data-rating data-rating-size="10" data-rating-value="8" class="item-player__rating rating">
-                                </div>
-                            </article>
-                            <article class="item-player item-player--stats">
-                                <a href="#" class="item-player__image-link">
-                                    <img src="/img/player/player.webp" alt="Image" class="ibg">
-                                </a>
-                                <div class="item-player__name">
-                                    <a href="#">МАКСИМ МАМЕДОВ</a>
-                                </div>
-                                <div class="item-player__details">
-                                    <div class="item-player__info">
-                                        31
-                                        <img src="/img/player/field.webp" alt="Image" class="ibg ibg--contain">
-                                    </div>
-                                    <div class="item-player__info">
-                                        28
-                                        <img src="/img/player/ball.webp" alt="Image" class="ibg ibg--contain">
-                                    </div>
-                                    <div class="item-player__info item-player__info--yellow-card">
-                                        1
-                                    </div>
-                                    <div class="item-player__info item-player__info--red-card">
-                                        0
-                                    </div>
-                                </div>
-                                <div data-rating data-rating-size="10" data-rating-value="8" class="item-player__rating rating">
-                                </div>
-                            </article>
-                            <article class="item-player item-player--stats">
-                                <a href="#" class="item-player__image-link">
-                                    <img src="/img/player/player.webp" alt="Image" class="ibg">
-                                </a>
-                                <div class="item-player__name">
-                                    <a href="#">МАКСИМ МАМЕДОВ</a>
-                                </div>
-                                <div class="item-player__details">
-                                    <div class="item-player__info">
-                                        31
-                                        <img src="/img/player/field.webp" alt="Image" class="ibg ibg--contain">
-                                    </div>
-                                    <div class="item-player__info">
-                                        28
-                                        <img src="/img/player/ball.webp" alt="Image" class="ibg ibg--contain">
-                                    </div>
-                                    <div class="item-player__info item-player__info--yellow-card">
-                                        1
-                                    </div>
-                                    <div class="item-player__info item-player__info--red-card">
-                                        0
-                                    </div>
-                                </div>
-                                <div data-rating data-rating-size="10" data-rating-value="8" class="item-player__rating rating">
-                                </div>
-                            </article>
-                            <article class="item-player item-player--stats">
-                                <a href="#" class="item-player__image-link">
-                                    <img src="/img/player/player.webp" alt="Image" class="ibg">
-                                </a>
-                                <div class="item-player__name">
-                                    <a href="#">МАКСИМ МАМЕДОВ</a>
-                                </div>
-                                <div class="item-player__details">
-                                    <div class="item-player__info">
-                                        31
-                                        <img src="/img/player/field.webp" alt="Image" class="ibg ibg--contain">
-                                    </div>
-                                    <div class="item-player__info">
-                                        28
-                                        <img src="/img/player/ball.webp" alt="Image" class="ibg ibg--contain">
-                                    </div>
-                                    <div class="item-player__info item-player__info--yellow-card">
-                                        1
-                                    </div>
-                                    <div class="item-player__info item-player__info--red-card">
-                                        0
-                                    </div>
-                                </div>
-                                <div data-rating data-rating-size="10" data-rating-value="8" class="item-player__rating rating">
-                                </div>
-                            </article>
-                            <article class="item-player item-player--stats">
-                                <a href="#" class="item-player__image-link">
-                                    <img src="/img/player/player.webp" alt="Image" class="ibg">
-                                </a>
-                                <div class="item-player__name">
-                                    <a href="#">МАКСИМ МАМЕДОВ</a>
-                                </div>
-                                <div class="item-player__details">
-                                    <div class="item-player__info">
-                                        31
-                                        <img src="/img/player/field.webp" alt="Image" class="ibg ibg--contain">
-                                    </div>
-                                    <div class="item-player__info">
-                                        28
-                                        <img src="/img/player/ball.webp" alt="Image" class="ibg ibg--contain">
-                                    </div>
-                                    <div class="item-player__info item-player__info--yellow-card">
-                                        1
-                                    </div>
-                                    <div class="item-player__info item-player__info--red-card">
-                                        0
-                                    </div>
-                                </div>
-                                <div data-rating data-rating-size="10" data-rating-value="8" class="item-player__rating rating">
-                                </div>
-                            </article>
-                            <article class="item-player item-player--stats">
-                                <a href="#" class="item-player__image-link">
-                                    <img src="/img/player/player.webp" alt="Image" class="ibg">
-                                </a>
-                                <div class="item-player__name">
-                                    <a href="#">МАКСИМ МАМЕДОВ</a>
-                                </div>
-                                <div class="item-player__details">
-                                    <div class="item-player__info">
-                                        31
-                                        <img src="/img/player/field.webp" alt="Image" class="ibg ibg--contain">
-                                    </div>
-                                    <div class="item-player__info">
-                                        28
-                                        <img src="/img/player/ball.webp" alt="Image" class="ibg ibg--contain">
-                                    </div>
-                                    <div class="item-player__info item-player__info--yellow-card">
-                                        1
-                                    </div>
-                                    <div class="item-player__info item-player__info--red-card">
-                                        0
-                                    </div>
-                                </div>
-                                <div data-rating data-rating-size="10" data-rating-value="8" class="item-player__rating rating">
-                                </div>
-                            </article>
-                            <article class="item-player item-player--stats">
-                                <a href="#" class="item-player__image-link">
-                                    <img src="/img/player/player.webp" alt="Image" class="ibg">
-                                </a>
-                                <div class="item-player__name">
-                                    <a href="#">МАКСИМ МАМЕДОВ</a>
-                                </div>
-                                <div class="item-player__details">
-                                    <div class="item-player__info">
-                                        31
-                                        <img src="/img/player/field.webp" alt="Image" class="ibg ibg--contain">
-                                    </div>
-                                    <div class="item-player__info">
-                                        28
-                                        <img src="/img/player/ball.webp" alt="Image" class="ibg ibg--contain">
-                                    </div>
-                                    <div class="item-player__info item-player__info--yellow-card">
-                                        1
-                                    </div>
-                                    <div class="item-player__info item-player__info--red-card">
-                                        0
-                                    </div>
-                                </div>
-                                <div data-rating data-rating-size="10" data-rating-value="8" class="item-player__rating rating">
-                                </div>
-                            </article>
-                            <article class="item-player item-player--stats">
-                                <a href="#" class="item-player__image-link">
-                                    <img src="/img/player/player.webp" alt="Image" class="ibg">
-                                </a>
-                                <div class="item-player__name">
-                                    <a href="#">МАКСИМ МАМЕДОВ</a>
-                                </div>
-                                <div class="item-player__details">
-                                    <div class="item-player__info">
-                                        31
-                                        <img src="/img/player/field.webp" alt="Image" class="ibg ibg--contain">
-                                    </div>
-                                    <div class="item-player__info">
-                                        28
-                                        <img src="/img/player/ball.webp" alt="Image" class="ibg ibg--contain">
-                                    </div>
-                                    <div class="item-player__info item-player__info--yellow-card">
-                                        1
-                                    </div>
-                                    <div class="item-player__info item-player__info--red-card">
-                                        0
-                                    </div>
-                                </div>
-                                <div data-rating data-rating-size="10" data-rating-value="8" class="item-player__rating rating">
-                                </div>
-                            </article>
+                            </article>                                
+                            @endforeach
+                           
                         </div>
                     </section>
                     <section class="team__members members-team">

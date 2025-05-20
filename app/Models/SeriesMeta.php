@@ -37,6 +37,11 @@ class SeriesMeta extends Model
     {
         return $this->belongsTo(Stadium::class, 'stadium_id');
     }
+
+    public function seriesResults()
+    {
+        return $this->hasMany(SeriesResult::class, 'series_meta_id');
+    }
    
     public function teams()
     {

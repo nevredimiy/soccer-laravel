@@ -15,17 +15,22 @@ class TournamentProtocol extends Component
     public $matches = null;
     public array $colorClasses = [];
 
-    public  function mount($teams)
+    public  function mount($teams, $eventId = 0)
     {
-        $this->teams = $teams;
         
-        $this->eventId = session('current_event', 0);
+        if($eventId == 0){
+            $this->eventId = session('current_event', 0);
+        } else {
+            $this->eventId = $eventId;
+        }
 
         $this->currentRound = [
             'round_number' => 1,
             'event_id' => $this->eventId,
             'series_number' => 1
         ];
+
+        $this->teams = $teams;
 
         $this->getMatches();
         $service = new SeriesTemplatesService();
@@ -63,7 +68,7 @@ class TournamentProtocol extends Component
             ->where('event_id', $this->eventId)
             ->where('round', $this->currentRound['round_number'])
             ->where('series', $this->currentRound['series_number'])
-            ->where('status', 'finished')
+            // ->where('status', 'finished')
             ->get();
     }
 

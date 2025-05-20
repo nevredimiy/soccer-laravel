@@ -15,6 +15,7 @@ class Team extends Model
       'owner_id',
       'name',
       'logo',
+      'group_photo',
       'color_id',
       'event_id',
       'promo_code_id',
@@ -93,5 +94,7 @@ class Team extends Model
             ->withPivot('status')
             ->withTimestamps();
     }
+
+    
 
 }

@@ -324,7 +324,7 @@
                                 <span class="fz-big">4</span>
                             </td>
                             <td class="color">
-                                <span style="background-color: #ff7f27;">
+                                <span style="background-color: #ec5600">
                                 </span>
                             </td>
                             <td>
@@ -624,7 +624,7 @@
                                 <span class="fz-big">8</span>
                             </td>
                             <td class="color">
-                                <span style="background-color: #9bbb59;">
+                                <span style="background-color: #9de500;">
                                 </span>
                             </td>
                             <td>
@@ -699,7 +699,7 @@
                                 <span class="fz-big">9</span>
                             </td>
                             <td class="color">
-                                <span style="background-color: #ff99ff;">
+                                <span style="background-color: #ff2357;">
                                 </span>
                             </td>
                             <td>
