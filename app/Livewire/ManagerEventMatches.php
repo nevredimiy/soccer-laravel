@@ -36,6 +36,8 @@ class ManagerEventMatches extends Component
         $this->getDataMatcheEvents();
 
         $this->goals = $this->getGoals();
+
+        
      
     }
 
@@ -79,7 +81,10 @@ class ManagerEventMatches extends Component
     #[On('add-event')]
     public function getDataMatcheEvents()
     {
-         $this->matches = Matche::with('matchEvents.team.color')->where('event_id', $this->event->id)->get()->toArray();
+         $this->matches = Matche::with('matchEvents.team.color')
+            ->where('series_meta_id', $this->seriesMeta->id)
+            ->get()
+            ->toArray();
          $this->goals = $this->getGoals();
     }
 

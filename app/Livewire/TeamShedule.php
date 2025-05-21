@@ -7,6 +7,7 @@ use App\Models\Team;
 use App\Models\Event;
 use App\Models\SeriesMeta;
 use App\Services\SeriesTemplatesService;
+use Livewire\Attributes\On;
 
 class TeamShedule extends Component
 {
@@ -20,11 +21,35 @@ class TeamShedule extends Component
     public function mount($event)
     {
         $this->event = $event;
+        $this->getTemplateCalendar();
+        
+    }
+
+    #[On('eventSelected')]
+    public function updateEvent($eventId)
+    {
+        $this->event = Event::find($eventId);
+        $this->getTemplateCalendar();
+    }
+
+    protected function getTemplateCalendar()
+    {
+        $event = $this->event;
         $count_teams = $event->tournament->count_teams;
         $service = new SeriesTemplatesService();
         $this->colorClasses = $service->getColorClasses();
         $this->colorNames = array_keys($this->colorClasses);
+
         $this->templateCalendar = $service->getTemplateCalendar($count_teams);
+        if($event->tournament->type == 'solo' && $event->tournament->subtype == 'regular' && $event->tournament->count_rounds > 1){
+            $teamplate = [];
+            for($i=0; $i<$event->tournament->count_rounds; $i++){
+                $teamplate[0][$i] = $this->templateCalendar[0][0];
+            }
+            
+            $this->templateCalendar = $teamplate;
+        }      
+        
 
         // $this->seriesMetas = SeriesMeta::where('event_id', $event->id)->get()->groupBy('series')->toArray();
         $this->seriesMetas = SeriesMeta::select('series', 'round', 'start_date')
@@ -32,7 +57,7 @@ class TeamShedule extends Component
             ->orderBy('series')
             ->orderBy('round')
             ->get()
-            ->groupBy('series')
+            ->groupBy('round')
             ->toArray();
 
         $this->currentRound = [
@@ -51,6 +76,7 @@ class TeamShedule extends Component
             'event_id' => $this->event->id,
             'series_number' => $seriesNumber
         ];
+
         $this->dispatch('currentRound', $this->currentRound);
     }
 

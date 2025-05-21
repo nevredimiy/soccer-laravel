@@ -10,20 +10,20 @@
                         {{$loop->iteration}} місце
                     </div>
                     <a href="#" class="item-player__image-link">
-                        <img src="{{asset('storage/' . $topScorer->player->photo)}}" alt="Image" class="ibg">
+                        <img src="{{asset('storage/' . $topScorer->player->photo)}}" alt="{{$topScorer->player->full_name}}" class="ibg">
                     </a>
                     <div class="item-player__details">
                         <div class="item-player__info">
                             {{$topScorer->matches_count}}
-                            <img src="img/player/field.webp" alt="Image" class="ibg ibg--contain">
+                            <img src="img/player/field.webp" alt="Кількість серій" class="ibg ibg--contain">
                         </div>
                         <div class="item-player__info">
                             {{$topScorer->goals_count}}
-                            <img src="img/player/ball.webp" alt="Image" class="ibg ibg--contain">
+                            <img src="img/player/ball.webp" alt="Кількість абитих м'ячів" class="ibg ibg--contain">
                         </div>
                     </div>
                     <div class="item-player__name">
-                        <a href="#">{{$topScorer->player->full_name}}</a>
+                        <div>{{$topScorer->player->full_name}}</div>
                     </div>
                 </article>
                 
@@ -43,20 +43,20 @@
                         {{$loop->iteration}} місце
                     </div>
                     <a href="#" class="item-player__image-link">
-                        <img src="{{asset('storage/' . $topAssist->assister->photo)}}" alt="Image" class="ibg">
+                        <img src="{{asset('storage/' . $topAssist->player->photo)}}" alt="{{$topAssist->player->full_name}}" class="ibg">
                     </a>
                     <div class="item-player__details">
                         <div class="item-player__info">
                             {{$topAssist->matches_count}}
-                            <img src="img/player/field.webp" alt="Image" class="ibg ibg--contain">
+                            <img src="img/player/field.webp" alt="Кільсть серій" class="ibg ibg--contain">
                         </div>
                         <div class="item-player__info">
                             {{$topAssist->assists_count}}
-                            <img src="img/player/ball.webp" alt="Image" class="ibg ibg--contain">
+                            <img src="img/player/shoe.svg" alt="Кількість асистентів" class="ibg ibg--contain">
                         </div>
                     </div>
                     <div class="item-player__name">
-                        <a href="#">{{$topAssist->assister->full_name}}</a>
+                        <div>{{$topAssist->player->full_name}}</div>
                     </div>
                 </article>
                 

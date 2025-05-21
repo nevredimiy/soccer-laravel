@@ -46,6 +46,7 @@
                                 data-team1-id="{{$matchEvents['team_id']}}" 
                                 data-team2-id="{{$teamIdsInSeries[$idxTeamId1]}}"  
                                 class="protocol__item">
+                                
                                 <span class="protocol__ball @if ( $matchEvents['team_id'] == $teamIdsInSeries[$idxTeamId1] ) up @endif">
                                     {{ $seriesPlayers[$matchEvents['player_id']]['player_number'] }}
                                     <img width="15" height="15" src="{{ asset('img/icons/' . $icons[$matchEvents['type']] . '.png') }}" alt="Image" class="ibg ibg--contain">

@@ -64,19 +64,31 @@ class TopScorersOfTournament extends Component
 
     private function getTopAssists()
     {
-        return MatcheEvent::query()
-            ->select('assister_id', 'team_id',
+         return MatcheEvent::query()
+            ->select('player_id', 'team_id',
                 DB::raw('COUNT(*) as assists_count'),
                 DB::raw('COUNT(DISTINCT match_id) as matches_count')
             )
-            ->with(['assister', 'team.color'])
+            ->with(['player', 'team.color'])
             ->whereIn('match_id', $this->getMatchIds())
-            ->where('type', 'goal')
-            ->whereNotNull('assister_id')
-            ->groupBy('assister_id', 'team_id')
+            ->where('type', 'assist')
+            ->groupBy('player_id', 'team_id')
             ->orderByDesc('assists_count')
             ->limit($this->topScorersLimit)
             ->get();
+        // return MatcheEvent::query()
+        //     ->select('assister_id', 'team_id',
+        //         DB::raw('COUNT(*) as assists_count'),
+        //         DB::raw('COUNT(DISTINCT match_id) as matches_count')
+        //     )
+        //     ->with(['assister', 'team.color'])
+        //     ->whereIn('match_id', $this->getMatchIds())
+        //     ->where('type', 'goal')
+        //     ->whereNotNull('assister_id')
+        //     ->groupBy('assister_id', 'team_id')
+        //     ->orderByDesc('assists_count')
+        //     ->limit($this->topScorersLimit)
+        //     ->get();
     }
 
     public function render()
