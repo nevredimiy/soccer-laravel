@@ -105,7 +105,7 @@
             <div class="hero-tournament__label">
                 Середній рівень гравців ЛІГИ
             </div>
-            <div data-rating-size="10" data-rating-value="8" class="hero-tournament__rating rating">
+            <div class="hero-tournament__rating rating">
                 <div class="rating__items">
                     @for ($i=0; $i<10; $i++)
                     <label class="rating__item @if ($i < $seriesMeta->average_player_rating)
@@ -127,7 +127,7 @@
             </div>
             @if (is_array($playerPrice))
                 <span class="text-xs text-gray-500">
-                    Ціна залежить від кількості граавців у команді. Може коливатися від {{$playerPrice[9]}} до {{$playerPrice[6]}} грн
+                    Ціна залежить від кількості гравців у команді. Може коливатися від {{$playerPrice[9]}} до {{$playerPrice[6]}} грн
                 </span>
             @endif
         </div>

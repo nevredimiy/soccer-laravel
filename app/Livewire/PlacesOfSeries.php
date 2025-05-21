@@ -74,6 +74,7 @@ class PlacesOfSeries extends Component
         }
         $this->getPlayerSeries();
         $this->statusRegistration = $this->seriesMeta?->status_registration;    
+        
     }
 
     #[On('team-selected')]

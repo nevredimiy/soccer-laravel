@@ -29,12 +29,13 @@ class PlayerRequestOne extends Component
     {
         $this->event = $event;
         $this->seriesMeta = $seriesMeta;
+        
         $this->playerPrice = $playerPrice;
         $this->user = auth()->user();
         $this->currentPlayer = Player::query()->where('user_id', $this->user->id)->first();
 
         $this->isSeriesClosed = SeriesMeta::query()
-            ->where('event_id', $this->event->id)
+            ->where('id', $this->seriesMeta->id)
             ->where('status_registration', 'closed')
             ->exists();
 
@@ -117,7 +118,7 @@ class PlayerRequestOne extends Component
     {
         // Закрываем регистрацию
         SeriesMeta::query()
-            ->where('event_id', $this->event->id)
+            ->where('id', $this->seriesMeta->id)
             ->update(['status_registration' => 'closed']);
 
         $this->isSeriesClosed = true;
@@ -126,7 +127,7 @@ class PlayerRequestOne extends Component
     protected function openSeries()
     {
          SeriesMeta::query()
-            ->where('event_id', $this->event->id)
+            ->where('id', $this->seriesMeta->id)
             ->update(['status_registration' => 'open']);
 
         $this->isSeriesClosed = false;

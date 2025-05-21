@@ -28,7 +28,8 @@ class ManagerSeriesController extends Controller
         $teams = Team::with('color')->where('event_id', $event->id)->get()->toArray();
 
         $series = $service->getTemplateCalendar($event->tournament->count_teams);
-        $template = $series[$seriesMeta->series - 1][$seriesMeta->round - 1];
+        $numRound = isset($series[$seriesMeta->series - 1][$seriesMeta->round - 1]) ?  $seriesMeta->round - 1 : 0;
+        $template = $series[$seriesMeta->series - 1][$numRound];
         $templateMatches = $service ->getMatchTemplate();
         
 

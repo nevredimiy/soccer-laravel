@@ -35,7 +35,7 @@
         <button wire:click="seriesOpen" wire:confirm="Ви впевнені, що хочете відкрити серію?" class="button button--black">Відкрити серію</button>            
         @endif
 
-        @if ($isActiveVoteButton)
+        @if ($isActiveVoteButton && $seriesMeta->event->tournament->type != 'team')
             <a href="{{route('manager.series.vote', $seriesId)}}" class="button button--red outline outline-offset-2">Голосування</a>            
         @endif
         

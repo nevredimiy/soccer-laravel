@@ -262,6 +262,8 @@ class ManagerEventActions extends Component
 
     public function render()
     {
+        // $event = Event::find();
+        // $tournamentType = $event->tournament->type;
         return view('livewire.manager-event-actions');
     }
 }

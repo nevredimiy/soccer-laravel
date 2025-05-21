@@ -68,7 +68,7 @@ class TournamentProtocol extends Component
             ->where('event_id', $this->eventId)
             ->where('round', $this->currentRound['round_number'])
             ->where('series', $this->currentRound['series_number'])
-            // ->where('status', 'finished')
+            ->where('status', 'finished')
             ->get();
     }
 

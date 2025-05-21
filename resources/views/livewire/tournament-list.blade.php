@@ -10,10 +10,13 @@
         @else
         
             @foreach ($events as $event)
-            <div wire:key="{{$event->id}}" class=" border rounded p-4">
-                <button wire:click="selectedEvent({{$event->id}})" class="button @if ($activeEventId == $event->id)
-                    button--blue
-                @endif">
+            @php
+                $activeBlockClass = $activeEventId == $event->id ? 'bg-yellow-100' : '';
+                
+                $activeBtnClass = $activeEventId == $event->id ? 'button--blue' : '';
+            @endphp
+            <div wire:key="{{$event->id}}" class=" border rounded p-4 {{$activeBlockClass}}">
+                <button wire:click="selectedEvent({{$event->id}})" class="button {{$activeBtnClass}}">
                     {{$event->name}}                    
                 </button>            
                 <select wire:model.live="activeSeries" >
@@ -29,9 +32,9 @@
     </div>
     @if ($isPanel)
 
-    @if (!empty($playersRegistraion))
+    @if (!empty($playersRegistration))
     <div class="players-tournament__items">
-        @foreach ($playersRegistraion as $player)
+        @foreach ($playersRegistration as $player)
         <div class="players-tournament__item {{ $player->id == $selectedPlayer ? 'active' : '' }}">
             <article class="item-player item-player--stats">
                 <button wire:click="selectPlayer({{$player->id}})" class="item-player__image-link">

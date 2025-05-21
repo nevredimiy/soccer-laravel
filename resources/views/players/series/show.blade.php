@@ -26,6 +26,7 @@
                         'seriesMeta' => $seriesMeta,
                         ])
                 @elseif ($event->tournament->type == 'solo_private')
+
                     @livewire('player-request-one-private', ['event' => $event, 'playerPrice' => $playerPrice])
                 @endif                   
                 

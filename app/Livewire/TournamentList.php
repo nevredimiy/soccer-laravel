@@ -18,7 +18,7 @@ class TournamentList extends Component
     public array $seriesMetas = [];
     public $activeEventId = 0;
     public bool $isPanel = false;
-    public $playersRegistraion = [];
+    public $playersRegistration = [];
     public $playersSeries = [];
     public $teams = null;
     public $selectedPlayer = null;
@@ -42,16 +42,12 @@ class TournamentList extends Component
 
         $this->events = $events;
         $this->seriesMetas = $seriesMetasSolo; 
-
-        
-           
     }
 
     public function selectedEvent($eventId)
     {
         $this->activeEventId = $eventId;
         $this->loadSettingPanel($eventId);
-
         $this->getSeriesPlayers();
     }
 
@@ -60,9 +56,11 @@ class TournamentList extends Component
          
         $event = Event::with('seriesMeta.playerSeriesRegistration.player')->find($eventId);
         $this->activeEvent = $event; 
-        $this->activeSeries = $this->seriesMetas[$this->activeEventId][0]->id;  
+        
+        $this->activeSeries = $this->seriesMetas[$this->activeEventId][0]->id;
 
-        $this->getPlayersRegistration($event);
+
+        $this->getPlayersRegistration($this->activeSeries);
 
         $this->teams = Team::with(['color', 'players'])->where('event_id', $eventId)->get();
         $teamIds = $this->teams->pluck('id')->toArray();
@@ -72,21 +70,20 @@ class TournamentList extends Component
 
 
         
-        
-        if(!empty($this->playersRegistraion || $playersTeams->count()>0)){
+        if (!empty($this->playersRegistration) || $playersTeams->count() > 0){
             $this->isPanel = true;
         }
     }
 
-    protected function getPlayersRegistration($event)
+    protected function getPlayersRegistration($seriesMetaId)
     {
-        $this->playersRegistraion = [];
-         foreach($event->seriesMeta as $seriesMeta) {
-            foreach($seriesMeta->playerSeriesRegistration as $playersSR) {
-                $this->playersRegistraion[] = $playersSR->player;
-            }   
-        }
+        $playerSeriesRegistration = PlayerSeriesRegistration::where('series_meta_id', $seriesMetaId)->get();
 
+        $this->playersRegistration = [];
+        foreach($playerSeriesRegistration as $playersSR) {            
+            $this->playersRegistration[] = $playersSR->player;            
+        }
+        
     }
 
     public function selectPlayer($playerId)
@@ -99,6 +96,10 @@ class TournamentList extends Component
     {
         if(!$this->selectedPlayer){
             return session()->flash('error', 'Спочатку виберіть гравця');
+        }
+
+        if (!is_numeric($playerNumber) || $playerNumber < 1 || $playerNumber > 10) {
+            return session()->flash('error', 'Невірний номер гравця');
         }
 
         PlayerSeriesRegistration::query()
@@ -121,7 +122,7 @@ class TournamentList extends Component
         ]);
         
         
-        $this->getPlayersRegistration($this->activeEvent);
+        $this->getPlayersRegistration($this->activeSeries);
         $this->getSeriesPlayers();
         
         $this->selectedPlayer = null;
@@ -160,10 +161,17 @@ class TournamentList extends Component
             'player_id' => $playerid,
         ]);
 
-        $this->getPlayersRegistration($this->activeEvent);
+        $this->getPlayersRegistration($this->activeSeries);
         $this->getSeriesPlayers();        
         $this->selectedPlayer = null;
         session()->flash('notice', 'Гравця видалено з команди і переведено у загальний кошик');
+    }
+
+    public function updatedActiveSeries()
+    {
+
+        $this->getPlayersRegistration($this->activeSeries);
+        $this->getSeriesPlayers();
     }
 
 
