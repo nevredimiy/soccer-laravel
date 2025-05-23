@@ -7,6 +7,7 @@ use App\Models\Team;
 use App\Models\Event;
 use App\Models\Player;
 use App\Models\EventTeamPrice;
+use App\Models\SeriesTeam;
 
 class TeamList extends Component
 {
@@ -15,42 +16,51 @@ class TeamList extends Component
     public $activeTeamId;
     public $userId;
     
-    public function mount()
+   public function mount()
     {
         $this->userId = auth()->id();
-    
-        // Получаем ID всех команд, где участвует игрок
+        $today = now()->timezone(config('app.timezone'));
+
+        // Получаем ID игрока
+        $playerId = \DB::table('players')
+            ->where('user_id', $this->userId)
+            ->value('id');
+
+        // Получаем ID команд, где игрок участвует
         $playerTeamIds = \DB::table('player_teams')
-            ->where('player_id', function ($query) {
-                $query->select('id')
-                    ->from('players')
-                    ->where('user_id', $this->userId)
-                    ->limit(1);
+            ->where('player_id', $playerId)
+            ->pluck('team_id')
+            ->toArray();
+
+        // Получаем команды с предзагрузкой, фильтруем по сериям > сегодня
+        $this->teams = Team::with(['event.seriesMeta' => function($query) use ($today) {
+                $query->where('start_date', '>', $today);
+            }, 'event.seriesMeta.stadium', 'color'])
+            ->where(function ($query) use ($playerTeamIds) {
+                $query->where('owner_id', $this->userId)
+                    ->orWhereIn('id', $playerTeamIds);
             })
-            ->pluck('team_id');
-        
-        $this->teams = Team::with(['event.seriesMeta.stadium', 'color'])
-            ->where('owner_id', $this->userId)
-            ->orWhereIn('id', $playerTeamIds)
             ->orderByDesc('id')
-            ->get();
+            ->get()
+            // Оставляем только команды, у которых есть будущие серии
+            ->filter(function ($team) {
+                return $team->event && $team->event->seriesMeta->isNotEmpty();
+            })
+            ->values(); // переиндексация
 
-        $this->activeTeamId = ($this->teams->first())->id;
+        // Установка активной команды
+        $this->activeTeamId = session('selected-team', optional($this->teams->first())->id);
 
-        //  Получаем сумму неоплаченной команды
+        // Вычисление суммы для команд со статусом "awaiting_payment"
         $awaitingPaymentTeams = $this->teams->where('status', 'awaiting_payment')->sortBy('id');
-        foreach($awaitingPaymentTeams as $t){
-            $eventTeams = Team::where('event_id', $t->event_id)->orderBy('id')->get();
-            $eventTeamPrices = EventTeamPrice::where('event_id', $t->event_id)->get()->toArray();
-
-            foreach($eventTeams as $idxEvT => $eventTeam){
-                if($eventTeam->id == $t->id){
-                    $t->amount = $eventTeamPrices[$idxEvT]['price'];
-                }
+        foreach ($awaitingPaymentTeams as $t) {
+            $eventTeamPrices = EventTeamPrice::where('event_id', $t->event_id)->get()->keyBy('team_id');
+            if ($eventTeamPrices->has($t->id)) {
+                $t->amount = $eventTeamPrices[$t->id]->price;
             }
         }
-       
     }
+
     
 
     public function selectTeam($teamId)
@@ -58,6 +68,7 @@ class TeamList extends Component
         
         $this->activeTeamId = $teamId;
         $this->dispatch('team-selected', team_id: $teamId);
+        session(['selected-team' => $teamId]);
     }
 
     public function render()

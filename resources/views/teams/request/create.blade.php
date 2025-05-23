@@ -27,15 +27,7 @@
                                 </div>
                                 <input type="text" placeholder="Назва команди" name="name" class="team-setup__input" value="{{ old('name') }}">
                             </div>
-                            {{-- <div class="team-setup__logo">
-                                <div class="team-setup__image">
-                                    <img src="{{ asset('img/header/logo.svg') }}" alt="Logo" class="ibg ibg--contain">
-                                </div>
-                                <label class="team-setup__upload button button--blue upload-btn">
-                                    <input type="file" name="logo" accept="image/webp, image/jpeg, image/png, image/gif, image/svg+xml" /> 
-                                    <span>Завантажити ЛОГОТИП</span>
-                                </label>
-                            </div> --}}
+                          
                             <livewire:team-logo-uploader />
         
                             <div class="team-setup__footer">

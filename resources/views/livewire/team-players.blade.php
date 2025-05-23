@@ -56,20 +56,23 @@
                 </div>
             </article>
             <div data-status="{{$player['status']}}" class="players-tournament__actions">
-                <div class="players-tournament__label {{ $player['status'] === 'main' ? 'green-bg' : 'gray-bg' }}">
-                    {{ $player['status'] === 'main' ? 'ОСНОВИЙ' : 'РЕЗЕРВНИЙ' }}
+                @php
+                    $statusClass = $player['status'] === 'main' ? 'text-green-600' : 'text-stone-600';
+                @endphp
+                <div class="text-center font-extrabold uppercase py-1 px-2 text-tiny transition w-full {{ $statusClass }}">
+                    {{ $player['status'] === 'main' ? 'ОСНОВНИЙ' : 'РЕЗЕРВНИЙ' }}
                 </div>
                 
                
                     <button 
                         wire:click="save({{ $player['id'] }}, {{ $team->id }})"
                         type="button"
-                        class="players-tournament__label {{ $player['status'] === 'main' ? 'gray-bg' : 'green-bg' }}"
+                        class="players-tournament__label text-white {{ $player['status'] === 'main' ? 'gray-bg' : 'green-bg' }}"
                     >
                         {{ $player['status'] === 'main' ? 'РЕЗЕРВНИЙ' : 'ОСНОВНИЙ' }}
                     </button>
                
-
+                    
 
                 <livewire:remove-player-from-team :player="$player" :key="$player['id']" :team="$team" />
                 

@@ -12,6 +12,7 @@ use Livewire\Attributes\On;
 class TeamShedule extends Component
 {
     public ?Event $event = null;
+    public $teams = null;
     public array $colorClasses = [];
     public array $colorNames = [];
     public array $templateCalendar = [];
@@ -22,13 +23,14 @@ class TeamShedule extends Component
     {
         $this->event = $event;
         $this->getTemplateCalendar();
-        
+        $this->teams = Team::with('color')->where('event_id', $event->id)->get();
     }
 
     #[On('eventSelected')]
     public function updateEvent($eventId)
     {
         $this->event = Event::find($eventId);
+       
         $this->getTemplateCalendar();
     }
 
@@ -50,8 +52,6 @@ class TeamShedule extends Component
             $this->templateCalendar = $teamplate;
         }      
         
-
-        // $this->seriesMetas = SeriesMeta::where('event_id', $event->id)->get()->groupBy('series')->toArray();
         $this->seriesMetas = SeriesMeta::select('series', 'round', 'start_date')
             ->where('event_id', $event->id)
             ->orderBy('series')
@@ -59,6 +59,7 @@ class TeamShedule extends Component
             ->get()
             ->groupBy('round')
             ->toArray();
+
 
         $this->currentRound = [
                 'round_number' => 1,

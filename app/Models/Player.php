@@ -54,14 +54,10 @@ class Player extends Model
         return $this->last_name . ' ' . $this->first_name;
     }
 
-
     protected $casts = [
         'birth_date' => 'date',
     ];
 
-    public function getCountGames($teamId)
-    {
-        
-    }
+    
 
 }

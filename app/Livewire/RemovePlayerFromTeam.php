@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\Player;
+use App\Models\SeriesPlayer;
 use App\Models\Team;
 use Illuminate\Support\Facades\Auth;
 
@@ -31,8 +32,6 @@ class RemovePlayerFromTeam extends Component
 
     public function remove()
     {
-       
-    
         if (!$this->team) {
             session()->flash('error', 'Гравець не належить до жодної команди.');
             return;
@@ -43,20 +42,32 @@ class RemovePlayerFromTeam extends Component
             return;
         }
 
+        $playerId = data_get($this->player, 'id');
+        $player = Player::find($playerId);
+
+        if (!$player) {
+            session()->flash('error', 'Гравця не знайдено.');
+            return;
+        }
+
+         $seriesPlayer = SeriesPlayer::where('player_id', $playerId)
+            ->where('team_id', $this->team->id)
+            ->first();
+        
+        if($seriesPlayer){
+            $seriesPlayer->delete();
+        }
         
         // Удаляем игрока из команды (из pivot-таблицы)
-        $this->player->teams()->detach($this->team->id);
-
+        $player->teams()->detach($this->team->id);
 
         // Закрываем модалку
         $this->confirming = false;
 
         // Успешное сообщение
-        session()->flash('success', "Гравця {$this->player->last_name} успішно видалено з команди {$this->team->name}.");
-
+        session()->flash('success', "Гравця {$player->full_name} успішно видалено з команди {$this->team->name}.");
         
-        // // Если нужно скрыть карточку игрока
-        // $this->dispatch('playerRemoved', playerId: $this->player->id);
+        // Если нужно скрыть карточку игрока
         return redirect(request()->header('Referer'));
     }
 

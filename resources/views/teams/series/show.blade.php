@@ -42,7 +42,7 @@
                                 <div style="--color: #FFF" class="reg-tournament__rating">
                                     <div data-rating-size="10" data-rating-value="8" class="rating">
                                         <div class="rating__items">
-                                            @for ($i=0; $i<10; $i++)
+                                            @for ($i=1; $i<=10; $i++)
                                             <label class="rating__item @if ($i <= $team->rating)
                                                 rating__item--active
                                                 @endif">                                            

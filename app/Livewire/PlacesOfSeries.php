@@ -16,6 +16,7 @@ use Livewire\Attributes\On;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\PlayerTeam;
+use App\Models\SeriesTeam;
 
 class PlacesOfSeries extends Component
 {
@@ -26,7 +27,8 @@ class PlacesOfSeries extends Component
     public ?Event $event = null;
     public $userId = null; 
     public $playerId = null;
-    public $seriesTeams = [];
+    public $seriesTeam = null;
+    public $seriesColorTeams = [];
     public $formatDate = '';
     public $maxPlayer = 6;
     public $showModal = false;
@@ -36,53 +38,97 @@ class PlacesOfSeries extends Component
     public $desiredBalance = 0;
     public $statusRegistration = 'open';
 
-    public function mount($team)
+  public function mount($team)
     {
         $this->team = $team;
-
         $this->userId = Auth::id();
-        $player = Player::where('user_id', $this->userId)->first();
-        $this->playerId = $player ? $player->id : null;
-        $today = Carbon::now()->timezone(config('app.timezone'))->format('Y-m-d H:i:s'); 
-        $event = Event::with('tournament')->find($team->event_id);        
-        
-        $this->seriesMeta = SeriesMeta::where('event_id', $event->id)->where('start_date', '>', $today)->orderBy('start_date')->first();
+        $this->playerId = Player::where('user_id', $this->userId)->value('id');
+        $this->event = Event::with('tournament')->find($team->event_id);
 
-        $service = new SeriesTemplatesService();
+        $this->loadSeriesMetaAndTeam();
 
-        $templateSeries = $service->getTemplateShedule($event->tournament->count_teams);
-        $teams = Team::with('color')->where('event_id', $this->team->event->id)->get()->toArray();
-    
-        if($this->seriesMeta){
-            foreach($templateSeries[$this->seriesMeta->round-1][$this->seriesMeta->series-1] as $key => $teamIndex){
-                if(isset($teams[$teamIndex])){
-                    $this->seriesTeams[$key]['name'] = $teams[$teamIndex]['name'];
-                    $this->seriesTeams[$key]['classColor'] = $service->getColorClass($teams[$teamIndex]['color']['name']);
-                }else {
-                    $this->seriesTeams[$key]['name'] = 'Очікуємо';
-                    $this->seriesTeams[$key]['classColor'] = 'default-bg';
-                }
-            }
-        }
-                
         if ($this->team) {
             $this->maxPlayer = $this->team->max_players;
         }
 
-        if($this->playerId){
-            $this->checkStatusPlayer();         
+        if ($this->playerId) {
+            $this->checkStatusPlayer();
         }
+
         $this->getPlayerSeries();
-        $this->statusRegistration = $this->seriesMeta?->status_registration;    
-        
+
+        $this->initSeriesColorTeams();
+
     }
 
     #[On('team-selected')]
     public function updateSelectedTeam($team_id)
     {
         $this->team = Team::find($team_id);
+        $this->event = Event::with('tournament')->find($this->team->event_id);
+
+        $this->loadSeriesMetaAndTeam();
         $this->getPlayerSeries();
     }
+
+    protected function loadSeriesMetaAndTeam()
+    {
+        if (!$this->team) {
+            return;
+        }
+
+        $today = now()->timezone(config('app.timezone'));
+
+        // Получаем ID всех series_meta, где участвует команда
+        $seriesMetaIds = SeriesTeam::where('team_id', $this->team->id)->pluck('series_meta_id');
+
+        // Получаем ближайшую серию, которая еще не началась
+        $this->seriesMeta = SeriesMeta::whereIn('id', $seriesMetaIds)
+            ->where('start_date', '>', $today)
+            ->where('status_registration', 'open')
+            ->orderBy('start_date')
+            ->first();
+
+        if ($this->seriesMeta) {
+            session(['currentSeriesMeta' => $this->seriesMeta->id]);
+
+            // Находим участие команды в найденной серии
+            $this->seriesTeam = SeriesTeam::where('series_meta_id', $this->seriesMeta->id)
+                ->where('team_id', $this->team->id)
+                ->first();
+
+            $this->statusRegistration = $this->seriesTeam?->status;
+        } else {
+            $this->seriesTeam = null;
+            $this->statusRegistration = null;
+        }
+    }
+
+
+    protected function initSeriesColorTeams()
+    {
+        if (!$this->seriesMeta) {
+            return;
+        }
+
+        $service = new SeriesTemplatesService();
+        $templateSeries = $service->getTemplateShedule($this->event->tournament->count_teams);
+        $teams = Team::with('color')->where('event_id', $this->team->event->id)->get()->toArray();
+
+        foreach ($templateSeries[$this->seriesMeta->round - 1][$this->seriesMeta->series - 1] as $key => $teamIndex) {
+            if (isset($teams[$teamIndex])) {
+                $this->seriesColorTeams[$key]['name'] = $teams[$teamIndex]['name'];
+                $this->seriesColorTeams[$key]['classColor'] = $service->getColorClass($teams[$teamIndex]['color']['name']);
+                $this->seriesColorTeams[$key]['styleColor'] = $teams[$teamIndex]['color']['color_picker'];
+            } else {
+                $this->seriesColorTeams[$key]['name'] = 'Очікуємо';
+                $this->seriesColorTeams[$key]['classColor'] = 'default-bg';
+                $this->seriesColorTeams[$key]['styleColor'] = '#c9c9c9';
+            }
+        }
+
+    }
+
 
     public function dropRegPlayer($player_id)
     {
@@ -121,6 +167,7 @@ class PlacesOfSeries extends Component
         }
     }
 
+
     public function closeModal()
     {
         $this->showModal = false;
@@ -146,7 +193,7 @@ class PlacesOfSeries extends Component
         $this->minBalance = $required;
         $this->desiredBalance = $required - $balance;
 
-        return $balance >= $required;
+        return $balance < $required;
     }
 
     public function takePlace($playerNumber = 0)
@@ -160,9 +207,7 @@ class PlacesOfSeries extends Component
         $event = Event::with('tournament')->find($eventId);
 
         // 1. Проверка: резервный игрок
-        $status = $this->playerIsReserve();
-
-        if ($status === 'reserve') {
+        if ($this->playerIsReserve()) {
             return redirect()->to('/profile');
         }
 
@@ -197,7 +242,7 @@ class PlacesOfSeries extends Component
     protected function getPlayerSeries()
     {
 
-         if (!$this->team || !$this->seriesMeta) return;
+        if (!$this->team || !$this->seriesMeta) return;
         
         $this->regPlayers = SeriesPlayer::with('player')
             ->where('series_meta_id', $this->seriesMeta->id)
@@ -218,11 +263,13 @@ class PlacesOfSeries extends Component
 
 
     public function closeRegistrations()
-    {
+    {        
+        if (!$this->team || !$this->seriesMeta || !$this->seriesTeam) return;
 
-        if (!$this->team || !$this->seriesMeta) return;
         
-        $this->seriesMeta->update(['status_registration' => 'closed']);
+        // Статус приема заявок закрывам для команды
+        $this->seriesTeam->update(['status' => 'closed']);
+
         $this->statusRegistration = 'closed';
 
         // списание баланса
@@ -230,25 +277,29 @@ class PlacesOfSeries extends Component
             ->where('series_meta_id', '=', $this->seriesMeta->id)
             ->where('team_id', '=', $this->team->id)
             ->get();
+
+        $playerCount = $seriesPlayers->count();
         
         $seriesPrice = SeriesMeta::query()
-            ->where('event_id', '=', $this->team->event->id)
+            ->where('event_id', '=', $this->team->event_id)
             ->where('series', '=',  $this->seriesMeta->series)
             ->value('price');
         
-        $writeOffAmount = round($seriesPrice / $seriesPlayers->count());
-        $balance = 0;
+        if ($playerCount === 0 || $seriesPrice === 0) return;
 
-        foreach($seriesPlayers as $player){
-            // $balance = User::query()
-            //     ->where('id', $player->player->user_id)
-            //     ->value('balance');
+        $writeOffAmount = round($seriesPrice / $playerCount);
 
-            // User::query()
-            //     ->where('id', $player->player->user_id)
-            //     ->update(['balance' => $balance - $writeOffAmount]);
-            $user = User::find($player->player->user_id);
-            $user->decrement('balance', $writeOffAmount);
+        foreach ($seriesPlayers as $player) {
+            if ($player->player && $player->player->user_id) {
+                User::where('id', $player->player->user_id)
+                    ->decrement('balance', $writeOffAmount);
+            }
+        }
+
+        // Проверка на закрытие всей серии
+        $seriesTeamsWithCloseStatus = SeriesTeam::where('status', 'closed')->where('series_meta_id', $this->seriesMeta->id)->get();
+        if ($seriesTeamsWithCloseStatus->count() == 3) {
+            $this->seriesMeta->update(['status_registration' => 'closed']);
         }
         
     }
@@ -256,7 +307,8 @@ class PlacesOfSeries extends Component
     #[On('updateMaxPlayer')]
     public function updateMaxPlayer($maxPlayer)
     {
-        $this->maxPlayer = $maxPlayer;        
+        $this->maxPlayer = $maxPlayer;   
+    
     }
 
     public function checkBalance()

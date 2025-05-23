@@ -52,8 +52,6 @@ class SeriesList extends Component
             ->values(); // переиндексируем коллекцию
             
         $this->series = $this->calculateStats($this->series);
-
-
     }
 
     protected function calculateStats($seriesCollection)
@@ -69,7 +67,7 @@ class SeriesList extends Component
             $totalRating = 0;
             $totalPlayers = 0;
 
-            if($this->tournament->type == 'solo_private'){
+            if($this->tournament->type == 'solo_private' || $this->tournament->type == 'team'){
                 foreach($series->seriesPlayers as $playerSR){
                     $totalRating += $playerSR->player->rating;
                     $totalPlayers += 1;

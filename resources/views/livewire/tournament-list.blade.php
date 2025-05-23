@@ -1,6 +1,6 @@
 <section class="profile__teams teams-profile hero-tournament__info">                        
     <h2 class="teams-profile__title section-title section-title--margin">
-        УПРАВЛІННЯ Турнирами
+        УПРАВЛІННЯ Турнирами для гравців
     </h2>   
     <div class="flex gap-2">
         @if (empty($events))

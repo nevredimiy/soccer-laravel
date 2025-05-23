@@ -19,10 +19,13 @@
                 </div>
                 <div class="calendar-section__items">
 
-                    @foreach ($template as $idxRound => $round)                
-                        <div wire:key="{{$series}}" class="calendar-section__item item-calendar item-calendar--gray-bg">
+                    @foreach ($template as $idxRound => $round) 
+              
+                        <div wire:key="{{$idxRound}}" class="calendar-section__item item-calendar item-calendar--gray-bg">
                             <div class="item-calendar__date">
-                                {{ isset($seriesMetas[$series+1][$idxRound]) ?  \Carbon\Carbon::parse($seriesMetas[$series+1][$idxRound]['start_date'])->locale('uk')->settings(['formatFunction' => 'translatedFormat'])->format('d.m') : \Carbon\Carbon::parse($seriesMetas[$series+1][0]['start_date'])->locale('uk')->settings(['formatFunction' => 'translatedFormat'])->format('d.m')}}
+                                {{ isset($seriesMetas[$idxRound+1][$idxRound]) ?  
+                                    \Carbon\Carbon::parse($seriesMetas[$idxRound+1][$idxRound]['start_date'])->locale('uk')->settings(['formatFunction' => 'translatedFormat'])->format('d.m') : 
+                                    \Carbon\Carbon::parse($seriesMetas[$idxRound+1][0]['start_date'])->locale('uk')->settings(['formatFunction' => 'translatedFormat'])->format('d.m')}}
                                 {{-- @if (isset($seriesMetas[$series+1][$idxRound]))
                                 {{\Carbon\Carbon::parse($seriesMetas[$series+1][$idxRound]['start_date'])->locale('uk')->settings(['formatFunction' => 'translatedFormat'])->format('d.m')}}    
                                 @else
@@ -44,9 +47,11 @@
                                     @endif
                                 </div>
                                 <div class="item-calendar__body">
-                                    @if ( count($seriesMetas[$series+1]) == $event->tournament->count_rounds )
-                                        @foreach ($seriesMetas[$series+1][$idxRound] as $teamIndex)
-                                        <span class="blue-bg"></span>                                
+                                    @if ( $teams->count() == $event->tournament->count_teams )
+                                        @foreach ($seriesMetas[$idxRound+1] as $itemSeries)
+                                            @foreach($itemSeries as $idx => $s)
+                                                <span style="background:{{$teams[$round[$loop->index]]->color->color_picker}}"></span>                                            
+                                            @endforeach                                        
                                         @endforeach
                                     @else
                                         @foreach ($round as $item)

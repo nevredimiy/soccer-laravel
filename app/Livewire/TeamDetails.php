@@ -18,40 +18,31 @@ class TeamDetails extends Component
     public $teamsWithApplications;    
     public $userId;    
     
-    public function mount()
+   public function mount()
     {
         $this->userId = Auth::id();
 
-        // Получаем ID всех команд, где участвует игрок
-        $playerTeamIds = \DB::table('player_teams')
-            ->where('player_id', function ($query) {
-                $query->select('id')
-                    ->from('players')
-                    ->where('user_id', $this->userId)
-                    ->limit(1);
-            })
-            ->pluck('team_id');        
-        
+        $playerId = Player::where('user_id', $this->userId)->value('id');
+
+        $playerTeamIds = PlayerTeam::where('player_id', $playerId)->pluck('team_id');
+
         $this->teams = Team::with(['event.tournament', 'color'])
             ->where('owner_id', $this->userId)
             ->orWhereIn('id', $playerTeamIds)
             ->orderByDesc('id')
             ->get();
-        if($this->teams->isEmpty()){
-            $playerId = Player::where('user_id', $this->userId)->pluck('id');
-            $teamIds = PlayerTeam::where('player_id', $playerId)->pluck('team_id');
-            
-            $this->teams = Team::with(['event.tournament', 'color'])
-                ->whereIn('id', $teamIds)
-                ->orderByDesc('id')
-                ->get();
+
+        $selectedTeamId = session('selected-team');
+
+        if ($selectedTeamId) {
+            $this->team = $this->teams->find($selectedTeamId);
+        } else {
+            $this->team = $this->teams->first();
         }
-        
-        $this->team = $this->teams->first();
-               
-        $this->teamsWithApplications = $this->teams->load('applications.user.player');    
-         
+
+        $this->teamsWithApplications = $this->teams->load('applications.user.player');
     }
+
 
     #[On('team-selected')]
     public function updateTeam($team_id)

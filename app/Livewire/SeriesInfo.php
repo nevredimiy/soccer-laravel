@@ -23,7 +23,7 @@ class SeriesInfo extends Component
         $totalRating = 0;
         $totalPlayers = 0;
 
-        if($type == 'team' || $type == 'solo'){
+        if($type == 'solo'){
             foreach($seriesMeta->playerSeriesRegistration as $playerSR){
                 $totalRating += $playerSR->player->rating;
                 $totalPlayers += 1;

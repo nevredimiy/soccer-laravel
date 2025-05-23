@@ -607,7 +607,12 @@ body::after {
   font-size: .75rem;
   font-weight: 700;
   line-height: 1.2;
-  text-transform: uppercase
+  text-transform: uppercase;
+  min-height: 2.4em;
+   display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 .item-player__name:not(:last-child) {
   margin-bottom: .5rem
@@ -2296,6 +2301,7 @@ body::after {
   transition: all .3s;
   padding: .3125rem .1875rem
 }
+
 .players-tournament__info {
   display: grid;
   grid-template-columns: repeat(auto-fill,minmax(11.875rem,1fr));

@@ -15,6 +15,7 @@ use LiqPay\LiqPay;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 
+
 class TeamRequestController extends Controller
 {
     
@@ -75,8 +76,7 @@ class TeamRequestController extends Controller
 
         $teams = Team::where('event_id', $request->event_id)->get();
 
-        
-     
+             
         // Проверка на уникальность цвета
         $existingColor = $teams->firstWhere('color_id', $color->id);
 
@@ -108,6 +108,42 @@ class TeamRequestController extends Controller
             'status' => 'awaiting_payment',
             'player_request_status' => 'needed'
         ]);
+
+        // ЗАПОЛНЕНИЯ ТАБЛИЦЫ series_teams        
+        // получаем индекс только что добавленной команды для приминения в шаблоне
+        $lastIndex = ($teams->keys()->last() ?? -1) + 1;
+        // получаем шаблон серий
+        $service = new SeriesTemplatesService();
+        $templateSeries = $service->getTemplateShedule($event->tournament->count_teams);
+        $seriesTeams = [];
+
+        foreach($templateSeries as $idxRound => $round){
+            foreach($round as $idxSeries => $series){
+                
+                if(in_array($lastIndex, $series)){
+
+                    $seriesMetaId = SeriesMeta::where('event_id', $event->id)
+                        ->where('series', $idxSeries+1)
+                        ->where('round', $idxRound+1)
+                        ->first();
+
+                   if ($seriesMetaId) {
+                        $seriesTeams[] = [
+                            'series_meta_id' => $seriesMetaId->id,
+                            'team_id' => $team->id,
+                            'status' => 'open',
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ];
+                    }
+
+                }
+            }
+        }
+
+        if(!empty($seriesTeams)){
+            \DB::table('series_teams')->insert($seriesTeams);
+        }
 
        
 
@@ -223,23 +259,6 @@ class TeamRequestController extends Controller
             Log::warning("Ошибка оплаты LiqPay для команды ID {$team->id}");
         }
 
-        // if ($liqpay->cnb_signature($data) !== $signature) {
-        //     return response()->json(['message' => 'Invalid signature'], 400);
-        // }
-        
-    
-        // if ($decodedData['status'] === 'success') {
-        //     $orderId = $decodedData['order_id']; // например, "team_15_1713983293"
-        //     $teamId = explode('_', $orderId)[1] ?? null;
-    
-        //     if ($teamId) {
-        //         $team = Team::find($teamId);
-        //         if ($team && $team->status === 'awaiting_payment') {
-        //             $team->update(['status' => 'paid']);
-        //         }
-        //     }
-        // }
-    
         return response()->json(['message' => 'Payment processed']);
     }
 
@@ -277,29 +296,49 @@ class TeamRequestController extends Controller
         }
     }
 
-    protected function generateMatches($event, $teams){
+    protected function generateMatches($event, $teams)
+    {
 
         $teamsArray = $teams->toArray(); // превращаем коллекцию в массив для быстрого доступа по индексам
-        $seriesMetas = SeriesMeta::where('event_id', $event->id)->get();
+        $seriesMetas = SeriesMeta::where('event_id', $event->id)->get()->groupBy('round');
+
+      
     
         $service = new SeriesTemplatesService();
     
         // Получаем шаблоны сериалов и матчей
-        $templateSeries = $service->getTemplateShedule($event->tournament->count_teams);
+        $templateSeries = $service->getTemplateCalendar($event->tournament->count_teams);
         $templateMatches = $service->getMatchTemplate();
+
 
         $matches = [];
 
-        foreach($seriesMetas as $indexRound => $seriesMeta){
-            foreach($templateSeries as $indexSeries => $series){
-                 foreach ($templateMatches as $templateMatche) {
+       foreach ($seriesMetas as $round => $roundMetaCollection) {
+            $seriesMetaItem = $roundMetaCollection->first();
+
+            foreach ($templateSeries as $indexSeries => $series) {
+                if (!isset($series[$round - 1])) {
+                    continue; // нет нужной тройки — пропускаем
+                }
+
+                $teamTriple = $series[$round - 1];
+
+                foreach ($templateMatches as $templateMatche) {
+                    $team1Index = $teamTriple[$templateMatche[0]] ?? null;
+                    $team2Index = $teamTriple[$templateMatche[1]] ?? null;
+
+                    if (!isset($teamsArray[$team1Index], $teamsArray[$team2Index])) {
+                        continue;
+                    }
+
                     $matches[] = [
                         'event_id' => $event->id,
-                        'team1_id' => $teams[ $templateSeries[ $indexRound ][ $indexSeries ][ $templateMatche[ 0 ] ] ][ 'id' ],
-                        'team2_id' => $teams[ $templateSeries[ $indexRound ][ $indexSeries ][ $templateMatche[ 1 ] ] ][ 'id' ],
-                        'start_time' => \Carbon\Carbon::parse($seriesMeta->start_date)->format('Y-m-d H:i:s'),
-                        'series' => $indexSeries+1,
-                        'round' => $indexRound+1,
+                        'series_meta_id' => $seriesMetaItem->id,
+                        'team1_id' => $teamsArray[$team1Index]['id'],
+                        'team2_id' => $teamsArray[$team2Index]['id'],
+                        'start_time' => \Carbon\Carbon::parse($seriesMetaItem->start_date)->format('Y-m-d H:i:s'),
+                        'series' => $indexSeries + 1,
+                        'round' => $round,
                         'status' => 'scheduled',
                         'created_at' => now(),
                         'updated_at' => now()
@@ -307,6 +346,7 @@ class TeamRequestController extends Controller
                 }
             }
         }
+
 
         if (!empty($matches)) {
             \DB::table('matches')->insert($matches);
