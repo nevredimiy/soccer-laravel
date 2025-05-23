@@ -59,14 +59,14 @@ class TeamShedule extends Component
             ->get()
             ->groupBy('round')
             ->toArray();
-
+        
 
         $this->currentRound = [
                 'round_number' => 1,
                 'event_id' => $event->id,
                 'series_number' => 1
             ];
-
+        
     }
 
     public function selectedRound($roundNumber, $eventId, $seriesNumber)
