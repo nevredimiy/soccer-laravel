@@ -20,6 +20,8 @@ class ManagerVotePlayers extends Component
         $this->series = $series;
         $this->playersTeam = $playersTeam;
         $this->updateVotedPlayers();
+
+
     }
 
     protected function updateVotedPlayers()
@@ -30,8 +32,8 @@ class ManagerVotePlayers extends Component
 
     public function selectVotingPlayer($playerId)
     {
-
         $this->votingPlayer = $playerId;
+        
     }
 
     public function selectBestPlayer($bestPlayerId)
@@ -97,6 +99,10 @@ class ManagerVotePlayers extends Component
 
     public function render()
     {
-        return view('livewire.manager-vote-players');
+        // Получаем количество игроков в команде в данной серии
+        $seriesPlyayersOfTeam = $this->series->seriesPlayers->groupBy('team_id')->all();
+        return view('livewire.manager-vote-players', [
+            'seriesPlyayersOfTeam' => $seriesPlyayersOfTeam,
+        ]);
     }
 }

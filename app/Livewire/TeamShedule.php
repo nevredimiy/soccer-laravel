@@ -24,7 +24,7 @@ class TeamShedule extends Component
         $this->event = $event;
         $this->getTemplateCalendar();
         $this->teams = Team::with('color')->where('event_id', $event->id)->get();
-    }
+        }
 
     #[On('eventSelected')]
     public function updateEvent($eventId)

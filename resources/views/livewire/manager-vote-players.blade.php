@@ -3,7 +3,7 @@
         <h2 class="hero-tournament__label">Фото гравців матчу</h2>
         @foreach ($series->teams as $team)
         <div wire:key="{{$team->id}}" style="--color: {{$team->color->color_picker}}" class="players-tournament__team">
-            @for ($i=1; $i<=$team->players->count(); $i++)                
+            @for ($i=1; $i<=count($playersTeam[$team->id]); $i++)                
                 @if ($playersTeam[$team->id][$i])
                 @php
                     $activeClass = $playersTeam[$team->id][$i]->id == $votingPlayer ? ' border-black'  : ' border-transparent';
@@ -38,7 +38,6 @@
                     </article>
                 </div>
                 @endif
-
             @endfor
         </div>            
         @endforeach    
@@ -48,47 +47,65 @@
         <h2 class="hero-tournament__label">Вибрати два найкращих гравців матчу</h2>
 
         @foreach ($series->teams as $team)
-        <div wire:key="{{$team->id}}" class="players-tournament__team">
-            @foreach ( $playersTeam[$team->id] as $playerNumbers => $player )
-            @php
-                $activeClass = in_array($player->id, $bestPlayerIds) ? ' border-black text-black' : ' border-transparent'
-            @endphp
-            <div wire:key="bestplayer-{{$player->id}}" class="rounded-full border-4 {{$activeClass}}">
-                    <button 
-                        wire:click="selectBestPlayer({{$player->id}})" 
-                        style="background: {{$team->color->color_picker}}" 
-                        class="social__item ball" 
-                    >
-                    {{ $playerNumbers }}
-                </button>
-            </div>                
-            @endforeach      
-        </div>            
+            <div wire:key="best-team-{{$team->id}}" class="players-tournament__team">
+                @foreach ($playersTeam[$team->id] as $playerNumber => $player)
+                    @php
+                        $isBest = in_array($player->id, $bestPlayerIds);
+                        $isVoting = $player->id == $votingPlayer || in_array($player->id, $worstPlayerIds);
+                    @endphp
+                    <div wire:key="bestplayer-{{$player->id}}" @class([
+                        'rounded-full border-4',
+                        'border-black text-black' => $isBest,
+                        'border-transparent' => !$isBest,
+                        'opacity-50 cursor-not-allowed' => $isVoting,
+                    ])>
+                        <button 
+                            @if (!$isVoting)
+                                wire:click="selectBestPlayer({{ $player->id }})"
+                            @endif
+                            style="background: {{ $team->color->color_picker }}"
+                            class="social__item ball"
+                        >
+                            {{ $playerNumber }}
+                        </button>
+                    </div>
+                @endforeach
+            </div>
         @endforeach
+
 
     </div>
 
     <div class="players-tournament__items profile__hero">
         <h2 class="hero-tournament__label">Вибрати два найгірших гравців матчу</h2>
         
-        @foreach ($series->teams as $team)
-        <div wire:key="{{$team->id}}" class="players-tournament__team">
-            @foreach ( $playersTeam[$team->id] as $playerNumbers => $player )
-            @php
-                $activeClass = in_array($player->id, $worstPlayerIds) ? ' border-black text-black' : 'border-transparent'
-            @endphp
-            <div wire:key="worstplayer-{{$player->id}}"  class="rounded-full border-4 {{$activeClass}}">
-                    <button 
-                        wire:click="selectWorstPlayer({{$player->id}})" 
-                        style="background: {{$team->color->color_picker}}" 
-                        class="social__item ball" 
-                    >
-                    {{ $playerNumbers }}
-                </button>
-            </div>                
-            @endforeach      
-        </div>            
+       @foreach ($series->teams as $team)
+            <div wire:key="best-team-{{$team->id}}" class="players-tournament__team">
+                @foreach ($playersTeam[$team->id] as $playerNumber => $player)
+                    @php
+                        $isWorst = in_array($player->id, $worstPlayerIds);
+                        $isVoting = $player->id == $votingPlayer || in_array($player->id, $bestPlayerIds);
+                    @endphp
+                    <div wire:key="bestplayer-{{$player->id}}" @class([
+                        'rounded-full border-4',
+                        'border-black text-black' => $isWorst,
+                        'border-transparent' => !$isWorst,
+                        'opacity-50 cursor-not-allowed' => $isVoting,
+                    ])>
+                        <button 
+                            @if (!$isVoting)
+                                wire:click="selectWorstPlayer({{ $player->id }})"
+                            @endif
+                            style="background: {{ $team->color->color_picker }}"
+                            class="social__item ball"
+                        >
+                            {{ $playerNumber }}
+                        </button>
+                    </div>
+                @endforeach
+            </div>
         @endforeach
+
     </div>
 
     @if (session()->has('error'))

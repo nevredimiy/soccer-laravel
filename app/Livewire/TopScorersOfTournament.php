@@ -5,6 +5,7 @@ namespace App\Livewire;
 use Livewire\Component;
 use App\Models\MatcheEvent;
 use App\Models\Matche;
+use App\Models\SeriesMeta;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\On;
 
@@ -18,13 +19,14 @@ class TopScorersOfTournament extends Component
     public $topAssists = [];
     public $topScorersLimit = 10;
     public $topScorersOffset = 0;
+    public $playerOfSeries = [];
     
 
     public function mount($teams, $eventId = null): void
     {
         $this->eventId = $eventId ?? session('current_event', 0);        
         $this->teams = $teams;
-        $this->loadTopStats();        
+        $this->loadTopStats();  
     }
 
     #[On('eventSelected')]
@@ -38,6 +40,7 @@ class TopScorersOfTournament extends Component
     {
         $this->topScorers = $this->getTopScorers();
         $this->topAssists = $this->getTopAssists();
+        $this->playerOfSeries = $this->getCountOfSeriesEachPlayers();
     }
 
     private function getMatchIds(): \Illuminate\Support\Collection
@@ -53,18 +56,19 @@ class TopScorersOfTournament extends Component
                 DB::raw('COUNT(*) as goals_count'),
                 DB::raw('COUNT(DISTINCT match_id) as matches_count')
             )
-            ->with(['player', 'team.color'])
+            ->with(['player', 'team.color', 'match.seriesMeta'])
             ->whereIn('match_id', $this->getMatchIds())
             ->where('type', 'goal')
             ->groupBy('player_id', 'team_id')
             ->orderByDesc('goals_count')
             ->limit($this->topScorersLimit)
             ->get();
+
     }
 
     private function getTopAssists()
     {
-         return MatcheEvent::query()
+       return MatcheEvent::query()
             ->select('player_id', 'team_id',
                 DB::raw('COUNT(*) as assists_count'),
                 DB::raw('COUNT(DISTINCT match_id) as matches_count')
@@ -76,19 +80,34 @@ class TopScorersOfTournament extends Component
             ->orderByDesc('assists_count')
             ->limit($this->topScorersLimit)
             ->get();
-        // return MatcheEvent::query()
-        //     ->select('assister_id', 'team_id',
-        //         DB::raw('COUNT(*) as assists_count'),
-        //         DB::raw('COUNT(DISTINCT match_id) as matches_count')
-        //     )
-        //     ->with(['assister', 'team.color'])
-        //     ->whereIn('match_id', $this->getMatchIds())
-        //     ->where('type', 'goal')
-        //     ->whereNotNull('assister_id')
-        //     ->groupBy('assister_id', 'team_id')
-        //     ->orderByDesc('assists_count')
-        //     ->limit($this->topScorersLimit)
-        //     ->get();
+      
+    }
+
+    protected function getCountOfSeriesEachPlayers()
+    {
+        $playerOfSeries = [];
+        $seriesMeta = SeriesMeta::with('seriesPlayers')
+            ->where('event_id', $this->eventId)
+            ->get()
+            ->groupBy('round');
+        foreach ($seriesMeta as $meta) {
+            foreach ($meta as $series) {
+                foreach ($series->seriesPlayers as $player) {
+                    if (!isset($playerOfSeries[$player->player_id])) {
+                        $playerOfSeries[$player->player_id] = [
+                            'id' => $player->player_id,
+                            'name' => $player->player->full_name,
+                            'series_count' => 0,
+                        ];
+                    }
+                    $playerOfSeries[$player->player_id]['series_count']++;
+                }
+                
+            }
+            
+        }
+        
+        return $playerOfSeries;
     }
 
     public function render()

@@ -14,11 +14,12 @@
                     </a>
                     <div class="item-player__details">
                         <div class="item-player__info">
-                            {{$topScorer->matches_count}}
+                            {{$playerOfSeries[$topScorer->player->id]['series_count'] ?? 0}}
                             <img src="img/player/field.webp" alt="Кількість серій" class="ibg ibg--contain">
                         </div>
                         <div class="item-player__info">
                             {{$topScorer->goals_count}}
+                            
                             <img src="img/player/ball.webp" alt="Кількість абитих м'ячів" class="ibg ibg--contain">
                         </div>
                     </div>
@@ -47,7 +48,7 @@
                     </a>
                     <div class="item-player__details">
                         <div class="item-player__info">
-                            {{$topAssist->matches_count}}
+                            {{$playerOfSeries[$topAssist->player->id]['series_count'] ?? 0}}
                             <img src="img/player/field.webp" alt="Кільсть серій" class="ibg ibg--contain">
                         </div>
                         <div class="item-player__info">

@@ -26,11 +26,6 @@
                                {{ isset($seriesMetas[$idxRound+1][$series]) ?  
                                     \Carbon\Carbon::parse($seriesMetas[$idxRound+1][$series]['start_date'])->locale('uk')->settings(['formatFunction' => 'translatedFormat'])->format('d.m') : 
                                     \Carbon\Carbon::parse($seriesMetas[1][0]['start_date'])->locale('uk')->settings(['formatFunction' => 'translatedFormat'])->format('d.m')}}
-                                {{-- @if (isset($seriesMetas[$series+1][$idxRound]))
-                                {{\Carbon\Carbon::parse($seriesMetas[$series+1][$idxRound]['start_date'])->locale('uk')->settings(['formatFunction' => 'translatedFormat'])->format('d.m')}}    
-                                @else
-                                {{\Carbon\Carbon::parse($seriesMetas[$series+1][0]['start_date'])->locale('uk')->settings(['formatFunction' => 'translatedFormat'])->format('d.m')}}
-                                @endif --}}
                             </div>
                             <div 
                                 wire:click="selectedRound({{ $idxRound + 1 }}, {{ session('current_event', 0) }}, {{$series + 1}})"  
@@ -48,14 +43,12 @@
                                 </div>
                                 <div class="item-calendar__body">
                                     @if ( $teams->count() == $event->tournament->count_teams &&  isset($seriesMetas[$idxRound+1]))
-                                        @foreach ($seriesMetas[$idxRound+1] as $itemSeries)
-                                            
-                                                <span style="background:{{$teams[$round[$loop->index]]->color->color_picker}}"></span>                                            
-                                                                                    
+                                        @foreach ($round as $item)
+                                                <span data-id="111" style="background:{{$teams[$round[$loop->index]]->color->color_picker}}"></span>
                                         @endforeach
                                     @else
                                         @foreach ($round as $item)
-                                        <span class="{{$colorClasses[$colorNames[$item]]}}"></span>                                    
+                                            <span data-id="222" class="{{$colorClasses[$colorNames[$item]]}}"></span>                                    
                                         @endforeach
                                     @endif
                                 </div>
