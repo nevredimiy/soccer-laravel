@@ -30,19 +30,27 @@ class TournamentInfo extends Component
     public $shedule = [];
     public $currentRound = [];
     public $seriesPlayers = null;
+    public bool $hasActiveEvent = true;
 
     public function mount()
     {
         $eventId = session('current_event', 0);
         $this->eventId = $eventId;
         $this->event = Event::with('tournament')->find($eventId);
+
+
+        if (!$this->event || !$this->event->tournament) {
+            $this->hasActiveEvent = false;
+            return;
+        }
+
         $this->teams = $this->getTeams($eventId);
         $this->shedule = $this->getScheduleProperty($this->teams);
 
         // что касаеться отображения игроков игры, т.е. выбранной серии
         $this->currentRound = [
             'round_number' => 1,
-            'event_id' => $this->event->id,
+            'event_id' => $eventId,
             'series_number' => 1
         ];
         $this->getSeriesPlayers($this->currentRound);
@@ -104,12 +112,13 @@ class TournamentInfo extends Component
             ->where('round', $currentRound['round_number'])
             ->first();
 
-        // dd($series);
         if(isset($series->seriesPlayers)){
             $this->seriesPlayers = $series->seriesPlayers->groupBy('team_id')->all();
         }else {
             $this->seriesPlayers = [];
         }
+
+        $this->topPlayersByVote = $this->getTopPlayersByVote();
     }
 
     private function getTeams($eventId)
