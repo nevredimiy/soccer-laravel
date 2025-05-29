@@ -108,6 +108,7 @@ class EventResource extends Resource
                             $set('tournament_team_creator', $tournament->team_creator);
                             $set('is_private', $tournament->type == 'solo_private');
                             $set('tournament_type', $tournament->type);
+                            $set('tournament_subtype', $tournament->subtype);
                             $set('count_series', $tournament->count_series);
                             $set('count_teams', $tournament->count_teams);
                         }
@@ -117,10 +118,12 @@ class EventResource extends Resource
                     ->schema([
                         DateTimePicker::make('series_start_all')
                             ->label('Дата початку для всіх Серій')
-                            ->seconds(false),                        
+                            ->seconds(false)
+                            ->required(),                       
                         DateTimePicker::make('series_end_all')
-                            ->label('Дата кінця для всіх Серій')
+                            ->label('Дата кінця Серії')
                             ->seconds(false),
+                            
                         TextInput::make('series_price_all')
                             ->label(function (callable $get) {
                                 $coutn_series = $get('count_series') ?? 0;
@@ -131,7 +134,9 @@ class EventResource extends Resource
                         TextInput::make('player_price')
                             ->label('Ціна гравця')
                             ->numeric()
-                            ->visible(fn (callable $get) => $get('tournament_type') !== 'team'),
+                            ->visible(fn (callable $get) => $get('tournament_type') !== 'team')
+                            ->required(fn (callable $get) => $get('tournament_type') !== 'team'),
+
                         Select::make('stadium_id')
                             ->label('Стадіон для всіх Серій')
                             ->options(function () {
@@ -156,16 +161,38 @@ class EventResource extends Resource
                             ->options(['40x20' => '40x20', '60x40' => '60x40'])
                             ->default('40x20')
                             ->dehydrated()
-                            ->label('Розмір стадіона'),    
-                        // TextInput::make('price')
-                        //     ->numeric()
-                        //     ->inputMode('decimal')
-                        //     ->label('Ціна Першого Внесення при створенні команди гравцем')
-                        //     ->visible(fn (callable $get) => $get('tournament_team_creator') === 'player'),                       
-                            
+                            ->label('Розмір стадіона'),   
+                        Select::make('custom_count_rounds')
+                            ->label('Кількість раундів')
+                            ->options([
+                                1 => '1',
+                                2 => '2',
+                                3 => '3',
+                                4 => '4',
+                                5 => '5',
+                                6 => '6',
+                                7 => '7',
+                                8 => '8',
+                                9 => '9',
+                                10 => '10',
+                                11 => '11',
+                                12 => '12',
+                                13 => '13',
+                                14 => '14',
+                                15 => '15',
+                                16 => '16',
+                                17 => '17',
+                                18 => '18',
+                                19 => '19',
+                                20 => '20',
+                            ])
+                            ->visible(fn (callable $get) =>
+                                $get('tournament_type') === 'solo' && $get('tournament_subtype') === 'regular'
+                            )
+                            ->default(15)
                     ])->columns(3),
 
-                Section::make('Інформація події')    
+                Section::make('Інформація події')
                     ->schema([
                         TextInput::make('name')
                             ->label('Назва події')

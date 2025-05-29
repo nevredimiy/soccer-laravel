@@ -63,6 +63,7 @@ class Team extends Model
         return $this->belongsTo(Event::class);
     }
 
+
     // создает ссылку на оплату. 
     public function getPaymentLink()
     {

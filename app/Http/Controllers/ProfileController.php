@@ -22,7 +22,7 @@ class ProfileController extends Controller
               
         // Если игрока нет, перенаправляем на создание профиля
         if (!$player) {
-            return redirect()->route('players.create')->with('success', 'Ваш email було успішно підтверджено!');;
+            return redirect()->route('players.create')->with('success', 'Ваш email було успішно підтверджено!. Заповніть, будь ласка, форму грвця для продовження роботи на сайті.');
         }
 
         $dateString = $player->birth_date;  

@@ -33,7 +33,7 @@
                                 <span class="protocol__ball @if ($event->team_id == $match->team1_id)
                                     up
                                 @endif">
-                                    {{ $event->player->getPlayerNumber($event->team_id) }}
+                                    {{ $event->player->getPlayerNumber($match->series_meta_id,$event->team_id) }}
                                     <img src="img/player/ball.webp" alt="Image" class="ibg ibg--contain">
                                 </span>
                             </div>
@@ -43,7 +43,7 @@
                                 <span class="protocol__shoe @if ($event->team_id == $match->team1_id)
                                     up
                                 @endif">
-                                    {{ $event->player->getPlayerNumber($event->team_id) }}
+                                    {{ $event->player->getPlayerNumber($match->series_meta_id,$event->team_id) }}
                                     <img src="img/player/shoe.svg" alt="Image" class="ibg ibg--contain">
                                 </span>
                             </div>                 
@@ -55,7 +55,7 @@
                                 <span class="protocol__yellow @if ($event->team_id == $match->team1_id)
                                     up
                                 @endif">
-                                    {{ $event->player->getPlayerNumber($event->team_id) }}
+                                    {{ $event->player->getPlayerNumber($match->series_meta_id,$event->team_id) }}
                                 </span>
                             </div>
                         @elseif ($event->type == 'red_card')
@@ -63,7 +63,7 @@
                                 <span class="protocol__red @if ($event->team_id == $match->team1_id)
                                     up
                                 @endif">
-                                    {{ $event->player->getPlayerNumber($event->team_id) }}
+                                    {{ $event->player->getPlayerNumber($match->series_meta_id,$event->team_id) }}
                                 </span>
                             </div>
                         @elseif ($event->type == 'goal' && $event->assister_id)
@@ -72,7 +72,7 @@
                                 <span class="protocol__shoe @if ($event->team_id == $match->team1_id)
                                     up
                                 @endif">
-                                    {{ $event->player->getPlayerNumber($event->team_id) }}
+                                    {{ $event->player->getPlayerNumber($match->series_meta_id,$event->team_id) }}
                                     <img src="img/player/shoe.svg" alt="Image" class="ibg ibg--contain">
                                 </span>
                             </div>

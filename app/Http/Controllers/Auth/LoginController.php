@@ -5,6 +5,10 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Auth\Events\PasswordReset;
+
 
 class LoginController extends Controller
 {
@@ -54,10 +58,10 @@ class LoginController extends Controller
         );
 
         if ($response === Password::RESET_LINK_SENT) {
-            return back()->with('status', 'Ссылка для сброса пароля отправлена на ваш email.');
+            return back()->with('status', 'Посилання для скидання пароля відправлено на ваш email.');
         }
 
-        return back()->withErrors(['email' => 'Не удалось отправить ссылку для сброса пароля']);
+        return back()->withErrors(['email' => 'Неможливо надіслати посилання для скидання пароля']);
     }
 
     public function showResetForm($token)
@@ -89,7 +93,7 @@ class LoginController extends Controller
             return redirect()->route('login')->with('status', 'Пароль был сброшен успешно!');
         }
 
-        return back()->withErrors(['email' => 'Не удалось сбросить пароль']);
+        return back()->withErrors(['email' => 'Не вдалося скинути пароль']);
     }
 
     

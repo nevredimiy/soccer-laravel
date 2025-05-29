@@ -8,6 +8,9 @@ use App\Models\City;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Auth;
 
+use Illuminate\Auth\Notifications\VerifyEmail;
+use Illuminate\Notifications\Messages\MailMessage;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -37,6 +40,15 @@ class AppServiceProvider extends ServiceProvider
         View::share('cities', $cities);
         View::composer('*', function ($view) {
             $view->with('authUser', Auth::user());
+        });
+
+        VerifyEmail::toMailUsing(function (object $notifiable, string $url) {
+        return (new MailMessage)
+            ->subject('Підтвердьте адресу електронної пошти')
+            ->line('Натисніть кнопку нижче, щоб підтвердити свою адресу електронної пошти.')
+            ->action('Підтвердьте адресу електронної пошти', $url)
+            ->greeting('Привіт, ' . $notifiable->name)
+            ->salutation('З повагою, ' . config('app.name'));
         });
     }
 

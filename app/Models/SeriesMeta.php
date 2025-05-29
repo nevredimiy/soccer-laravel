@@ -42,6 +42,12 @@ class SeriesMeta extends Model
     {
         return $this->hasMany(SeriesResult::class, 'series_meta_id');
     }
+
+    // public function matchesEvents()
+    // {
+    //     return $this->hasMany(MatcheEvent::class, 'series_meta_id');
+    // }
+
    
     public function teams()
     {
@@ -54,6 +60,13 @@ class SeriesMeta extends Model
             'id'          // Local key on the events table...
         );
     }
+
+    public function seriesTeams()
+    {
+        return $this->hasMany(SeriesTeam::class, 'series_meta_id');
+    }
+
+    
 
     public function seriesPlayers()
     {

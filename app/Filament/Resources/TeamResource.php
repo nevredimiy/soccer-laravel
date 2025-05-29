@@ -65,23 +65,7 @@ class TeamResource extends Resource
                     ->required(),
                 Forms\Components\Select::make('event_id')
                     ->label('Подія')
-                    ->options(function () {
-                        return Event::with(['stadium', 'tournament'])
-                            ->orderBy('id', 'desc')
-                            ->get()
-                            ->mapWithKeys(function ($event) {
-                                $id = $event->id;
-                                $type = $event->tournament->type;
-                                $subtype = $event->tournament->subtype;
-                                $date = \Carbon\Carbon::parse($event->date)->format('d.m.Y'); // Форматируем дату
-                                $startTime = \Carbon\Carbon::parse($event->start_time)->format('H:i'); // Форматируем время начала
-                                $endTime = \Carbon\Carbon::parse($event->end_time)->format('H:i'); // Форматируем время конца
-                                $location = $event->stadium->location ? $event->stadium->location->address : 'Без локації'; // Проверяем наличие локации
-                                $stadium = $event->stadium ? $event->stadium->name : 'Без Стадіону'; // Проверяем наличие локации
-                
-                                return [$event->id => "({$id}) - {$type}/{$subtype} {$date} | {$startTime} - {$endTime} | {$location} | {$stadium}"];
-                            });
-                    })
+                    ->options(Event::all()->pluck('name', 'id'))
                     ->searchable()
                     ->required()
                     ->columnSpan(3),
@@ -96,16 +80,30 @@ class TeamResource extends Resource
                     ])
                     ->default('awaiting_payment')
                     ->required(),
-               
+                Forms\Components\FileUpload::make('group_photo')
+                    ->image()
+                    ->disk('public')
+                    ->maxSize(2048)
+                    ->directory('img/team_group_photo')
+                    ->default('img/team_group_photo/group_placeholder.jpg')
+                    ->deleteUploadedFileUsing(fn ($record) =>
+                        $record->group_photo && file_exists(storage_path('app/public/' . $record->group_photo))
+                            ? unlink(storage_path('app/public/' . $record->group_photo))
+                            : null
+                    ),
+
                 Forms\Components\FileUpload::make('logo')
                     ->image()
                     ->disk('public')
                     ->maxSize(2048)
                     ->directory('img/team_logo')
                     ->default('img/team_logo/team_placeholder.png')
-                    ->deleteUploadedFileUsing(fn ($record) => 
-                        $record->logo ? unlink(storage_path('app/public/' . $record->logo)) : null
+                    ->deleteUploadedFileUsing(fn ($record) =>
+                        $record->logo && file_exists(storage_path('app/public/' . $record->logo))
+                            ? unlink(storage_path('app/public/' . $record->logo))
+                            : null
                     ),
+
             ])->columns(3);
     }
 
@@ -130,7 +128,10 @@ class TeamResource extends Resource
                 Tables\Columns\TextColumn::make('promo_code_id')
                     ->label('Промокод'), 
                 Tables\Columns\TextColumn::make('status')
-                    ->label('Статус'),  
+                    ->label('Статус'), 
+                Tables\Columns\ImageColumn::make('group_photo')
+                    ->disk('public')
+                    ->label('Групове фото'),
                 
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()

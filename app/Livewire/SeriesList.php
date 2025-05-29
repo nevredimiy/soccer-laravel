@@ -20,10 +20,12 @@ class SeriesList extends Component
     
     public $series = [];
     public $teams = [];
+    public $status = 'shedule';
     
-    public function mount($tournamentId)
+    public function mount($tournamentId, $status = 'shedule')
     {
         $this->tournament = Tournament::with('events.teams')->findOrFail($tournamentId);
+        $this->status = $status;
     
         $this->selectedCity = session('current_city', 2);
         $events = $this->tournament->events;
@@ -163,6 +165,7 @@ class SeriesList extends Component
 
     public function render()
     {
+                
         return view('livewire.series-list');
     }
 }

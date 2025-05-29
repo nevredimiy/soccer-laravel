@@ -65,7 +65,11 @@
                             </span>
                         </td>
                         <td>
-                            <span class="team fz-big">{{$team->name}}</span>
+                            <span class="team fz-big">
+                                <a href="{{route('teams.show', ['id' => $team->id])}}">
+                                    {{$team->name}}
+                                </a>
+                            </span>
                         </td>
 
                         @foreach ($roman as $value)                        

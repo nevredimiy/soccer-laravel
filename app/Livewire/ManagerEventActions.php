@@ -243,7 +243,7 @@ class ManagerEventActions extends Component
     {
         SeriesMeta::where('id', $this->seriesId)->update(['status' => 'open']);
         SeriesResult::where('series_meta_id', $this->seriesId)->delete();
-        Matche::where('id', $this->seriesId)->update(['status' => 'scheduled']);
+        Matche::where('series_meta_id', $this->seriesId)->update(['status' => 'scheduled']);
         
         session()->flash('success', 'Серію відкрито, результати очищено.');
     

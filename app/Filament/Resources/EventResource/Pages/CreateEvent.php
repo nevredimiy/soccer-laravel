@@ -43,8 +43,7 @@ class CreateEvent extends CreateRecord
     
             if (!empty($teams)) {
                 $startTime = Carbon::parse($data['series_start_all'] ?? now());
-                $countRounds = $tournament->count_rounds ?? 1;
-    
+                $countRounds = (isset($data['custom_count_rounds']) ? $data['custom_count_rounds'] : $tournament->count_rounds) ?? 1;    
                 $this->createMatches($event->id, $teams, $startTime, $countRounds);
             }
         }
@@ -58,8 +57,13 @@ class CreateEvent extends CreateRecord
 
         $startDate = Carbon::parse($data['series_start_all']);
         $endDate = Carbon::parse($data['series_end_all']);
+        if(isset($data['custom_count_rounds'])){
+            $countRounds = $data['custom_count_rounds'];
+        } else {
+            $countRounds = $tournament->count_rounds;
+        }
 
-        for ($round = 1; $round <= $tournament->count_rounds; $round++) {
+        for ($round = 1; $round <= $countRounds; $round++) {
             for ($seriesIndex = 1; $seriesIndex <= $tournament->count_series; $seriesIndex++) {
                 $seriesMeta[] = [
                     'event_id' => $eventId,

@@ -5,6 +5,7 @@ namespace App\Livewire;
 use Livewire\Component;
 use Livewire\Attributes\On;
 use App\Models\Matche;
+use App\Models\SeriesMeta;
 use App\Services\SeriesTemplatesService;
 
 class TournamentProtocol extends Component
@@ -32,9 +33,14 @@ class TournamentProtocol extends Component
 
         $this->teams = $teams;
 
-        $this->getMatches();
+        $this->getMatches($this->eventId);
         $service = new SeriesTemplatesService();
         $this->colorClasses = $service->getColorClasses();
+
+        // // dump($this->matches);
+        // foreach($this->matches as $match){
+        //     dump($match->event_id, $match->series_meta_id);
+        // }
     }
 
 
@@ -52,7 +58,7 @@ class TournamentProtocol extends Component
         if ($eventId) {
             $this->eventId = $eventId;
         }
-        
+
         $this->matches = Matche::query()
             ->with(['team1.color', 'team2.color', 'matchEvents'])
             ->withCount([

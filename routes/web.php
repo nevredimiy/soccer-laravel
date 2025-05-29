@@ -32,26 +32,33 @@ Route::get('/districts/{city_id}', [LocationController::class, 'getDistricts']);
 Route::get('/locations/{district_id}', [LocationController::class, 'getLocations']);
 Route::get('/leagues/{location_id}', [LocationController::class, 'getLeagues']);
 
-// Страница входа
-Route::get('/login', [LoginController::class, 'index'])->name('login');
-Route::post('/login', [LoginController::class, 'login']);
+
+
+Route::middleware('guest')->group(function () {
+    // Регистрация
+    Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+    Route::post('/register', [RegisterController::class, 'register']);
+    
+    // Страница входа
+    Route::get('/login', [LoginController::class, 'index'])->name('login');
+    Route::post('/login', [LoginController::class, 'login']);
+
+    // Восстановление пароля
+    Route::get('forgot-password', [LoginController::class, 'showLinkRequestForm'])->name('password.request');
+    Route::post('forgot-password', [LoginController::class, 'sendResetLinkEmail'])->name('password.email');
+    Route::get('reset-password/{token}', [LoginController::class, 'showResetForm'])->name('password.reset');
+    Route::post('reset-password', [LoginController::class, 'reset'])->name('password.update');
+});
+
+Route::middleware('auth')->group(function () {
+    // Подтверждение email
+    Route::get('/email/verify', [VerificationController::class, 'show'])->name('verification.notice');
+    Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verify'])->middleware(['signed', 'throttle:3,1'])->name('verification.verify');
+    Route::post('/email/resend', [VerificationController::class, 'resend'])->middleware('throttle:3,1')->name('verification.resend');
+
+});
+
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-
-Route::get('forgot-password', [LoginController::class, 'showLinkRequestForm'])->name('password.request');
-Route::post('forgot-password', [LoginController::class, 'sendResetLinkEmail'])->name('password.email');
-Route::get('reset-password/{token}', [LoginController::class, 'showResetForm'])->name('password.reset');
-Route::post('reset-password', [LoginController::class, 'reset'])->name('password.update');
-
-
-
-// Регистрация
-Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
-Route::post('/register', [RegisterController::class, 'register']);
-
-// Подтверждение email
-Route::get('/email/verify', [VerificationController::class, 'show'])->name('verification.notice');
-Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verify'])->name('verification.verify');
-Route::post('/email/resend', [VerificationController::class, 'resend'])->name('verification.resend');
 
 // Профиль пользователя
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -93,7 +100,7 @@ Route::middleware(['auth'])->group(function () {
     
 
     Route::get('/teams/series', [TeamSeriesController::class, 'index'])->name('teams.series');
-    Route::get('/teams/series/{id}', [TeamSeriesController::class, 'show'])->name('teams.series.show');
+    Route::get('/teams/series/{id}', [TeamSeriesController::class, 'show'])->middleware('verified')->name('teams.series.show');
     
     Route::get('/players/series', [PlayerSeriesController::class, 'index'])->name('players.series');
     Route::get('/players/series/{id}', [PlayerSeriesController::class, 'show'])->name('players.series.show');

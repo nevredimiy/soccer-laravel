@@ -22,8 +22,8 @@
             <form action="{{ route('players.store') }}" method="POST" class="account__block _block" enctype="multipart/form-data">
                 @csrf
 
-                <div class="account__hero">
-                    <div class="account__field">
+                <div class="account__hero1">
+                    {{-- <div class="account__field">
                         <div class="account__label ">
                             ФОТО
                         </div>
@@ -41,7 +41,7 @@
                                 >
                             </div>
                         </label>                       
-                    </div>
+                    </div> --}}
 
 
                    

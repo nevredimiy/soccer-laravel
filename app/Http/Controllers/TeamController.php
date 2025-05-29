@@ -16,7 +16,41 @@ class TeamController extends Controller
     
     public function show($id)
     {
-        $team = Team::with(['color', 'players'])->find($id);
+        $team = Team::with([
+            'color', 
+            'players', 
+            'event.seriesMeta.seriesTeams.team.color',
+            'event.seriesMeta.matches.matchEvents'
+            ])->find($id);
+
+
+        // foreach($team->players as $player){
+        //     $this->getPlayerStatic($player->id, $team);
+        // }
+
+        $matchesEvents = [];
+        foreach($team->event->seriesMeta as $seriesMeta){
+            foreach($seriesMeta->matches as $match){
+                foreach($match->matchEvents as $event){
+                    if(!isset($matchesEvents[$event->player_id])){
+                        $matchesEvents[$event->player_id] = [
+                            'goal' => 0,
+                            'yellow_card' => 0,
+                            'red_card' => 0,
+                            
+
+                        ];
+                    }
+                    if(!isset($matchesEvents[$event->player_id][$event->type])){
+                        $matchesEvents[$event->player_id][$event->type] = 0;
+                    }
+                    $matchesEvents[$event->player_id][$event->type] += 1;
+                    
+
+                }
+            }
+        }
+
         $rating = 0;
         $totalRating = 0;
         $totalPlayers = 0;
@@ -31,7 +65,18 @@ class TeamController extends Controller
 
         $rating = round($totalRating / $totalPlayers);
 
-        return view('teams.show', compact('team', 'rating'));
+        return view('teams.show', compact('team', 'rating', 'matchesEvents'));
+    }
+
+    private function getPlayerStatic($playerId, $team)
+    {
+        $matchesEvents = $team->event->seriesMeta->load('matchesEvents');
+        // $matchesEvents = $team->event->seriesMeta->matchesEvents()
+        //     ->where('player_id', $playerId)
+        //     ->get();
+        // $goals = $matchesEvents->where('type', 'goal')->count();
+        dump($matchesEvents);
+
     }
     
 }

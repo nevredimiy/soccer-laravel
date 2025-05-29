@@ -34,6 +34,8 @@ class JoinTeam extends Component
 
         $this->applied = $hasApplication || $isInTeam;
 
+     
+
         $isInTeam = PlayerTeam::where('team_id', $teamId)->where('player_id', $player->id)->first();
         if($isInTeam){
             $this->isInTeam = true;

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Player extends Model
 {
@@ -36,12 +37,28 @@ class Player extends Model
         return $this->hasMany(PlayerTeam::class);
     }
 
-    public function getPlayerNumber($teamId)
+    public function seriesPlayer()
     {
-        $playerTeam = $this->playerTeams()->where('team_id', $teamId)->first();
-        return $playerTeam ? $playerTeam->player_number : null;
+        return $this->hasMany(SeriesPlayer::class);
     }
-    public function teams()
+
+    // public function getPlayerNumber($teamId)
+    // {
+    //     $playerTeam = $this->playerTeams()->where('team_id', $teamId)->first();
+    //     return $playerTeam ? $playerTeam->player_number : null;
+    // }
+
+
+    public function getPlayerNumber($seriesId, $teamId)
+    {
+        $seriesPlayer = $this->seriesPlayer()
+            ->where('team_id', $teamId)
+            ->where('series_meta_id', $seriesId)
+            ->first();
+        return $seriesPlayer ? $seriesPlayer->player_number : null;
+    }
+
+    public function teams(): BelongsToMany
     {
         return $this->belongsToMany(Team::class, 'player_teams')
         ->withPivot('status')

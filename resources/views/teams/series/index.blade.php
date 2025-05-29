@@ -11,10 +11,16 @@
         <div class="page__wrapper"> <div class="page__bid bid">
             <div class="bid__block _block">
                 <div class="bid__filter filter-block">
-                    <a href="#" class="filter-block__link _active button button--blue">
+                    <a 
+                        href="{{ route('teams.series', ['status' => 'shedule']) }}" 
+                        class="filter-block__link button button--blue {{ $status === 'shedule' ? '_active' : '' }}"
+                    >
                         <span>ЗАПЛАНОВАНІ</span>
                     </a>
-                    <a href="#" class="filter-block__link button button--blue">
+                    <a 
+                        href="{{ route('teams.series', ['status' => 'started']) }}" 
+                        class="filter-block__link button button--blue {{ $status === 'started' ? '_active' : '' }}"
+                    >
                         <span>РОЗПОЧАТІ</span>
                     </a>
                 </div>
@@ -29,8 +35,14 @@
                             {{ $tournament->name }}
                         </h2>
                         
-                        @if ($tournament->isShedule)                        
-                            @livewire('series-list', ['tournamentId' => $tournament->id], key($tournament->id))
+                        @if ($tournament->isShedule || $tournament->isStarted)                        
+                            @livewire('series-list', 
+                                [
+                                    'tournamentId' => $tournament->id, 
+                                    'status' => $status
+                                ], 
+                                key($tournament->id)
+                            )
                         @else
                             <p class="text-center">На даний момент в цьому турнірі немає подій</p>
                         @endif

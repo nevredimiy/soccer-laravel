@@ -23,7 +23,12 @@
                                 </div>
                             </div>
                             <div class="hero-team__image">
-                                <img src="{{ asset($team->group_photo ? 'storage/'.$team->group_photo : 'img/gallery/01.webp') }}" alt="{{$team->name ?? 'Групове фото команди'}}" class="ibg">
+                                {{-- <img src="{{ asset($team->group_photo ? 'storage/'.$team->group_photo : 'img/gallery/01.webp') }}" alt="{{$team->name ?? 'Групове фото команди'}}" class="ibg"> --}}
+                                <img 
+                                    src="{{ asset($team->group_photo ? 'storage/'.$team->group_photo : 'storage/img/team_group_photo/group_placeholder.jpg') }}" 
+                                    alt="{{$team->name ?? 'Групове фото команди'}}" 
+                                    class="ibg"
+                                >
                             </div>
                         </div>
                     </section>
@@ -32,126 +37,46 @@
                             КАЛЕНДАР
                         </h2>
                         <div class="calendar-team__items">
-                            <div class="calendar-team__item match-info">
-                                <div class="match-info__details">
-                                    <div class="match-info__label">
-                                        27 Червня
+
+                            @foreach ($team->event->seriesMeta as $seriesMeta)
+                                <div class="calendar-team__item match-info">
+                                    <div class="match-info__details">
+                                        <div class="match-info__label">
+                                            {{\Carbon\Carbon::parse($seriesMeta->start_date)->locale('uk')->translatedFormat('d F')}}
+                                        </div>
+                                        <div class="match-info__label">
+                                            {{\Carbon\Carbon::parse($seriesMeta->start_date)->locale('uk')->translatedFormat('l')}}
+                                        </div>
+                                        <div class="match-info__label">
+                                            {{\Carbon\Carbon::parse($seriesMeta->start_date)->format('H:i')}}
+                                        </div>
+                                        <div class="match-info__label">
+                                            {{$seriesMeta->round}} ТУР
+                                        </div>
+                                        <div class="match-info__label">
+                                            СЕРІЯ {{$seriesMeta->series}}
+                                        </div>
                                     </div>
-                                    <div class="match-info__label">
-                                        ВТ
+                                    <div class="match-info__teams">
+                                        @if($seriesMeta->seriesTeams->count() < $team->event->tournament->count_teams)
+                                          <div class="match-info__team">
+                                          </div>
+                                          <div class="match-info__team">
+                                          </div>
+                                          <div class="match-info__team">
+                                          </div>
+                                        @endif
+                                        @foreach ($seriesMeta->seriesTeams as $teamSeries)
+                                        <div style="background-color: {{$teamSeries->team->color->color_picker}}" class="match-info__label blue-bg">
+                                            {{$teamSeries->team->name}}
+                                        </div>
+                                            
+                                        @endforeach
+                                        
                                     </div>
-                                    <div class="match-info__label">
-                                        19:45
-                                    </div>
-                                    <div class="match-info__label">
-                                        9 ТУР
-                                    </div>
-                                    <div class="match-info__label">
-                                        СЕРІЯ Б
-                                    </div>
-                                </div>
-                                <div class="match-info__teams">
-                                    <div class="match-info__label blue-bg">
-                                        AFC SPARTA
-                                    </div>
-                                    <div class="match-info__label green-bg">
-                                        ДИНАМО ВІДРАДНИЙ
-                                    </div>
-                                    <div class="match-info__label gray-bg">
-                                        КЗПТО
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="calendar-team__item match-info">
-                                <div class="match-info__details">
-                                    <div class="match-info__label">
-                                        27 Червня
-                                    </div>
-                                    <div class="match-info__label">
-                                        ВТ
-                                    </div>
-                                    <div class="match-info__label">
-                                        19:45
-                                    </div>
-                                    <div class="match-info__label">
-                                        9 ТУР
-                                    </div>
-                                    <div class="match-info__label">
-                                        СЕРІЯ Б
-                                    </div>
-                                </div>
-                                <div class="match-info__teams">
-                                    <div class="match-info__label blue-bg">
-                                        AFC SPARTA
-                                    </div>
-                                    <div class="match-info__label green-bg">
-                                        ДИНАМО ВІДРАДНИЙ
-                                    </div>
-                                    <div class="match-info__label gray-bg">
-                                        КЗПТО
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="calendar-team__item match-info">
-                                <div class="match-info__details">
-                                    <div class="match-info__label">
-                                        27 Червня
-                                    </div>
-                                    <div class="match-info__label">
-                                        ВТ
-                                    </div>
-                                    <div class="match-info__label">
-                                        19:45
-                                    </div>
-                                    <div class="match-info__label">
-                                        9 ТУР
-                                    </div>
-                                    <div class="match-info__label">
-                                        СЕРІЯ Б
-                                    </div>
-                                </div>
-                                <div class="match-info__teams">
-                                    <div class="match-info__label blue-bg">
-                                        AFC SPARTA
-                                    </div>
-                                    <div class="match-info__label green-bg">
-                                        ДИНАМО ВІДРАДНИЙ
-                                    </div>
-                                    <div class="match-info__label gray-bg">
-                                        КЗПТО
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="calendar-team__item match-info">
-                                <div class="match-info__details">
-                                    <div class="match-info__label">
-                                        27 Червня
-                                    </div>
-                                    <div class="match-info__label">
-                                        ВТ
-                                    </div>
-                                    <div class="match-info__label">
-                                        19:45
-                                    </div>
-                                    <div class="match-info__label">
-                                        9 ТУР
-                                    </div>
-                                    <div class="match-info__label">
-                                        СЕРІЯ Б
-                                    </div>
-                                </div>
-                                <div class="match-info__teams">
-                                    <div class="match-info__label blue-bg">
-                                        AFC SPARTA
-                                    </div>
-                                    <div class="match-info__label green-bg">
-                                        ДИНАМО ВІДРАДНИЙ
-                                    </div>
-                                    <div class="match-info__label gray-bg">
-                                        КЗПТО
-                                    </div>
-                                </div>
-                            </div>
+                                </div>                                
+                            @endforeach
+                           
                         </div>
                     </section>
 
@@ -174,14 +99,14 @@
                                         <img src="/img/player/field.webp" alt="Image" class="ibg ibg--contain">
                                     </div>
                                     <div class="item-player__info">
-                                        28
+                                        {{$matchesEvents[$player->id]['goal'] ?? 0}}
                                         <img src="/img/player/ball.webp" alt="Image" class="ibg ibg--contain">
                                     </div>
                                     <div class="item-player__info item-player__info--yellow-card">
-                                        1
+                                         {{$matchesEvents[$player->id]['yellow_card'] ?? 0}}
                                     </div>
                                     <div class="item-player__info item-player__info--red-card">
-                                        0
+                                        {{$matchesEvents[$player->id]['red_card'] ?? 0}}
                                     </div>
                                 </div>
                                 <div data-rating data-rating-size="10" data-rating-value="{{$player->rating}}" class="item-player__rating rating">
