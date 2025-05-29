@@ -47,7 +47,7 @@ class AppServiceProvider extends ServiceProvider
             ->subject('Підтвердьте адресу електронної пошти')
             ->line('Натисніть кнопку нижче, щоб підтвердити свою адресу електронної пошти.')
             ->action('Підтвердьте адресу електронної пошти', $url)
-            ->greeting('Привіт, ' . $notifiable->name)
+            ->greeting('Вітаю, ' . $notifiable->name)
             ->salutation('З повагою, ' . config('app.name'));
         });
     }

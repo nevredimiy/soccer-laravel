@@ -23,4 +23,9 @@ class SeriesPlayer extends Model
     {
         return $this->belongsTo(SeriesMeta::class, 'series_meta_id');
     }
+
+    public function team()
+    {
+        return $this->belongsTo(Team::class, 'team_id');
+    }
 }

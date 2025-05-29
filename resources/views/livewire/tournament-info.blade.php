@@ -175,9 +175,52 @@
         </section>            
         @endif
 
-
         @livewire('tournament-protocol', ['teams' => $teams, 'eventId' => $eventId])
        
+        @if (!empty($topPlayersByVote))
+            <section class="home__best-players players-section">
+                <h2 class="players-section__title section-title section-title--margin">
+                    НАЙКРАЩІ Гравці за результатами голосування
+                </h2>
+                <div class="players-section__body">
+                    <div class="players-section__items">
+                        @foreach ($topPlayersByVote as $topPlayer)
+                            <article style="--color: {{$topPlayer['player']['team_color']}}" class="players-section__item item-player">
+                                <div class="item-player__position">
+                                    {{$loop->iteration}} місце
+                                </div>
+                                <a href="#" class="item-player__image-link">
+                                    <img src="{{asset('storage/' . $topPlayer['player']->photo)}}" alt="{{$topPlayer['player']->full_name}}" class="ibg">
+                                </a>
+                                <div class="item-player__details">
+                                    <div class="item-player__info">
+                                        {{-- {{$playerOfSeries[$topAssist->player->id]['series_count'] ?? 0}} --}}
+                                        1
+                                        <img src="img/player/field.webp" alt="Кільсть серій" class="ibg ibg--contain">
+                                    </div>
+                                    <div class="item-player__info">
+                                        {{$topPlayer['votes']}}
+                                        <img src="img/player/shoe.svg" alt="Кількість асистентів" class="ibg ibg--contain">
+                                    </div>
+                                </div>
+                                <div class="item-player__name">
+                                    <div>{{$topPlayer['player']->full_name}}</div>
+                                </div>
+                            </article>
+                            
+                        @endforeach
+                        
+                    </div>
+                </div>
+            </section>
+        @else
+            <h2 class="players-section__title section-title section-title--margin">
+                НАЙКРАЩІ Гравці за результатами голосування
+            </h2>
+            <div class="players-section__body">
+                <p class="text-center">Немає даних для відображення</p>
+            </div>
+        @endif
     
         <section class="home__teams teams-section">
             <h2 class="teams-section__title section-title section-title--margin">

@@ -18,6 +18,7 @@ class TournamentInfo extends Component
     public $teams = [];
     public $eventId = null;
     public $event = null;
+    public $topPlayersByVote = [];
 
     protected array $tourTemplate = [
         ['Червоний', 'Зелений', 'Жовтий'], 
@@ -25,14 +26,6 @@ class TournamentInfo extends Component
         ['Червоний', 'Жовтий', 'Рожевий'], 
         ['Зелений', 'Жовтий', 'Рожевий'], 
     ];
-
-
-    // protected array $colorClasses = [
-    //     'Червоний' => 'red-bg',
-    //     'Зелений' => 'green-bg',
-    //     'Жовтий' => 'yellow-bg',
-    //     'Рожевий' => 'orange-bg',
-    // ];
 
     public $shedule = [];
     public $currentRound = [];
@@ -53,6 +46,50 @@ class TournamentInfo extends Component
             'series_number' => 1
         ];
         $this->getSeriesPlayers($this->currentRound);
+
+        $this->topPlayersByVote = $this->getTopPlayersByVote();
+
+    }
+
+    private function getTopPlayersByVote()
+    {
+        if($this->event->tournament->type !== 'solo'){
+            return array();
+        }    
+        
+        $seriesMeta = SeriesMeta::query()
+            ->with(['seriesPlayers.team.color', 'voters'])
+            ->where('event_id', $this->currentRound['event_id'])
+            ->where('series', $this->currentRound['series_number'])
+            ->where('round', $this->currentRound['round_number'])
+            ->first();
+        $teamColorPlayers = [];
+        foreach ($seriesMeta->seriesPlayers as $seriesPlayer){
+            $teamColorPlayers[$seriesPlayer->player_id] = $seriesPlayer->team->color->color_picker;
+        }
+
+        $topPlayersByVote = [];
+        foreach ($seriesMeta->voters as $voter) {
+            foreach ([$voter->best_player1, $voter->best_player2] as $playerId) {
+
+                if (!isset($topPlayersByVote[$playerId])) {
+                    $player = Player::find($playerId);
+                    $topPlayersByVote[$playerId] = [
+                        'player' => $player,
+                        'votes' => 1,
+                        'team_color' => $teamColorPlayers[$playerId] ?? '#ccc',
+                    ];
+                } else {
+                    $topPlayersByVote[$playerId]['votes'] += 1;
+                }
+            }
+        }
+
+        return collect($topPlayersByVote)
+            ->sortByDesc('votes')
+            ->take(10)
+            ->values()
+            ->all();
         
     }
 

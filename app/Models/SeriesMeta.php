@@ -83,6 +83,11 @@ class SeriesMeta extends Model
         return $this->hasMany(PlayerSeriesRegistration::class, 'series_meta_id');
     }
 
+    public function voters()
+    {
+        return $this->hasMany(Voter::class, 'series_meta_id');
+    }
+
     public function getStartDateAttribute($value)
     {
         return \Carbon\Carbon::parse($value)->format('d.m.Y H:i');

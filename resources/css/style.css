@@ -816,6 +816,7 @@ body::after {
   padding-bottom: 1.125rem;
   margin-right: -.625rem;
   overflow: auto;
+  margin-bottom: 1.25rem;
 }
 .players-section__items {
   display: flex;
