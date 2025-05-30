@@ -47,16 +47,20 @@ class TeamList extends Component
                 return $team->event && $team->event->seriesMeta->isNotEmpty();
             })
             ->values(); // переиндексация
-
+        
         // Установка активной команды
         $this->activeTeamId = session('selected-team', optional($this->teams->first())->id);
 
         // Вычисление суммы для команд со статусом "awaiting_payment"
         $awaitingPaymentTeams = $this->teams->where('status', 'awaiting_payment')->sortBy('id');
+        
+        
         foreach ($awaitingPaymentTeams as $t) {
-            $eventTeamPrices = EventTeamPrice::where('event_id', $t->event_id)->get()->keyBy('team_id');
-            if ($eventTeamPrices->has($t->id)) {
-                $t->amount = $eventTeamPrices[$t->id]->price;
+            $eventTeams = Team::where('event_id', $t->event_id)->pluck('id')->toArray();
+            $keyTeam = array_search($t->id, $eventTeams);
+            $eventTeamPrices = EventTeamPrice::where('event_id', $t->event_id)->get();
+            if ($keyTeam) {
+                $t->price = $eventTeamPrices[$keyTeam]->price;
             }
         }
     }

@@ -38,7 +38,7 @@ class PlacesOfSeries extends Component
     public $desiredBalance = 0;
     public $statusRegistration = 'open';
 
-  public function mount($team)
+    public function mount($team)
     {
         $this->team = $team;
         $this->userId = Auth::id();
@@ -138,6 +138,8 @@ class PlacesOfSeries extends Component
             ->where('team_id', $this->team->id)
             ->where('series_meta_id', $this->seriesMeta->id)
             ->delete();
+        $user = auth()->user();
+        $user->decrement('reserved_balance', round($this->seriesMeta->price / 6));
         $this->getPlayerSeries();
     }
 
@@ -184,16 +186,20 @@ class PlacesOfSeries extends Component
     {
         if (!$this->team || !$this->team->event || !$this->team->event->tournament) return false;
         
-        $balance = Auth::user()->balance;
+        $user = Auth::user();
+        if (!$user) return false;
+        $balance = $user->balance;
+        $reserved_balance = $user->reserved_balance;
+        $netBalance = $balance - $reserved_balance;
 
         $required = $this->team->event->tournament->team_creator === 'admin'
             ? ceil($price / 18)
             : ceil($price / 6);
 
         $this->minBalance = $required;
-        $this->desiredBalance = $required - $balance;
+        $this->desiredBalance = $required - $netBalance;
 
-        return $balance < $required;
+        return $netBalance < $required;
     }
 
     public function takePlace($playerNumber = 0)
@@ -232,6 +238,9 @@ class PlacesOfSeries extends Component
                 'player_number' => $playerNumber,
                 'team_id' => $teamId
             ]);
+
+            $user = auth()->user();
+            $user->increment('reserved_balance', round($this->seriesMeta->price / 6));
         }
 
         $this->getPlayerSeries();
@@ -266,11 +275,7 @@ class PlacesOfSeries extends Component
     {        
         if (!$this->team || !$this->seriesMeta || !$this->seriesTeam) return;
 
-        
-        // Статус приема заявок закрывам для команды
-        $this->seriesTeam->update(['status' => 'closed']);
-
-        $this->statusRegistration = 'closed';
+        if ($this->seriesTeam->status === 'closed') return;
 
         // списание баланса
         $seriesPlayers = SeriesPlayer::query()
@@ -289,12 +294,24 @@ class PlacesOfSeries extends Component
 
         $writeOffAmount = round($seriesPrice / $playerCount);
 
+        $reserved_balance = round($seriesPrice / 6);
+        
+        // Списание баланса у игроков
         foreach ($seriesPlayers as $player) {
             if ($player->player && $player->player->user_id) {
-                User::where('id', $player->player->user_id)
-                    ->decrement('balance', $writeOffAmount);
+               $user = User::find($player->player->user_id);
+                if ($user) {
+                    $user->decrement('balance', $writeOffAmount);
+                    $user->decrement('reserved_balance', $reserved_balance);
+                }
+
             }
         }
+
+        // Статус приема заявок закрывам для команды
+        $this->seriesTeam->update(['status' => 'closed']);
+
+        $this->statusRegistration = 'closed';
 
         // Проверка на закрытие всей серии
         $seriesTeamsWithCloseStatus = SeriesTeam::where('status', 'closed')->where('series_meta_id', $this->seriesMeta->id)->get();

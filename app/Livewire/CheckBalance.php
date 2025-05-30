@@ -39,8 +39,9 @@ class CheckBalance extends Component
     
     public function checkPayment($payment = null)
     {
+        
         if (!$payment) {
-            $payment = Payment::where('user_id', $this->user->id)
+            $payment = Payment::where('user_id', auth()->user()->id)
                 ->where('status', 'pending')
                 ->latest()
                 ->first();

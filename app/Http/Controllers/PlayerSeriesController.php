@@ -13,13 +13,35 @@ use App\Models\Matche;
 
 class PlayerSeriesController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $status = $request->query('status', 'shedule'); // по умолчанию "shedule"
+        
+        
+        
         $tournaments = Tournament::with('events.seriesMeta')
-        ->whereIn('type', ['solo', 'solo_private'])
-        ->get(); 
+            ->whereIn('type', ['solo', 'solo_private'])
+            ->get(); 
+        $today = \Carbon\Carbon::now()->timezone(config('app.timezone'))->format('Y-m-d H:i:s'); 
 
-        return view('players.series.index', compact('tournaments'));
+        foreach($tournaments as $tournament){
+            foreach($tournament->events as $event){
+                foreach($event->seriesMeta as $series){
+                    
+                    if(
+                        \Carbon\Carbon::parse($series->start_date)->timezone(config('app.timezone'))->format('Y-m-d H:i:s') > $today
+                        && $series->round == 1){
+                        $tournament->isShedule = $series;   
+                    }
+
+                    if ($status === 'started' && $series->round > 1) {
+                        $tournament->isStarted = $series;   
+                    }
+                }
+            }
+        }
+
+        return view('players.series.index', compact('tournaments', 'status'));
     }
 
     public function show($id)

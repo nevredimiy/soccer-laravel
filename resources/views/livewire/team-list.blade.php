@@ -38,7 +38,7 @@
                     <a  
                         data-amount="{{$team->amount}}"
                         class="payment-btn button button--yellow" 
-                        href="{{ route('teams.request.payment', [$team->id, $team->amount]) }}"
+                        href="{{ route('teams.request.payment', [$team->id, $team->price]) }}"
                     >
                         Оплатити
                     </a>

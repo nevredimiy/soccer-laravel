@@ -37,7 +37,7 @@ class TeamRequestController extends Controller
 
         $promoCodes = PromoCode::all();
 
-        $teams = Team::where('event_id', '=', $eventId)->get();
+        $teams = Team::where('event_id', '=', $eventId)->orderBy('id')->get();
 
         $eventTeamPrice = EventTeamPrice::where('event_id', $event->id)->get()->toArray();
         if($teams->count()){
@@ -143,9 +143,7 @@ class TeamRequestController extends Controller
 
         if(!empty($seriesTeams)){
             \DB::table('series_teams')->insert($seriesTeams);
-        }
-
-       
+        }       
 
         // Логика для обработки логотипа
         if ($request->hasFile('logo')) {
@@ -178,9 +176,6 @@ class TeamRequestController extends Controller
             $team->save();
             return redirect()->route('profile');
         }
-
-
-
     }
 
     public function pay($team_id, $amount)
@@ -288,13 +283,27 @@ class TeamRequestController extends Controller
 
         $res = $liqpay->api("request", $params);
 
+        // dd($res);
+
         if ($res->status === 'success' || $res->status === 'sandbox') {
+            
+            // Обновляем статус команды и баланс пользователя
+            $user = auth()->user();                
+            $event = Event::findOrFail($team->event_id);
+            $eventTeamPrices = EventTeamPrice::where('event_id', $event->id)->get()->toArray();
+            $keyTeam = array_search($team->id, array_column($eventTeamPrices, 'team_id'));
+            $team_price = $eventTeamPrices[$keyTeam]['price'] ?? 0;            
+            $user->balance += $res->amount - $team_price;
+            $user->save();
+            
             $team->update(['status' => 'paid']);
             return redirect()->route('profile')->with('success', "Оплата підтверджена!");
         } else {
             return redirect()->route('profile')->with('notice', "Оплата не знайдена або в обробці");
         }
     }
+
+    // protected function updateBalance($team_price)
 
     protected function generateMatches($event, $teams)
     {
