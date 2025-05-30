@@ -13,6 +13,7 @@ use Filament\Forms\Components\Select;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Illuminate\Database\Eloquent\Builder;
@@ -108,10 +109,13 @@ class PlayerResource extends Resource
                     ->required(),
                             
                 Forms\Components\TextInput::make('rating')
-                        ->numeric()
-                        ->minValue(1)
-                        ->maxValue(10)
-                        ->label('Рейтинг'),
+                    ->numeric()
+                    ->minValue(1)
+                    ->maxValue(10)
+                    ->label('Рейтинг'),
+                Forms\Components\Toggle::make('verify_rating')
+                    ->label('Рейтинг підтверджено')
+                    ->inline(false),
                
                 Forms\Components\FileUpload::make('photo')
                     ->image()
@@ -139,8 +143,12 @@ class PlayerResource extends Resource
                 TextColumn::make('user.name')
                     ->label('Користувач') 
                     ->sortable()
-                    ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->searchable(),
+                TextColumn::make('user.email')
+                    ->label('Email') 
+                    ->sortable()
+                    ->searchable(),
+                    
                 TextColumn::make('last_name')
                     ->sortable()
                     ->searchable(),
@@ -156,7 +164,8 @@ class PlayerResource extends Resource
                         return $record->teams
                             ->map(fn ($team) => "{$team->name} ({$team->id})")
                             ->implode(', ');
-                    }),
+                    })
+                    ->toggleable(isToggledHiddenByDefault: true),
                     
                
                 TextColumn::make('tg')
@@ -173,8 +182,10 @@ class PlayerResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('rating')
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
+                IconColumn::make('verify_rating')
+                    ->label('Підтверджено')
+                    ->boolean(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

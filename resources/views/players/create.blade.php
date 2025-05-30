@@ -88,7 +88,6 @@
                             *ОБРАТИ СВІЙ РІВЕНЬ
                         </div>
                         <div  data-rating-size="10" data-rating-value="1" class="account__rating rating">
-
                            
                             @livewire('rating')
 

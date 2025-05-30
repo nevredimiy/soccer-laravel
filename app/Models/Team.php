@@ -96,6 +96,11 @@ class Team extends Model
             ->withTimestamps();
     }
 
+    public function averageRating()
+    {
+        return $this->players()->avg('rating');
+    }
+
     
 
 }

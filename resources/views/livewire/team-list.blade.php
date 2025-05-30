@@ -15,8 +15,9 @@
                 <div class="team-card__logo">
                     <img src="{{ asset('storage/' . $team->logo) }}" alt="Image" class="ibg ibg--contain">
                 </div>
-                <div data-rating data-rating-size="10" data-rating-value="8" class="team-card__rating rating">
-                </div>
+
+                <x-player-rating :rating="$team->averageRating()" />
+
                 <div class="team-card__label">
                     {{-- {{ $team->event->stadium->name }} --}}
                     {{-- {{ $team->event->seriesMeta->first()->stadium->name }} --}}

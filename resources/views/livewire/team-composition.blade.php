@@ -19,8 +19,9 @@
                             <div class="item-player__name">
                                 <a href="#">{{$player['last_name']}} {{$player['first_name']}}</a>
                             </div>
-                            <div data-rating data-rating-size="10" data-rating-value="{{$player['rating']}}" class="item-player__rating rating">
-                            </div>
+
+                            <x-player-rating :rating="$player['rating']" />
+                            
                         </article>
                     </div>                
                 @endforeach

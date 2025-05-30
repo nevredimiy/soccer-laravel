@@ -18,6 +18,7 @@ class Player extends Model
         'birth_date',
         'photo',
         'rating',
+        'verify_rating',
 
     ];
 

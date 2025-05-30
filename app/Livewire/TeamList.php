@@ -35,7 +35,7 @@ class TeamList extends Component
         // Получаем команды с предзагрузкой, фильтруем по сериям > сегодня
         $this->teams = Team::with(['event.seriesMeta' => function($query) use ($today) {
                 $query->where('start_date', '>', $today);
-            }, 'event.seriesMeta.stadium', 'color'])
+            }, 'event.seriesMeta.stadium', 'color', 'players'])
             ->where(function ($query) use ($playerTeamIds) {
                 $query->where('owner_id', $this->userId)
                     ->orWhereIn('id', $playerTeamIds);

@@ -18,9 +18,10 @@
                                 <div class="team-card__logo">
                                     <img src="{{ asset('storage/' . $team->logo) }}" alt="{{$team->name ?? 'Логотип команди'}}" class="ibg ibg--contain">
                                 </div>
+                                
                                 <div style="--color: {{$team->color->color_picker}}" data-rating data-rating-size="10" data-rating-value="{{$rating}}" class="team-card__rating rating">
-
                                 </div>
+
                             </div>
                             <div class="hero-team__image">
                                 {{-- <img src="{{ asset($team->group_photo ? 'storage/'.$team->group_photo : 'img/gallery/01.webp') }}" alt="{{$team->name ?? 'Групове фото команди'}}" class="ibg"> --}}

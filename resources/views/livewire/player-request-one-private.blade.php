@@ -37,7 +37,9 @@
                         <div class="item-player__name">
                             <a href="#">{{ $regPlayer['last_name'] }} {{ $regPlayer['first_name'] }}</a>
                         </div>
-                        <div data-rating data-rating-size="10" data-rating-value="{{ $regPlayer['rating'] }}" class="item-player__rating rating"></div>
+
+                        <x-player-rating :rating="$regPlayer['rating']" />
+                        
                     </article>
                     @if ($currentPlayer->id == $regPlayer['id'])
                     <div class="flex justify-center">
